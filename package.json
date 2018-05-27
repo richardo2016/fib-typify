@@ -1,0 +1,27 @@
+{
+  "name": "fib-typify",
+  "version": "0.0.1",
+  "description": "just write fibjs with typescript : )",
+  "main": "index.js",
+  "scripts": {
+    "test": "fibjs test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardo2016/fib-typify.git"
+  },
+  "keywords": [
+    "fibjs",
+    "typescript"
+  ],
+  "author": "richardo2016 <richardo2016@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/richardo2016/fib-typify/issues"
+  },
+  "homepage": "https://github.com/richardo2016/fib-typify#readme",
+  "dependencies": {
+    "@fibjs/mkdirp": "^1.0.1",
+    "typescript": "^2.8.3"
+  }
+}
