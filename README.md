@@ -13,17 +13,17 @@ just write fibjs with typescript : )
 
 | Param | Type | Required/Default |
 | -------- | -------- | -------- |
-| baseDir   | string   | Y/`path.resolve(__dirname, './')`   |
+| baseDir   | string   | Y / `path.resolve(__dirname, './')`   |
 
 **Options**
 
 | Field | Type | Required/Default | Explanation |
 | -------- | -------- | -------- | --------- |
-| recursive   | boolean   | Y/`false`    | whether render recursively |
+| recursive   | boolean   | Y / `false`    | whether render recursively |
 
 ## TODO
 
-- There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.
+- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del> Just use [fib-types](https://github.com/fibjs/fib-types)
 
 ## Contributions
 
