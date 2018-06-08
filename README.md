@@ -1,4 +1,8 @@
 # fib-typify
+
+[![Build Status](https://travis-ci.com/richardo2016/fib-typify.svg?branch=master)](https://travis-ci.org/richardo2016/fib-typify)
+[![NPM version](https://img.shields.io/npm/v/fib-typify.svg)](https://www.npmjs.org/package/fib-typify)
+
 just write fibjs with typescript : )
 
 ## Introduction
