@@ -4,6 +4,7 @@
   "description": "just write fibjs with typescript : )",
   "main": "index.js",
   "scripts": {
+    "ci": "fibjs test/index.js",
     "test": "fibjs test/index.js"
   },
   "repository": {
@@ -23,5 +24,17 @@
   "dependencies": {
     "@fibjs/mkdirp": "^1.0.1",
     "typescript": "^2.8.3"
+  },
+  "ci": {
+    "type": "travis",
+    "version": [
+      "0.21.0",
+      "0.22.0",
+      "0.23.0",
+      "0.24.0"
+    ]
+  },
+  "devDependencies": {
+    "@fibjs/ci": "^2.0.0"
   }
 }
