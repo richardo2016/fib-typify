@@ -11,19 +11,56 @@ just write fibjs with typescript : )
 ## renderer
 `fib-typify`'s core is [jstransformer-typescript] (which is one [jstransformer] aimed to typescript) like, but this core is only valid in fibjs rather than pure javascript
 
-## APIs
+## Usage
 
-**void: renderDirectory(baseDir: string, opts: Options)**
+### APIs
+
+**NOTE** All `TSCompilerOptions` is just typescript's [compilerOptions]
+
+---
+
+**compileRaw: (tsRaw: string, tsCompilerOptions: TSCompilerOptions) => string**
+
+compile `tsRaw` to javascript.
+
+**compileRawToFile: (tsRaw: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void**
+
+compile `tsRaw` to javascript, then write to `targetpath`
+
+**compileRawToSandbox: (tsRaw: string, sboxOpts: any, tsCompilerOptions: TSCompilerOptions) => any**
+
+compile `tsRaw` to javascript, then read it as sandbox
+
+**compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string**
+
+compile content in `filepath` to javascript.
+
+**compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void**
+
+compile content in `filepath` to javascript, then write to `targetpath`
+
+**compileRawToFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string**
+
+compile content in `filepath` to javascript, then read it as sandbox
+
+**compileDirectoryTo: (baseDir: string, distDir: string, compileDirToOpts: any) => void**
 
 | Param | Type | Required/Default |
 | -------- | -------- | -------- |
-| baseDir   | string   | Y / `path.resolve(__dirname, './')`   |
+| baseDir   | string   | Y / -   |
+| distDir   | string   | Y / -   |
+| compileDirToOpts | [compileDirToOpts] | N / - |
 
-**Options**
+compile files in directory `baseDir` recursively to `distDir`, view options in view [compileDirToOpts]
+
+---
+
+### compileDirToOpts
 
 | Field | Type | Required/Default | Explanation |
 | -------- | -------- | -------- | --------- |
-| recursive   | boolean   | Y / `false`    | whether render recursively |
+| compilerOptions   | boolean   | Y / `false`    | typescript's [compilerOptions] |
+| filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled when returning `true` |
 
 ## TODO
 
@@ -37,3 +74,6 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 [fibjs]:http://fibjs.org/
 [jstransformer-typescript]:https://github.com/jstransformers/jstransformer-typescript
 [jstransformer]:https://github.com/jstransformers/jstransformer
+
+[compilerOptions]:https://www.typescriptlang.org/docs/handbook/compiler-options.html
+[compileDirToOpts]:#compileDirToOpts
