@@ -60,11 +60,34 @@ compile files in directory `baseDir` recursively to `distDir`, view options in v
 | Field | Type | Required/Default | Explanation |
 | -------- | -------- | -------- | --------- |
 | compilerOptions   | boolean   | Y / `false`    | typescript's [compilerOptions] |
-| filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled when returning `true` |
+| fileglobsToCopy | Array, '*' | N / `['*.js', '*.jsc', '*.json']` | whitelist for extensions of globnames to copy when recursive walk to one
+| includeLeveledGlobs | string | string[] | N / `['*', '!node_modules', '!.ts']` | glob descriptor list to exclude on walk to every directory level, view detail in [micromatch] |
+| filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled if returning `true` |
+
+<!-- | extsToCopy | Array, '*' | N / `['.js', '.jsc', '.json']` | whitelist for extensions of filename to copy when recursive walk to one file -->
+**notice** `compileDirToOpts.extsToCopy` is depreacated, if you pass it,`compileDirToOpts.fileglobsToCopy` get invalid.
+
+### File Filter Priority
+
+High -> Low:
+1. includeLeveledGlobs
+1. fileglobsToCopy
+1. filterFileName
+
+### File Writing Priority
+1. [compileResult]
+1. fileglobsToCopy
 
 ## TODO
 
-- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del> Just use [fib-types](https://github.com/fibjs/fib-types)
+- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  ---> Just use [fib-types](https://github.com/fibjs/fib-types)
+- [ ] better options for `compileDirectoryTo`
+    - [ ] hooks before, when, after compiling
+    - [ ] on walk to one file recursively
+    - [ ] customizable `recursive`
+    - [ ] support `fileglobsToCopy` with higher priorty than `extsToCopy`
+- [ ] compile '.ts' to '.jsc' directly
+- [ ] pack compiled '.jsc' to binary and extract one zipped file.
 
 ## Contributions
 
@@ -77,3 +100,4 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 
 [compilerOptions]:https://www.typescriptlang.org/docs/handbook/compiler-options.html
 [compileDirToOpts]:#compileDirToOpts
+[micromatch]:https://github.com/micromatch/micromatch#options

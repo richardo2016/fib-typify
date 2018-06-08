@@ -23,7 +23,8 @@
   "homepage": "https://github.com/richardo2016/fib-typify#readme",
   "dependencies": {
     "@fibjs/mkdirp": "^1.0.1",
-    "typescript": "^2.8.3"
+    "micromatch": "^3.1.10",
+    "typescript": "^2.9.1"
   },
   "ci": {
     "type": "travis",
@@ -35,6 +36,7 @@
     ]
   },
   "devDependencies": {
-    "@fibjs/ci": "^2.0.0"
+    "@fibjs/ci": "^2.0.0",
+    "@types/fibjs": "github:fibjs/fib-types#v1.0.4"
   }
 }
