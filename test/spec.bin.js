@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
+const coroutine = require('coroutine')
 
 const cmd = process.execPath
 
@@ -18,7 +19,7 @@ describe('fib-typify', () => {
     it(`check ${argFlags.output.join(',')}`, () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
-        const result = process.open(cmd, [
+        const result = process.run(cmd, [
             path.join(__dirname, '../bin', 'fib-typify.js'),
             inputsrc,
             '-o',
@@ -29,8 +30,6 @@ describe('fib-typify', () => {
             }
         })
 
-        // let outputText = result.readLines()
-        // console.log('outputText', outputText.join('\n'))
         assert.equal( fs.exists(
             path.resolve(__dirname, '../', outputdist)
         ), true )
