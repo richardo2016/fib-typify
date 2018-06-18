@@ -41,14 +41,22 @@ let tsCompilerOptions = {
     module: 'commonjs'
 }
 finalParams.configFilepath = getParamFromArgs(args, ['-c', '--config-file'])
-let configFilepath = finalParams.configFilepath ? path.resolve(baseDir, finalParams.configFilepath) : null
+let configFilepath = finalParams.configFilepath ? path.resolve(cwd, finalParams.configFilepath) : null
+isDebug && console.log('configFilepath', configFilepath)
+
 if (configFilepath && fs.exists(configFilepath)) {
     let config = {}
-    try {
-        config = JSON.parse(fs.readTextFile(configFilepath))
-    } catch (e) {
-        console.warn(`error occured when trying to parse config file: ${configFilepath}`)
+    if (['.json', '.js', '.jsc'].some(ext => configFilepath.endsWith(ext))) {
+        config = require(configFilepath)
+        isDebug && console.log('internal extension', config)
+    } else {
+        try {
+            config = JSON.parse(fs.readTextFile(configFilepath))
+        } catch (e) {
+            console.warn(`error occured when trying to parse config file: ${configFilepath}`)
+        }
     }
+
     tsCompilerOptions = util.extend({}, tsCompilerOptions, config)
 }
 

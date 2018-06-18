@@ -41,6 +41,6 @@
 	},
 	"devDependencies": {
 		"@fibjs/ci": "^2.0.0",
-		"@types/fibjs": "github:fibjs/fib-types#v1.0.6"
+		"@types/fibjs": "github:fibjs/fib-types#v1.0.7"
 	}
 }

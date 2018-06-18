@@ -13,6 +13,13 @@ just write fibjs with typescript : )
 
 ## Usage
 
+```bash
+# locally
+fibjs --install fib-typify
+# or globally
+npm i -g fib-typify
+```
+
 ### APIs
 
 **NOTE** All `TSCompilerOptions` is just typescript's [compilerOptions]
@@ -78,6 +85,25 @@ High -> Low:
 1. [compileResult]
 1. fileglobsToCopy
 
+## CLI
+Started from `0.2.0`, you can run `fib-typify` in CLI.
+
+```bash
+fib-typify src -o lib -c .typify.json
+```
+
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`. The default tsCompilerOptions is
+```javascript
+{
+    target: 'es6',
+    module: 'commonjs'
+}
+```
+if you want to extend it, just write .json/.js/.jsc file, and put its path relateive to `cwd()` after `-c`/`--config-file` CLI option.
+
+I only provided one simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
+
+
 ## TODO
 
 - [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  ---> Just use [fib-types](https://github.com/fibjs/fib-types)
@@ -88,7 +114,7 @@ High -> Low:
     - [ ] support `fileglobsToCopy` with higher priorty than `extsToCopy`
 - [ ] compile '.ts' to '.jsc' directly
 - [ ] pack compiled '.jsc' to binary and extract one zipped file.
-
+- [ ] `--help` CLI option for cli
 ## Contributions
 
 If you wanna contribute to this package, just learn about [fibjs] first, then fork this repo :)
