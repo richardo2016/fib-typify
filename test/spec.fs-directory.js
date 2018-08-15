@@ -1,3 +1,6 @@
+const test = require('test');
+test.setup();
+
 const vm = require('vm')
 
 const fs = require('fs')
@@ -93,3 +96,5 @@ describe('fs-directory', () => {
         assert.equal( fs.exists(path.resolve(customizedCopyDir, 'glob_to_exclude123')), false )
     })
 })
+
+require.main === module && test.run(console.DEBUG)

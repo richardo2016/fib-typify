@@ -26,31 +26,31 @@ npm i -g fib-typify
 
 ---
 
-`compileRaw: (tsRaw: string, tsCompilerOptions: TSCompilerOptions) => string`
+* `compileRaw: (tsRaw: string, tsCompilerOptions: TSCompilerOptions) => string`
 
 compile `tsRaw` to javascript.
 
-`compileRawToFile: (tsRaw: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
+* `compileRawToFile: (tsRaw: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
 
 compile `tsRaw` to javascript, then write to `targetpath`
 
-`compileRawToSandbox: (tsRaw: string, sboxOpts: any, tsCompilerOptions: TSCompilerOptions) => any`
+* `compileRawToSandBox: (tsRaw: string, sboxOpts: any, tsCompilerOptions: TSCompilerOptions) => any`
 
 compile `tsRaw` to javascript, then read it as sandbox
 
-`compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
+* `compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
 
 compile content in `filepath` to javascript.
 
-`compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
+* `compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
 
 compile content in `filepath` to javascript, then write to `targetpath`
 
-`compileFileToSandBox: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
+* `compileFileToSandBox: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
 
 compile content in `filepath` to javascript, then read it as sandbox
 
-`compileDirectoryTo: (baseDir: string, distDir: string, compileDirToOpts: any) => void`
+* `compileDirectoryTo: (baseDir: string, distDir: string, compileDirToOpts: any) => void`
 
 | Param | Type | Required/Default |
 | -------- | -------- | -------- |

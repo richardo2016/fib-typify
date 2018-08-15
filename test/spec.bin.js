@@ -1,3 +1,6 @@
+const test = require('test');
+test.setup();
+
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
@@ -35,3 +38,5 @@ describe('fib-typify', () => {
         ), true )
     })
 })
+
+require.main === module && test.run(console.DEBUG)
