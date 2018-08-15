@@ -1,3 +1,6 @@
+const test = require('test');
+test.setup();
+
 const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
@@ -53,7 +56,7 @@ describe('raw', () => {
     })
 
     it('compileToSandBox', () => {
-        const sbox = fibTypify.compileRawToSandbox(rawTest.input, {
+        const sbox = fibTypify.compileRawToSandBox(rawTest.input, {
             sboxName: 'rawbasic'
         })
 
@@ -61,3 +64,5 @@ describe('raw', () => {
         assertSandboxForBasicTs(module)
     })
 })
+
+require.main === module && test.run(console.DEBUG)

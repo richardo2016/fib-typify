@@ -1,3 +1,6 @@
+const test = require('test');
+test.setup();
+
 const vm = require('vm')
 
 const fs = require('fs')
@@ -85,3 +88,5 @@ describe('fs-file', () => {
         assert.equal(rawModule(), 'hello')
     })
 })
+
+require.main === module && test.run(console.DEBUG)

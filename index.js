@@ -1,9 +1,9 @@
-exports.compileRaw = require('./lib/raw').compile
-exports.compileRawToFile = require('./lib/raw').compileToFile
-exports.compileRawToSandbox = require('./lib/raw').compileToSandBox
+exports.compileRaw = require('./lib/raw').compileRaw
+exports.compileRawToFile = require('./lib/raw').compileRawToFile
+exports.compileRawToSandBox = require('./lib/raw').compileRawToSandBox
 
-exports.compileFile = require('./lib/fs-file').compile
-exports.compileFileTo = require('./lib/fs-file').compileTo
-exports.compileFileToSandBox = require('./lib/fs-file').compileToSandBox
+exports.compileFile = require('./lib/fs-file').compileFile
+exports.compileFileTo = require('./lib/fs-file').compileFileTo
+exports.compileFileToSandBox = require('./lib/fs-file').compileFileToSandBox
 
-exports.compileDirectoryTo = require('./lib/fs-directory').compileTo
+exports.compileDirectoryTo = require('./lib/fs-directory').compileDirectoryTo

@@ -2,10 +2,10 @@
 var test = require('test');
 test.setup();
 
-require('./spec.raw')
-require('./spec.fs-file')
-require('./spec.fs-directory')
+run('./spec.raw')
+run('./spec.fs-file')
+run('./spec.fs-directory')
 
-require('./spec.bin')
+run('./spec.bin')
 
-test.run(console.DEBUG)
+require.main === module && test.run(console.DEBUG)
