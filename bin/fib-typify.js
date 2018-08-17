@@ -36,10 +36,7 @@ if (!finalParams.outputDir) {
 const baseDir = path.resolve(cwd, srcpath)
 const distDir = path.resolve(cwd, finalParams.outputDir)
 
-let tsCompilerOptions = {
-    target: 'es6',
-    module: 'commonjs'
-}
+let tsCompilerOptions = require('../lib/_utils').tsCompilerOptions
 finalParams.configFilepath = getParamFromArgs(args, ['-c', '--config-file'])
 let configFilepath = finalParams.configFilepath ? path.resolve(cwd, finalParams.configFilepath) : null
 isDebug && console.log('configFilepath', configFilepath)

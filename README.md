@@ -103,16 +103,26 @@ if you want to extend it, just write .json/.js/.jsc file, and put its path relat
 
 I only provided one simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
 
+## `loader-box` Limitations in `fibjs < 0.25.0`
+From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compiler for specified extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loader-box`.
+
+fib-typify also support `loader-box` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
+
+- always add `.ts` suffix in `require` and `import` statement
+- don't `export interface` in pure `.ts` file
+- dont't write loop-requirement with import statement in `.ts`, if you really do it, write `exports.xxx = ...` instead of `export const xxx = ...` in the loop requirement.
+
+so it's better to upgrade fibjs to version`>=0.25.0`, best to `>=0.26.0`, which resolves typescript source faster than previous version fibjs in fib-typify.
 
 ## TODO
 
-- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  ---> Just use [fib-types](https://github.com/fibjs/fib-types)
+- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  Now Just use [fib-types](https://github.com/fibjs/fib-types)
 - [ ] better options for `compileDirectoryTo`
     - [ ] hooks before, when, after compiling
     - [ ] on walk to one file recursively
     - [ ] customizable `recursive`
     - [ ] support `fileglobsToCopy` with higher priorty than `extsToCopy`
-- [ ] compile '.ts' to '.jsc' directly
+- [ ] compile `.ts` to '.jsc' directly
 - [ ] pack compiled '.jsc' to binary and extract one zipped file.
 - [ ] `--help` CLI option for cli
 ## Contributions
