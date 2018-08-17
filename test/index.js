@@ -8,4 +8,6 @@ run('./spec.fs-directory')
 
 run('./spec.bin')
 
+run('./spec.loader-box')
+
 require.main === module && test.run(console.DEBUG)
