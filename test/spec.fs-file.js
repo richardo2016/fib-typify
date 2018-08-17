@@ -53,14 +53,14 @@ describe('fs-file', () => {
     it('compileFileToSandbox basic', () => {
         const rawModule = fibTypify.compileFileToSandBox(fsFileTestBasic.inputFilepath, {
             sboxName: 'fs-file-basic'
-        }).require('fs-file-basic', __dirname)
+        }).require(fsFileTestBasic.inputFilepath, __dirname)
         assertSandboxForBasicTs(rawModule)
     })
 
     it('compileFileToSandbox interface', () => {
         const rawModule = fibTypify.compileFileToSandBox(fsFileTestInterface.inputFilepath, {
             sboxName: 'fs-file-interface'
-        }).require('fs-file-interface', __dirname)
+        }).require(fsFileTestInterface.inputFilepath, __dirname)
 
         assert.isObject(rawModule)
         assert.isFunction(rawModule.doFoo)
@@ -81,7 +81,7 @@ describe('fs-file', () => {
                 console.log('mname', mname)
             }
         })
-        const rawModule = sbox.require('fs-file-import', __dirname)
+        const rawModule = sbox.require(fsFileTestImport.inputFilepath, __dirname)
 
         assert.isObject(rawModule)
         assert.isFunction(rawModule)
