@@ -1,7 +1,15 @@
 
-v0.2.1 / 2018-08-17
+v0.3.0 / 2018-08-21
 ==================
 
+  * [README] add content about loaderBox.
+  * [@fibjs/ci:config] remove 0.21.0, add 0.26.1
+  * support loader for fibjs with version between 0.21.0, 0.26.0
+
+v0.2.1 / 2018-08-17
+===================
+
+  * Release v0.2.1
   * add 'moduleName' option to sboxOpts.
   * rename 'compileRawToSandbox' to 'compileRawToSandBox', and do other name normalization.
   * fix and update README.md.
