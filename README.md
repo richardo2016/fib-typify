@@ -18,6 +18,18 @@ just write fibjs with typescript : )
 fibjs --install fib-typify
 # or globally
 npm i -g fib-typify
+
+# compile code in ./src to ./dist recursively
+fib-typify ./src -o ./dist
+```
+
+### default tsCompilerOptions
+```javascript
+{
+    target: 'es6',
+    module: 'commonjs',
+    noImplicitUseStrict: true
+}
 ```
 
 ### APIs
@@ -32,11 +44,11 @@ compile `tsRaw` to javascript.
 
 * `compileRawToFile: (tsRaw: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
 
-compile `tsRaw` to javascript, then write to `targetpath`
+compile `tsRaw` to javascript, then write to `targetpath`.
 
 * `compileRawToSandBox: (tsRaw: string, sboxOpts: any, tsCompilerOptions: TSCompilerOptions) => any`
 
-compile `tsRaw` to javascript, then read it as sandbox
+compile `tsRaw` to javascript, then read it as sandbox.
 
 * `compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
 
@@ -44,25 +56,33 @@ compile content in `filepath` to javascript.
 
 * `compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
 
-compile content in `filepath` to javascript, then write to `targetpath`
+compile content in `filepath` to javascript, then write to `targetpath`.
 
 * `compileFileToSandBox: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
 
-compile content in `filepath` to javascript, then read it as sandbox
+compile content in `filepath` to javascript, then read it as sandbox.
 
-* `compileDirectoryTo: (baseDir: string, distDir: string, compileDirToOpts: any) => void`
+* `compileDirectoryTo: (baseDir: string, distDir: string, directoryCompilationOptions: any) => void`
 
 | Param | Type | Required/Default |
 | -------- | -------- | -------- |
 | baseDir   | string   | Y / -   |
 | distDir   | string   | Y / -   |
-| compileDirToOpts | [compileDirToOpts] | N / - |
+| directoryCompilationOptions | [directoryCompilationOptions] | N / - |
 
-compile files in directory `baseDir` recursively to `distDir`, view options in view [compileDirToOpts]
+compile files in directory `baseDir` recursively to `distDir`, view options in view [directoryCompilationOptions].
+
+* `generateLoaderbox(tsCompilerOptions: TSCompilerOptions, basedir: string)`
+
+generate one loaderBox with compilation options `tsCompilerOptions`.
+
+* `loaderBox`
+
+default loaderBox of `fib-typify`, it use **default tsCompilerOptions** as compiler options for `.ts`.
 
 ---
 
-### compileDirToOpts
+### directoryCompilationOptions
 
 | Field | Type | Required/Default | Explanation |
 | -------- | -------- | -------- | --------- |
@@ -72,7 +92,36 @@ compile files in directory `baseDir` recursively to `distDir`, view options in v
 | filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled if returning `true` |
 
 <!-- | extsToCopy | Array, '*' | N / `['.js', '.jsc', '.json']` | whitelist for extensions of filename to copy when recursive walk to one file -->
-**notice** `compileDirToOpts.extsToCopy` is depreacated, if you pass it,`compileDirToOpts.fileglobsToCopy` get invalid.
+**notice** `directoryCompilationOptions.extsToCopy` is depreacated, if you pass it,`directoryCompilationOptions.fileglobsToCopy` get invalid.
+
+## loaderBox
+
+loaderBox is one new feature started from fib-typify`>= 0.3`, it depends on new API `Sandbox::setModuleCompiler` in fibjs`>= 0.26.0`, but it also work in fibjs `>= 0.22.0 < 0.26.0 ` **partly**
+
+### require typescript directly by default loaderBox
+
+```javascript
+// default-loader.js
+const fibTypify = require('fib-typify')
+
+const module = fibTypify.loaderBox.require('./index.ts', __dirname)
+```
+
+### require typescript directly by customized loaderBox
+```javascript
+// customized-loader.js
+const fibTypify = require('fib-typify')
+
+const loaderBox = fibTypify.generateLoaderbox({
+        ...fibTypify.defaultCompilerOptions,
+        // enable some options as you like
+        strict: true,
+        diagnostics: true,
+        allowJs: true,
+    })
+
+const module = loaderBox.require('./index.ts', __dirname)
+```
 
 ### File Filter Priority
 
@@ -92,27 +141,31 @@ Started from `0.2.0`, you can run `fib-typify` in CLI.
 fib-typify src -o lib -c .typify.json
 ```
 
-Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`. The default tsCompilerOptions is
-```javascript
-{
-    target: 'es6',
-    module: 'commonjs'
-}
-```
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`.
+
 if you want to extend it, just write .json/.js/.jsc file, and put its path relateive to `cwd()` after `-c`/`--config-file` CLI option.
 
 I only provided one simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
 
-## `loader-box` Limitations in `fibjs < 0.25.0`
-From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compiler for specified extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loader-box`.
+## Warning
 
-fib-typify also support `loader-box` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
+### `loaderBox` Limitations when `fibjs < 0.25.0`
+From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compiler for specified extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loaderBox`.
+
+fib-typify also support `loaderBox` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
 
 - always add `.ts` suffix in `require` and `import` statement
 - don't `export interface` in pure `.ts` file
 - dont't write loop-requirement with import statement in `.ts`, if you really do it, write `exports.xxx = ...` instead of `export const xxx = ...` in the loop requirement.
 
 so it's better to upgrade fibjs to version`>=0.25.0`, best to `>=0.26.0`, which resolves typescript source faster than previous version fibjs in fib-typify.
+
+### compile `.ts` to `.js` before your deploy
+
+By the way, although I have tested in some cases, but it's not enough to say, "fib-typify's loaderBox can run in production directly". In my own work, I use fib-typify's loaderBox to load all source code when app's in developing stage, but I would
+compile source to **pure javascript** code before publishing.
+
+Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API to build your source code. Get more samples [here](/test/spec.fs-directory.js)
 
 ## TODO
 
@@ -135,5 +188,5 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 [jstransformer]:https://github.com/jstransformers/jstransformer
 
 [compilerOptions]:https://www.typescriptlang.org/docs/handbook/compiler-options.html
-[compileDirToOpts]:#compileDirToOpts
+[directoryCompilationOptions]:#directoryCompilationOptions
 [micromatch]:https://github.com/micromatch/micromatch#options
