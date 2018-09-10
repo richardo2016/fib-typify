@@ -76,9 +76,17 @@ compile files in directory `baseDir` recursively to `distDir`, view options in v
 
 generate one loaderBox with compilation options `tsCompilerOptions`.
 
+* `registerTsCompiler(sandbox: vm.SandBox, tsCompilerOptions: TSCompilerOptions = defaultCompilerOptions)`
+
+register '.ts' compiler for one Sanbox which haven't been registered before.
+
 * `loaderBox`
 
 default loaderBox of `fib-typify`, it use **default tsCompilerOptions** as compiler options for `.ts`.
+
+* `defaultCompilerOptions`
+
+default typescript compiler options. More detail in [typescript's compiler options]
 
 ---
 
@@ -113,12 +121,12 @@ const module = fibTypify.loaderBox.require('./index.ts', __dirname)
 const fibTypify = require('fib-typify')
 
 const loaderBox = fibTypify.generateLoaderbox({
-        ...fibTypify.defaultCompilerOptions,
-        // enable some options as you like
-        strict: true,
-        diagnostics: true,
-        allowJs: true,
-    })
+    ...fibTypify.defaultCompilerOptions,
+    // enable some options as you like
+    strict: true,
+    diagnostics: true,
+    allowJs: true,
+})
 
 const module = loaderBox.require('./index.ts', __dirname)
 ```
@@ -190,3 +198,4 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 [compilerOptions]:https://www.typescriptlang.org/docs/handbook/compiler-options.html
 [directoryCompilationOptions]:#directoryCompilationOptions
 [micromatch]:https://github.com/micromatch/micromatch#options
+[typescript's compiler options]:https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
