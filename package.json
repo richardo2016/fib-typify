@@ -42,7 +42,7 @@
 	},
 	"devDependencies": {
 		"@fibjs/ci": "^2.1.0",
-		"@types/fibjs": "^0.25.2"
+		"@types/fibjs": "^0.26.0"
 	},
 	"engines": {
 		"fibjs": ">=0.21.0"
