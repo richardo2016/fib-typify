@@ -4,6 +4,9 @@ matrix:
   include:
     - os: linux
       env:
+        - VERSION=0.21.0
+    - os: linux
+      env:
         - VERSION=0.22.0
     - os: linux
       env:
@@ -20,6 +23,10 @@ matrix:
     - os: linux
       env:
         - VERSION=0.26.1
+    - os: osx
+      osx_image: xcode9
+      env:
+        - VERSION=0.21.0
     - os: osx
       osx_image: xcode9
       env:

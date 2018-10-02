@@ -7,7 +7,7 @@
 		"fib-typify": "./bin/fib-typify.js"
 	},
 	"scripts": {
-		"ci": "fibjs test/index.js",
+		"ci": "npm run test",
 		"test": "fibjs test/index.js"
 	},
 	"repository": {
@@ -32,6 +32,7 @@
 	"ci": {
 		"type": "travis",
 		"version": [
+			"0.21.0",
 			"0.22.0",
 			"0.23.0",
 			"0.24.0",
