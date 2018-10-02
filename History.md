@@ -1,7 +1,15 @@
 
-v0.3.0 / 2018-08-21
+v0.3.1 / 2018-10-02
 ==================
 
+  * fix mistake about fibjs@0.21.0 of builtin-modules
+  * upgrade '@types/fibjs'
+  * [README.md] update
+
+v0.3.0 / 2018-08-21
+===================
+
+  * Release v0.3.0
   * [README] add content about loaderBox.
   * [@fibjs/ci:config] remove 0.21.0, add 0.26.1
   * support loader for fibjs with version between 0.21.0, 0.26.0
