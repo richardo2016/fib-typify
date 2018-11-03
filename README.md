@@ -24,6 +24,8 @@ fib-typify ./src -o ./dist
 ```
 
 ### default tsCompilerOptions
+
+**internal default ts compilerOptions**
 ```javascript
 {
     target: 'es6',
@@ -31,6 +33,8 @@ fib-typify ./src -o ./dist
     noImplicitUseStrict: true
 }
 ```
+
+it would be overwritten by `compilerOptions` from `CWD/tsconfig.json`
 
 ### APIs
 
@@ -46,10 +50,6 @@ compile `tsRaw` to javascript.
 
 compile `tsRaw` to javascript, then write to `targetpath`.
 
-* `compileRawToSandBox: (tsRaw: string, sboxOpts: any, tsCompilerOptions: TSCompilerOptions) => any`
-
-compile `tsRaw` to javascript, then read it as sandbox.
-
 * `compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
 
 compile content in `filepath` to javascript.
@@ -57,10 +57,6 @@ compile content in `filepath` to javascript.
 * `compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
 
 compile content in `filepath` to javascript, then write to `targetpath`.
-
-* `compileFileToSandBox: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
-
-compile content in `filepath` to javascript, then read it as sandbox.
 
 * `compileDirectoryTo: (baseDir: string, distDir: string, directoryCompilationOptions: any) => void`
 
@@ -149,11 +145,15 @@ Started from `0.2.0`, you can run `fib-typify` in CLI.
 fib-typify src -o lib -c .typify.json
 ```
 
-Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`.
-
-if you want to extend it, just write .json/.js/.jsc file, and put its path relateive to `cwd()` after `-c`/`--config-file` CLI option.
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpile(options)`.
 
 I only provided one simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
+
+### options
+
+`-c, --config-file`: equals to `tsconfig.compilerOptions`, would overwrite the one from `tsconfig.json`
+
+`-o, --out-dir`: equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
 
 ## Warning
 

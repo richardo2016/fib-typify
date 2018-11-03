@@ -4,7 +4,6 @@ test.setup();
 const fs = require('fs')
 const path = require('path')
 const process = require('process')
-const coroutine = require('coroutine')
 
 const cmd = process.execPath
 

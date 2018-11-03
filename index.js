@@ -13,4 +13,4 @@ exports.generateLoaderbox = require('./lib/loader-box').generateLoaderbox
 
 exports.builtModules = require('./lib/_utils').builtModules
 exports.registerTsCompiler = require('./lib/_utils').registerTsCompiler
-exports.defaultCompilerOptions = require('./lib/_utils').tsCompilerOptions
+exports.defaultCompilerOptions = require('./lib/_utils').defaultCompilerOptions
