@@ -23,9 +23,9 @@ npm i -g fib-typify
 fib-typify ./src -o ./dist
 ```
 
-### default tsCompilerOptions
+## default tsCompilerOptions
 
-**internal default ts compilerOptions**
+### internal default compilerOptions
 ```javascript
 {
     target: 'es6',
@@ -34,7 +34,15 @@ fib-typify ./src -o ./dist
 }
 ```
 
-it would be overwritten by `compilerOptions` from `CWD/tsconfig.json`
+### `tsconfig.json`
+
+Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite internal default compilerOptions.
+
+### priority of overwriting
+
+1. compilerOptions passed to `function params`
+1. compilerOptions in `tsconfig.json`
+1. internal default compilerOptions
 
 ### APIs
 
