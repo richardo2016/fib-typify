@@ -1,7 +1,14 @@
 
-v0.3.1 / 2018-10-02
+v0.4.0 / 2018-11-03
 ==================
 
+  * update README.md
+  * support read compilerOptions from 'tsconfig.json', and depreacte two useless util functions.
+
+v0.3.1 / 2018-10-02
+===================
+
+  * Release v0.3.1
   * fix mistake about fibjs@0.21.0 of builtin-modules
   * upgrade '@types/fibjs'
   * [README.md] update
