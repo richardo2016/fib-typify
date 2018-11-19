@@ -5,11 +5,24 @@
 
 just write fibjs with typescript : )
 
+```javascript
+// entry.js
+const vm = require('vm')
+const typify = require('fib-typify')
+
+typify.generateLoaderbox().require('./index.ts', __dirname)
+
+// index.ts
+export function foo (str: string): string {
+    return `hello, ${str}`
+}
+```
+
 ## Introduction
 `fib-typify` allows you write fibjs with [typescript] in compilation or in runtime. It depends on original [typescript] stable version. As typescript is written with **nodejs**, it's not restricted in nodejs runtime: you can also compile typescript in browser or _ANY_ other pure Javascript runtime. That is, you can use it in fibjs also.
 
 ## renderer
-`fib-typify`'s core is [jstransformer-typescript] (which is one [jstransformer] aimed to typescript) like, but this core is only valid in fibjs rather than pure javascript
+`fib-typify`'s core is [jstransformer-typescript]-like ([jstransformer-typescript] is one [jstransformer] aimed to typescript), but this core is only valid in fibjs rather than pure javascript
 
 ## Usage
 
