@@ -1,7 +1,17 @@
 
-v0.4.0 / 2018-11-03
+v0.4.1 / 2018-11-25
 ==================
 
+  * add appveyor ci badget.
+  * add appveyor ci config.
+  * abstract utils overwriteFile
+  * fix overwriting failure when executing '_getCopyWhiteListViaGlobrule'.
+  * [README.md] add marked sample before `introduction`.
+
+v0.4.0 / 2018-11-03
+===================
+
+  * Release v0.4.0
   * update README.md
   * support read compilerOptions from 'tsconfig.json', and depreacte two useless util functions.
 
