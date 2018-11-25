@@ -27,6 +27,7 @@
 	"dependencies": {
 		"@fibjs/builtin-modules": "^0.1.0",
 		"@fibjs/mkdirp": "^1.0.1",
+		"@fibjs/rmdirr": "^2.0.0",
 		"micromatch": "^3.1.10",
 		"typescript": "^3.1.6"
 	},
