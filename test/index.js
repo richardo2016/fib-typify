@@ -2,6 +2,10 @@
 var test = require('test');
 test.setup();
 
+var fibjsVersion = require('util').buildInfo().fibjs
+if (fibjsVersion <= '0.21.0')
+    require.main = module
+
 run('./spec.raw')
 run('./spec.fs-file')
 run('./spec.fs-directory')
@@ -10,7 +14,9 @@ run('./spec.bin')
 
 run('./spec.loader-box')
 
-run('./spec.source-map')
+if (fibjsVersion >= '0.26.0')
+    run('./spec.source-map')
 
-var fibjsVersion = require('../lib/_utils').fibjsVersion
-;(fibjsVersion <= '0.21.0' || require.main === module) && test.run(console.DEBUG)
+if (require.main === module) {
+    test.run(console.DEBUG)
+}

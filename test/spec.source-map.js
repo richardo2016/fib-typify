@@ -2,9 +2,9 @@ const test = require('test');
 test.setup();
 
 const path = require('path');
-const getErrorSource = require('source-map-support').getErrorSource;
 
 const fibTypify = require('..')
+const fibjsVersion = require('util').buildInfo().fibjs
 
 describe('error emitted by fib-typify correctly', () => {
     const vbox = fibTypify.generateLoaderbox()
@@ -43,6 +43,11 @@ describe('error emitted by fib-typify correctly', () => {
                 vbox.require(require_path, __dirname)
             } catch (e) {
                 assert.equal(e.message, message)
+
+                // correct lineNumber/columnNumber only suppported in fibjs >= 0.26.x
+                if (fibjsVersion < '0.26.0')
+                    return
+
                 assert.isTrue(e.stack.includes(
                     target_path
                 ))
