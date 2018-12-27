@@ -3,7 +3,7 @@ const path = require('path')
 const util = require('util')
 
 const CORE = require('./core')
-const fibTypify = require('../')
+const raw = require('./raw')
 const UTILs = require('./_utils')
 
 function _checkSrcFilepath (filepath) {
@@ -59,7 +59,7 @@ exports.compileFileTo = function (filepath = '', targetpath = '', tsCompilerOpti
     }
     tsRaw = UTILs.fixTsRaw(tsRaw)
 
-    return fibTypify.compileRawToFile(tsRaw, targetpath, tsCompilerOptions)
+    return raw.compileRawToFile(tsRaw, targetpath, tsCompilerOptions)
 }
 
 /**
@@ -77,7 +77,7 @@ exports.compileFileToSandBox = function (filepath = '', sboxOpts, tsCompilerOpti
     }
     tsRaw = UTILs.fixTsRaw(tsRaw)
 
-    return fibTypify.compileRawToSandBox(tsRaw, util.extend({
+    return raw.compileRawToSandBox(tsRaw, util.extend({
         moduleName: filepath,
     }, sboxOpts), tsCompilerOptions)
 }

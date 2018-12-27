@@ -11,10 +11,10 @@ const util = require('util')
 const argFlags = require('./utils/arg_flags')
 const errCode = require('./utils/err_code')
 
-const extendCompilerConfigFromTSConfig= require('../lib/_utils').extendCompilerConfigFromTSConfig
-let tsCompilerOptions = JSON.parse(JSON.stringify(require('../lib/_utils').defaultCompilerOptions))
+const extendCompilerConfigFromTSConfig= require('../core/_utils').extendCompilerConfigFromTSConfig
+let tsCompilerOptions = JSON.parse(JSON.stringify(require('../core/_utils').defaultCompilerOptions))
 
-const fibTypify = require('..')
+const { compileDirectoryTo } = require('../core/fs-directory')
 
 const cwd = process.cwd()
 isDebug && console.log('cwd', cwd)
@@ -68,7 +68,7 @@ const distDir = path.resolve(cwd, tsCompilerOptions.outDir)
 isDebug && console.log('finalParams', finalParams)
 isDebug && console.log('tsCompilerOptions', tsCompilerOptions);
 
-fibTypify.compileDirectoryTo(baseDir, distDir, {
+compileDirectoryTo(baseDir, distDir, {
     compilerOptions: tsCompilerOptions
 })
 /* run :end */

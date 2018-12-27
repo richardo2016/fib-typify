@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
-        "alwaysStrict": false,
-        "inlineSourceMap": true
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "alwaysStrict": false
     }
 }

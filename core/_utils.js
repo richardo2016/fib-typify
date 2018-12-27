@@ -64,42 +64,67 @@ exports.getCwdTsCompilerOptions = function () {
 }
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
+const SOURCEMAP_SUFFIX = exports.SOURCEMAP_SUFFIX = '.map'
 
 exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-module-hash')()
+exports.defaultSandboxFallback = function (name) {
+    return require(name)
+}
 
 const { compileModule } = require('./module')
 const defaultSourceMapInstallScriptName = exports.defaultSourceMapInstallScriptName = path.resolve(__dirname, './runtime/source-map-install.js')
 
+const saveCacheMap = function (filename, mapContent) {
+    const io = require('io')
+    const zip = require('zip')
+
+    const stream = new io.MemoryStream();
+    const zipfile = zip.open(stream, "w");
+    zipfile.write(new Buffer(mapContent), 'index.map');
+    zipfile.close();
+
+    stream.rewind();
+    fs.setZipFS(`/${filename}.zip`, stream.readAll());
+}
+
 exports.registerTsCompiler = (
     sandbox,
     tsCompilerOptions = exports.getCwdTsCompilerOptions(),
+    moduleOptions = {},
     sourceMapConfig
 ) => {
     const {
-        __sourceMapBox = new vm.SandBox({}),
         sourceMapInstallScriptFilename = defaultSourceMapInstallScriptName,
         sourceMapInstallScript = ''
     } = sourceMapConfig || {}
 
-    __sourceMapBox.setModuleCompiler(TS_SUFFIX, (buf) => buf + '')
+    moduleOptions.compilerOptions = util.extend({}, tsCompilerOptions, moduleOptions.compilerOptions)
 
-    CORE._filterCompilerOptions(tsCompilerOptions)
-    if (tsCompilerOptions.inlineSourceMap) {
-        sandbox.add('__sourceMapBox', __sourceMapBox)
+    CORE._filterCompilerOptions(moduleOptions.compilerOptions)
+
+    if (moduleOptions.compilerOptions.inlineSourceMap) {
+        // sandbox.setModuleCompiler(SOURCEMAP_SUFFIX, buf => buf + '')
+
         if (sourceMapInstallScript)
-            sandbox.add('', sourceMapInstallScript)
+            sandbox.add('source-map-install.js', sourceMapInstallScript)
         else if (sourceMapInstallScriptFilename && fs.exists(sourceMapInstallScriptFilename))
             sandbox.require(sourceMapInstallScriptFilename, __dirname)
     }
 
     sandbox.setModuleCompiler(TS_SUFFIX, (buf, args) => {
-        const compiledModule = compileCallback(buf, args, tsCompilerOptions)
+        const compiledModule = compileCallback(buf, args, moduleOptions)
 
-        if (tsCompilerOptions.inlineSourceMap) {
-            __sourceMapBox.add(args.filename, compiledModule.outputText)
+        if (moduleOptions.compilerOptions.inlineSourceMap) {
+            const lineMark = '//# sourceMappingURL=';
+            const sourceMapURL = compiledModule.outputText.slice(
+                compiledModule.outputText.lastIndexOf(lineMark), -1
+            )
+
+            saveCacheMap(args.filename, lineMark + sourceMapURL)
+            // sandbox.add(args.filename + SOURCEMAP_SUFFIX, sourceMapURL)
         }
 
-        return `${compiledModule.outputText}`
+        return compiledModule.outputText
     })
 }
 
@@ -114,14 +139,14 @@ exports.fixTsRaw = function (tsRaw) {
     return tsRaw
 }
 
-function compileCallback (buf, args, tsCompilerOptions) {
+function compileCallback (buf, args, moduleOptions) {
    let tsScriptString = buf + ''
    tsScriptString = exports.fixTsRaw(tsScriptString)
 
     if (!tsScriptString) return undefined
 
     const compiledModule = compileModule(tsScriptString, {
-        compilerOptions: tsCompilerOptions,
+        ...moduleOptions,
         fileName: args.filename,
         moduleName: args.filename
     })

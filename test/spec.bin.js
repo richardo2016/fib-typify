@@ -13,7 +13,7 @@ const errCode = require('../bin/utils/err_code')
 describe('fib-typify', () => {
     it('empty args', () => {
         const result = process.open(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js')
+            path.join(__dirname, '../bin', 'fib-typify')
         ])
         assert.equal( result.readLine(), errCode["noArg:output"] )
     })

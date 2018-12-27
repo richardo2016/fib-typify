@@ -2,13 +2,15 @@
 	"name": "fib-typify",
 	"version": "0.4.1",
 	"description": "just write fibjs with typescript : )",
-	"main": "index.js",
+	"main": "lib",
 	"bin": {
-		"fib-typify": "./bin/fib-typify.js"
+		"fts-run": "./bin/fts-run",
+		"fib-typify": "./bin/fib-typify"
 	},
 	"scripts": {
-		"ci": "npm run test",
-		"test": "fibjs test/index.js"
+		"build": "./bin/fib-typify src -o lib",
+		"test": "fibjs test/index.js",
+		"ci": "npm run build && npm run test"
 	},
 	"repository": {
 		"type": "git",
