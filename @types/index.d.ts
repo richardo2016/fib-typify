@@ -20,10 +20,10 @@ declare namespace FibTypify {
         (loader: ChainLoader): void
     }
 
-    interface SandBoxApi extends SandBoxConstructor<Class_SandBox> {
-        (): Class_SandBox
-        (box: Class_SandBox, func?: SetLoaderCallback): Class_SandBox
-        (mods: object, require: Function, global: object, func?: SetLoaderCallback): Class_SandBox
+    interface SandBoxApi extends SandBoxConstructor<LoaderSandbox> {
+        (): LoaderSandbox
+        (box: Class_SandBox | LoaderSandbox, func?: SetLoaderCallback): LoaderSandbox
+        (mods: object, require: Function, global: object, func?: SetLoaderCallback): LoaderSandbox
     }
 
     class ChainLoader {
@@ -44,7 +44,7 @@ declare namespace FibTypify {
         // advanced api :end
 
         static loader(moduleOptions: any, sourceMapConfig: any, sandBoxCfg?: SandBoxInitialConfig): ChainLoader
-        static sandbox: SandBoxConstructor<Class_SandBox>
+        static sandbox: SandBoxConstructor<LoaderSandbox>
         sandbox: SandBoxApi
     }
 }

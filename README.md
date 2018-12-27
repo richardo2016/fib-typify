@@ -11,7 +11,11 @@ just write fibjs with typescript : )
 const vm = require('vm')
 const typify = require('fib-typify')
 
-typify.generateLoaderbox().require('./index.ts', __dirname)
+typify.loader({
+    compilerOptions: {
+        inlineSourceMap: true
+    }
+}).sandbox().require('./index.ts', __dirname)
 
 // index.ts
 export function foo (str: string): string {
@@ -58,7 +62,18 @@ Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite i
 1. compilerOptions in `tsconfig.json`
 1. internal default compilerOptions
 
-### APIs
+### Baisc Usage
+
+* `loader(moduleOptions: any, sourceMapConfig: any, sandBoxCfg?: SandBoxInitialConfig): ChainLoader`
+
+generate one [ChainLoader]
+
+* `loader().sandbox(mods: object, require: Function, global: object, func?: SetLoaderCallback): Class_SandBox`
+
+generate one [ChainLoader]'s sandbox
+
+
+### Advanced APIs
 
 **NOTE** All `TSCompilerOptions` is just typescript's [compilerOptions]
 
@@ -138,13 +153,15 @@ const module = fibTypify.loaderBox.require('./index.ts', __dirname)
 // customized-loader.js
 const fibTypify = require('fib-typify')
 
-const loaderBox = fibTypify.generateLoaderbox({
-    ...fibTypify.defaultCompilerOptions,
-    // enable some options as you like
-    strict: true,
-    diagnostics: true,
-    allowJs: true,
-})
+const loaderBox = fibTypify.loader({
+    compilerOptions: {
+        ...fibTypify.defaultCompilerOptions,
+        // enable some options as you like
+        strict: true,
+        diagnostics: true,
+        allowJs: true,
+    }
+}).sandbox()
 
 const module = loaderBox.require('./index.ts', __dirname)
 ```
@@ -221,3 +238,4 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 [directoryCompilationOptions]:#directoryCompilationOptions
 [micromatch]:https://github.com/micromatch/micromatch#options
 [typescript's compiler options]:https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+[ChainLoader]:./@types/index.d.ts
