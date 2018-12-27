@@ -4,11 +4,10 @@
 	"description": "just write fibjs with typescript : )",
 	"main": "lib",
 	"bin": {
-		"fts-run": "./bin/fts-run",
 		"fib-typify": "./bin/fib-typify"
 	},
 	"scripts": {
-		"build": "./bin/fib-typify src -o lib",
+		"build": "fibjs ./bin/fib-typify src -o lib",
 		"test": "fibjs test/index.js",
 		"ci": "npm run build && npm run test"
 	},

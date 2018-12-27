@@ -4,6 +4,11 @@ const getCacheSourceMap = function (filename) {
     return fs.readFile(`/${filename}.zip$/index.map`, 'utf-8')
 }
 
+global.Error = Error
+global.useGlobalError = function () {
+    return global.Error
+}
+
 const sourceMapSupport = require('source-map-support');
 sourceMapSupport.install({
     retrieveFile (filename) {
@@ -14,12 +19,12 @@ sourceMapSupport.install({
             return null
 
         // let mapFilename = filename + '.map'
-        try {
+        // try {
             return getCacheSourceMap(filename)
             // return require(mapFilename, __dirname)
-        } catch (e) {
-            console.warn(`retrieveFile ${filename} failed, view error detail to help.`)
-            console.error(e.stack)
-        }
+        // } catch (e) {
+        //     console.warn(`retrieveFile ${filename} failed, view error detail to help.`)
+        //     console.error(e.stack)
+        // }
     }
 })

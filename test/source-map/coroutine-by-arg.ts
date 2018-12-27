@@ -8,7 +8,7 @@ const coroutine = require('coroutine')
 1 & 0;
 'a' && 0;
 
-export const fiber = coroutine.start(() => {
+export const fiber = coroutine.start((Error) => {
 
 
     coroutine.sleep(100);
@@ -20,5 +20,5 @@ export const fiber = coroutine.start(() => {
 
 
 
-    throw new global.Error("I am from coroutine.ts");
-})
+    throw new Error("I am from coroutine.ts");
+}, Error)

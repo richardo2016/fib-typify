@@ -22,7 +22,7 @@ describe('fib-typify', () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
         const result = process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js'),
+            path.join(__dirname, '../bin', 'fib-typify'),
             inputsrc,
             '-o',
             outputdist

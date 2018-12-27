@@ -71,7 +71,7 @@ exports.defaultSandboxFallback = function (name) {
     return require(name)
 }
 
-const { compileModule } = require('./module')
+const compileModule = require('./module').compileModule
 const defaultSourceMapInstallScriptName = exports.defaultSourceMapInstallScriptName = path.resolve(__dirname, './runtime/source-map-install.js')
 
 const saveCacheMap = function (filename, mapContent) {
@@ -87,6 +87,7 @@ const saveCacheMap = function (filename, mapContent) {
     fs.setZipFS(`/${filename}.zip`, stream.readAll());
 }
 
+const LINE_MARKER = '//# sourceMappingURL=';
 exports.registerTsCompiler = (
     sandbox,
     tsCompilerOptions = exports.getCwdTsCompilerOptions(),
@@ -104,7 +105,6 @@ exports.registerTsCompiler = (
 
     if (moduleOptions.compilerOptions.inlineSourceMap) {
         // sandbox.setModuleCompiler(SOURCEMAP_SUFFIX, buf => buf + '')
-
         if (sourceMapInstallScript)
             sandbox.add('source-map-install.js', sourceMapInstallScript)
         else if (sourceMapInstallScriptFilename && fs.exists(sourceMapInstallScriptFilename))
@@ -115,12 +115,10 @@ exports.registerTsCompiler = (
         const compiledModule = compileCallback(buf, args, moduleOptions)
 
         if (moduleOptions.compilerOptions.inlineSourceMap) {
-            const lineMark = '//# sourceMappingURL=';
             const sourceMapURL = compiledModule.outputText.slice(
-                compiledModule.outputText.lastIndexOf(lineMark), -1
+                compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
             )
-
-            saveCacheMap(args.filename, lineMark + sourceMapURL)
+            saveCacheMap(args.filename, LINE_MARKER + sourceMapURL)
             // sandbox.add(args.filename + SOURCEMAP_SUFFIX, sourceMapURL)
         }
 
@@ -150,6 +148,5 @@ function compileCallback (buf, args, moduleOptions) {
         fileName: args.filename,
         moduleName: args.filename
     })
-
     return compiledModule
 }

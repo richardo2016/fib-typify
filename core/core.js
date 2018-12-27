@@ -26,11 +26,11 @@ exports._filterCompilerOptions = function (tsCompilerOptions) {
     }
 }
 
-exports._getTranspilor = function (compilerOptions, filename, diagnostics, moduleName) {
+exports._getTranspilor = function (compilerOptions, fileName, diagnostics, moduleName) {
     return (input, locals) => {
         compilerOptions && exports._filterCompilerOptions(compilerOptions)
 
-        return typescript.transpile(input, _getOptions(compilerOptions, locals))
+        return typescript.transpile(input, _getOptions(compilerOptions, locals), fileName, diagnostics, moduleName)
     }
 }
 

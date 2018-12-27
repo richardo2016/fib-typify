@@ -17,13 +17,18 @@ describe('error emitted by fib-typify correctly', () => {
                 '123',
             ],
             [
-                `error missing in coroutine.ts(but still it was output)`,
-                './source-map/coroutine.ts',
+                `error missing in coroutine.js(but still it was output)`,
+                './source-map/coroutine.js',
                 false
             ],
             [
-                `error missing in coroutine.js(but still it was output)`,
-                './source-map/coroutine.js',
+                `error missing in coroutine-by-arg.ts(but still it was output)`,
+                './source-map/coroutine-by-arg.ts',
+                false
+            ],
+            [
+                `error missing in coroutine.ts(but still it was output)`,
+                './source-map/coroutine.ts',
                 false
             ],
             [

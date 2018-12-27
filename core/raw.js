@@ -5,8 +5,8 @@ const vm = require('vm')
 const CORE = require('./core')
 const UTILs = require('./_utils')
 
-exports.compileRaw = function (tsRaw = '', tsCompilerOptions) {
-    return CORE._getTranspilor(tsCompilerOptions)(tsRaw)
+exports.compileRaw = function (tsRaw = '', tsCompilerOptions, filename, diagnostics, moduleName) {
+    return CORE._getTranspilor(tsCompilerOptions, filename, diagnostics, moduleName)(tsRaw)
 }
 
 exports.compileRawToFile = function (tsRaw = '', targetpath = '', tsCompilerOptions) {
