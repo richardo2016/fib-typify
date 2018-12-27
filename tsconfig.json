@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
-        "alwaysStrict": false
+        "alwaysStrict": false,
+        "inlineSourceMap": true
     }
 }
