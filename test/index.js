@@ -10,5 +10,7 @@ run('./spec.bin')
 
 run('./spec.loader-box')
 
+run('./spec.source-map')
+
 var fibjsVersion = require('../lib/_utils').fibjsVersion
 ;(fibjsVersion <= '0.21.0' || require.main === module) && test.run(console.DEBUG)
