@@ -6,6 +6,12 @@
 
 just write fibjs with typescript : )
 
+## Pre-requisite
+
+- fibjs `>= 0.26.0`
+
+## Usage
+
 ```javascript
 // entry.js
 const vm = require('vm')
@@ -209,22 +215,11 @@ so it's better to upgrade fibjs to version`>=0.25.0`, best to `>=0.26.0`, which 
 
 ### compile `.ts` to `.js` before your deploy
 
-By the way, although I have tested in some cases, but it's not enough to say, "fib-typify's loaderBox can run in production directly". In my own work, I use fib-typify's loaderBox to load all source code when app's in developing stage, but I would
+By the way, although I have tested in some cases, but it's not enough to improve "fib-typify's loaderBox can run in production directly". In my own work, I use fib-typify's loaderBox to load all source code when app's in developing stage, but I would
 compile source to **pure javascript** code before publishing.
 
 Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API to build your source code. Get more samples [here](/test/spec.fs-directory.js)
 
-## TODO
-
-- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  Now Just use [fib-types](https://github.com/fibjs/fib-types)
-- [ ] better options for `compileDirectoryTo`
-    - [ ] hooks before, when, after compiling
-    - [ ] on walk to one file recursively
-    - [ ] customizable `recursive`
-    - [ ] support `fileglobsToCopy` with higher priorty than `extsToCopy`
-- [ ] compile `.ts` to '.jsc' directly
-- [ ] pack compiled '.jsc' to binary and extract one zipped file.
-- [ ] `--help` CLI option for cli
 ## Contributions
 
 If you wanna contribute to this package, just learn about [fibjs] first, then fork this repo :)

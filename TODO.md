@@ -17,3 +17,15 @@
     1. [ ] `mixin` 1.1 + 1.3.2
     1. [ ] `mixin` 1.1 + 1.3.3
     1. [ ] `mixin` 1.1 + 1.4
+
+## Features
+
+- [x] <del>There is no official `*.d.ts` for fibjs yet. I will support generating `fibjs.d.ts` when compilation.</del>  Now Just use [fib-types](https://github.com/fibjs/fib-types)
+- [ ] better options for `compileDirectoryTo`
+    - [ ] hooks before, when, after compiling
+    - [ ] on walk to one file recursively
+    - [ ] customizable `recursive`
+    - [ ] support `fileglobsToCopy` with higher priorty than `extsToCopy`
+- [ ] compile `.ts` to '.jsc' directly
+- [ ] pack compiled '.jsc' to binary and extract one zipped file.
+- [ ] `--help` CLI option for cli
