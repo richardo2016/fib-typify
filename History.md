@@ -1,7 +1,20 @@
 
-v0.4.1 / 2018-11-25
+v0.5.0 / 2018-12-28
 ==================
 
+  * adjust for publish.
+  * doc normalization.
+  * add new feature to doc, fix typo.
+  * add test case about using shared Error constructor with`coroutine.start`.
+  * adjust directory, add test cases about sourceMap.
+  * code format.
+  * add some test cases(with TODO record).
+  * support emit correct stack lineNumber/columNumber when error occured in typescript.
+
+v0.4.1 / 2018-11-25
+===================
+
+  * Release v0.4.1
   * add appveyor ci badget.
   * add appveyor ci config.
   * abstract utils overwriteFile
