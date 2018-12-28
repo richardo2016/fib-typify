@@ -9,7 +9,8 @@
 	"scripts": {
 		"build": "fibjs ./bin/fib-typify src -o lib",
 		"test": "fibjs test/index.js",
-		"ci": "npm run build && npm run test"
+		"ci": "npm run build && npm run test",
+        "prepublishOnly": "npm run build"
 	},
 	"repository": {
 		"type": "git",
