@@ -3,6 +3,7 @@
 	"version": "0.5.0",
 	"description": "just write fibjs with typescript : )",
 	"main": "./lib",
+	"types": "@types/index.d.ts",
 	"bin": {
 		"fib-typify": "./bin/fib-typify"
 	},
@@ -10,7 +11,7 @@
 		"build": "fibjs ./bin/fib-typify src -o lib",
 		"test": "fibjs test/index.js",
 		"ci": "npm run build && npm run test",
-        "prepublishOnly": "npm run build"
+		"prepublishOnly": "npm run build"
 	},
 	"repository": {
 		"type": "git",
@@ -32,7 +33,7 @@
 		"@fibjs/rmdirr": "^2.0.0",
 		"micromatch": "^3.1.10",
 		"source-map-support": "^0.5.9",
-		"typescript": "^3.1.6"
+		"typescript": "^3.2.2"
 	},
 	"ci": {
 		"type": "travis, appveyor",
