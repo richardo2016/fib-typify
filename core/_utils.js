@@ -155,3 +155,21 @@ function compileCallback (buf, args, moduleOptions) {
     })
     return compiledModule
 }
+
+exports.replaceSuffix = function (target = '', to_replace = '.ts', replace_to = '.js') {
+    if (!target) return target
+
+    return target.replace(new RegExp(`${to_replace}$`), replace_to)
+}
+
+exports.replaceSuffixV2 = function (target = '', to_replace = '.ts', replace_to = '.js') {
+    let idx = target.lastIndexOf(to_replace)
+
+    const tlen = to_replace.length
+    if (idx + tlen !== target.length) return target
+
+    if (idx === -1) return target
+
+    const replaced_str = target.slice(0, idx) + replace_to + target.slice(idx + tlen)
+    return replaced_str
+}

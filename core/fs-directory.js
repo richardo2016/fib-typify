@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const mm = require('micromatch')
-const rmdirr = require('@fibjs/rmdirr')
 
 const compileFile = require('./fs-file')
 const UTILs = require('./_utils')
@@ -115,7 +114,7 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
             return
         }
 
-        const tbasename = blobname.replace('.ts', '.js')
+        const tbasename = UTILs.replaceSuffix(blobname, '.ts', '.js')
         const tpath = path.join(distDir, tbasename)
 
         compileFile.compileFileTo(fullspath, tpath, compilerOptions)
