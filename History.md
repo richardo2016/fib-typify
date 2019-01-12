@@ -1,7 +1,26 @@
 
-v0.5.0 / 2018-12-28
+v0.5.1 / 2019-01-12
 ==================
 
+  * fix implement of `resolveExistedEntry`.
+  * test case fix.
+  * normalize README.md
+  * normalize args.
+  * move general from `fibTypify` to `Typify`.
+  * support auto fallback to `compileFileTo` in `compileDirectoryTo`.
+  * fix test case for fibjs <= 0.26.x, where isSupportSetModuleCompiler() === false
+  * robust for source-map.
+  * fix grandmother-paradox style generating.
+  * robust for `compileDirectoryTo`.
+  * support use typescript script as entry point.
+  * normalize cli script.
+  * add 'types' to package.json.
+  * publish.
+
+v0.5.0 / 2018-12-28
+===================
+
+  * Release v0.5.0
   * adjust for publish.
   * doc normalization.
   * add new feature to doc, fix typo.
