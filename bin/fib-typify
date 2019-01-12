@@ -55,16 +55,14 @@ function getParamFromArgs (args = [], optFlags = []) {
 
 function resolveExistedEntry (vbox, entryPoint, cwd = __dirname) {
     // always allow existed file
-
     if (entryPoint && fs.exists(entryPoint) && fs.stat(entryPoint).isFile())
         return vbox.resolve(entryPoint, cwd);
 
-    let existed = false
+    let existed = null
     try {
-        vbox.resolve(entryPoint, cwd)
-        existed = true
+        existed = vbox.resolve(entryPoint, cwd)
     } catch (e) {
-        existed = false
+        existed = null
     }
     return existed
 }
