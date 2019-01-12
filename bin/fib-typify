@@ -1,9 +1,5 @@
 #!/usr/bin/env fibjs
 
-const isDebug = !!process.env.FIB_TYPIFY_DEBUG
-
-isDebug && console.log(process.argv)
-
 const fs = require('fs')
 const path = require('path')
 const util = require('util')
@@ -12,22 +8,11 @@ const argFlags = require('./utils/arg_flags')
 const errCode = require('./utils/err_code')
 
 const extendCompilerConfigFromTSConfig= require('../core/_utils').extendCompilerConfigFromTSConfig
-let tsCompilerOptions = JSON.parse(JSON.stringify(require('../core/_utils').defaultCompilerOptions))
-
 const { compileDirectoryTo } = require('../core/fs-directory')
+const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 
-const cwd = process.cwd()
-isDebug && console.log('cwd', cwd)
+is_debug() && console.log(process.argv)
 
-const [
-    _1, _2,
-    srcpath,
-    ...args
-] = process.argv || []
-
-const finalParams = {cwd, srcpath}
-
-/* collect params :start */
 function mergeCompilerConfigFromCustomConfig (configFilepath = null, origConfig = {}) {
     configFilepath = configFilepath ? path.resolve(cwd, configFilepath) : null
 
@@ -35,7 +20,7 @@ function mergeCompilerConfigFromCustomConfig (configFilepath = null, origConfig 
         let config = {}
         if (['.json', '.js', '.jsc'].some(ext => configFilepath.endsWith(ext))) {
             config = require(configFilepath)
-            isDebug && console.log('internal extension', config)
+            is_debug() && console.log('internal extension', config)
         } else {
             try {
                 config = JSON.parse(fs.readTextFile(configFilepath))
@@ -49,37 +34,64 @@ function mergeCompilerConfigFromCustomConfig (configFilepath = null, origConfig 
     return origConfig
 }
 
-tsCompilerOptions = mergeCompilerConfigFromCustomConfig(getParamFromArgs(args, ['-c', '--config-file']), tsCompilerOptions)
-tsCompilerOptions = extendCompilerConfigFromTSConfig(tsCompilerOptions)
-/* collect params :end */
-
-tsCompilerOptions.outDir = tsCompilerOptions.outDir || getParamFromArgs(args, argFlags.output)
-isDebug && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
-
-if (!tsCompilerOptions.outDir) {
-    console.error(errCode["noArg:output"])
-    process.exit(-1)
-}
-
-/* run :start */
-const baseDir = path.resolve(cwd, srcpath)
-const distDir = path.resolve(cwd, tsCompilerOptions.outDir)
-
-isDebug && console.log('finalParams', finalParams)
-isDebug && console.log('tsCompilerOptions', tsCompilerOptions);
-
-compileDirectoryTo(baseDir, distDir, {
-    compilerOptions: tsCompilerOptions
-})
-/* run :end */
-
 function getParamFromArgs (args = [], optFlags = []) {
     if (!Array.isArray(optFlags)) {
         optFlags = [optFlags]
     }
-    isDebug && console.log('optFlags', optFlags, args)
+    is_debug() && console.log('optFlags', optFlags, args)
 
     const argIndex = args.findIndex(x => optFlags.includes(x))
     return argIndex >= 0 ? args[argIndex + 1] : null
 }
 
+function main () {
+    let tsCompilerOptions = JSON.parse(JSON.stringify(defaultCompilerOptions))
+
+    const cwd = process.cwd()
+    is_debug() && console.log('cwd', cwd)
+
+    const [
+        _1, _2,
+        srcpath,
+        ...args
+    ] = process.argv || []
+
+    // finalParams
+    const fP = {
+        cwd,
+        srcpath,
+        entryPoint: srcpath
+    }
+
+    /* collect params :start */
+
+    tsCompilerOptions = mergeCompilerConfigFromCustomConfig(getParamFromArgs(args, ['-c', '--config-file']), tsCompilerOptions)
+    tsCompilerOptions = extendCompilerConfigFromTSConfig(tsCompilerOptions)
+    /* collect params :end */
+
+    tsCompilerOptions.outDir = tsCompilerOptions.outDir || getParamFromArgs(args, argFlags.output)
+    is_debug() && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
+
+    if (tsCompilerOptions.outDir) {
+        /* run :start */
+        const baseDir = path.resolve(fP.cwd, fP.srcpath)
+        const distDir = path.resolve(fP.cwd, tsCompilerOptions.outDir)
+
+        is_debug() && console.log('finalParams', fP)
+        is_debug() && console.log('tsCompilerOptions', tsCompilerOptions);
+
+        compileDirectoryTo(baseDir, distDir, {
+            compilerOptions: tsCompilerOptions
+        })
+        /* run :end */
+    } else {
+        console.error(errCode["noArg:output"])
+        process.exit(-1)
+    }
+}
+
+function is_debug () {
+    return !!process.env.FIB_TYPIFY_DEBUG
+}
+
+main()
