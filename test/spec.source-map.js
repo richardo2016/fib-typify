@@ -4,7 +4,7 @@ test.setup();
 const path = require('path');
 const coroutine = require('coroutine');
 
-const fibTypify = require('..')
+const Typify = require('..')
 const fibjsVersion = require('util').buildInfo().fibjs
 
 describe('error emitted by fib-typify correctly', () => {
@@ -94,7 +94,7 @@ describe('error emitted by fib-typify correctly', () => {
     }
 
     describe('by top-level api genereateLoaderBox', () => {
-        const vbox = fibTypify.generateLoaderbox({
+        const vbox = Typify.generateLoaderbox({
             inlineSourceMap: true
         })
         run_test(vbox)
@@ -103,7 +103,7 @@ describe('error emitted by fib-typify correctly', () => {
     describe('by top-level ChainLoader.loader(...).sandbox()', () => {
         // would emit correct stack lineNumber/columnNumber info in sync,
         run_test(
-            fibTypify.loader({
+            Typify.loader({
                 compilerOptions: {
                     inlineSourceMap: true
                 }
@@ -114,7 +114,7 @@ describe('error emitted by fib-typify correctly', () => {
     describe('by top-level ChainLoader.loader().sandbox()', () => {
         // would emit wrong stack lineNumber/columnNumber info
         run_test(
-            fibTypify.loader().sandbox()
+            Typify.loader().sandbox()
         )
     })
 })

@@ -5,7 +5,7 @@ const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
 
-const fibTypify = require('../')
+const Typify = require('../')
 
 const rawTest = {
     input: `
@@ -39,7 +39,7 @@ describe('raw', () => {
     }
 
     it('compile', () => {
-        const compiledString = fibTypify.compileRaw(rawTest.input)
+        const compiledString = Typify.compileRaw(rawTest.input)
         assert.isString(compiledString)
 
         const sbox = new vm.SandBox({})
@@ -51,12 +51,12 @@ describe('raw', () => {
 
     it('compileToFile', () => {
         const target = path.resolve(__dirname, './dist/raw/compileToFile.js')
-        fibTypify.compileRawToFile(rawTest.input, target)
+        Typify.compileRawToFile(rawTest.input, target)
         assert.equal(fs.exists(target), true)
     })
 
     it('compileToSandBox', () => {
-        const sbox = fibTypify.compileRawToSandBox(rawTest.input, {
+        const sbox = Typify.compileRawToSandBox(rawTest.input, {
             sboxName: 'rawbasic'
         })
 

@@ -149,19 +149,19 @@ loaderBox is one new feature started from fib-typify`>= 0.3`, it depends on new 
 
 ```javascript
 // default-loader.js
-const fibTypify = require('fib-typify')
+const Typify = require('fib-typify')
 
-const module = fibTypify.loaderBox.require('./index.ts', __dirname)
+const module = Typify.loaderBox.require('./index.ts', __dirname)
 ```
 
 ### require typescript directly by customized loaderBox
 ```javascript
 // customized-loader.js
-const fibTypify = require('fib-typify')
+const Typify = require('fib-typify')
 
-const loaderBox = fibTypify.loader({
+const loaderBox = Typify.loader({
     compilerOptions: {
-        ...fibTypify.defaultCompilerOptions,
+        ...Typify.defaultCompilerOptions,
         // enable some options as you like
         strict: true,
         diagnostics: true,
@@ -192,6 +192,12 @@ fib-typify src -o lib -c .typify.json
 
 # run .ts script directly
 fib-typify ./src/index.ts
+
+# or compile it to same directory with corresponding filename
+fib-typify ./src/index.ts -o # get compiled script `./script/index.js`
+
+# or compile one file to specified position
+fib-typify ./src/index.ts -o /tmp/a.js # get compiled script `/tmp/a.js`
 
 # run index script directly
 fib-typify ./ # which would from `./index.ts`, main script in `package.json`, './index.js', './index.json'...

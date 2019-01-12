@@ -4,7 +4,7 @@ test.setup();
 const fs = require('fs')
 const path = require('path')
 
-const fibTypify = require('../')
+const Typify = require('../')
 
 const compilerOptions1 = {
     target: 'es6',
@@ -26,7 +26,7 @@ describe('fs-directory', () => {
         const baseDir = path.resolve(__dirname, './ts')
         const distDir = path.resolve(distDirPath, './directory')
 
-        fibTypify.compileDirectoryTo(baseDir, distDir)
+        Typify.compileDirectoryTo(baseDir, distDir)
     })
 
     it('compileDirectoryTo with filename', () => {
@@ -39,7 +39,7 @@ describe('fs-directory', () => {
             [true, inputfile, distfile],
             [true, inputfile, path.resolve(__dirname, './dist/lalala/basic.js')],
         ].forEach(([assert_require, f, d]) => {
-            fibTypify.compileDirectoryTo(f, d)
+            Typify.compileDirectoryTo(f, d)
             assert.equal( fs.exists(d), true )
 
             if (assert_require) {
@@ -61,14 +61,14 @@ describe('fs-directory', () => {
         const baseDir = path.resolve(__dirname, './ts')
         const distDir = path.resolve(distDirPath, './directory1')
 
-        fibTypify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptions1 })
+        Typify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptions1 })
     })
 
     it('compileDirectoryTo with compilerOptions2', () => {
         const baseDir = path.resolve(__dirname, './ts')
         const distDir = path.resolve(distDirPath, './directory2')
 
-        fibTypify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptions2 })
+        Typify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptions2 })
     })
 
     const baseDir = path.resolve(__dirname, './dir_to_copy')
@@ -76,7 +76,7 @@ describe('fs-directory', () => {
     it('compileDirectoryTo with other files: default_copy', () => {
         const defaultCopyDir = path.resolve(distDirPath, './default_copy')
 
-        fibTypify.compileDirectoryTo(baseDir, defaultCopyDir)
+        Typify.compileDirectoryTo(baseDir, defaultCopyDir)
         assert.equal( fs.exists(path.resolve(defaultCopyDir, '1.txt')), false )
         assert.equal( fs.exists(path.resolve(defaultCopyDir, '2.json')), true )
         assert.equal( fs.exists(path.resolve(defaultCopyDir, '3.makefile')), false )
@@ -87,7 +87,7 @@ describe('fs-directory', () => {
 
     it('compileDirectoryTo with other files: allcopystrategy_copy', () => {
         const allCopyStrategyDir = path.resolve(distDirPath, './allcopystrategy_copy')
-        fibTypify.compileDirectoryTo(baseDir, allCopyStrategyDir, {
+        Typify.compileDirectoryTo(baseDir, allCopyStrategyDir, {
             extsToCopy: '*'
         })
 
@@ -103,11 +103,11 @@ describe('fs-directory', () => {
     it('compileDirectoryTo with other files: customized_copy', () => {
         const customizedCopyDir = path.resolve(distDirPath, './customized_copy')
         assert.throws(() => {
-            fibTypify.compileDirectoryTo(baseDir, customizedCopyDir, {
+            Typify.compileDirectoryTo(baseDir, customizedCopyDir, {
                 extsToCopy: ['.txt', 'cpp', 'makefile']
             })
         })
-        fibTypify.compileDirectoryTo(baseDir, customizedCopyDir, {
+        Typify.compileDirectoryTo(baseDir, customizedCopyDir, {
             extsToCopy: ['.txt'],
             includeLeveledGlobs: ['*', '!node_modules', 'glob_to_include', '!glob_to_exclude*']
         })

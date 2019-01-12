@@ -6,7 +6,7 @@ var fibjsVersion = require('util').buildInfo().fibjs
 if (fibjsVersion <= '0.21.0')
     require.main = module
 
-const fibTypify = require('../')
+const Typify = require('../')
 
 run('./spec.raw')
 run('./spec.fs-file')
@@ -18,7 +18,7 @@ run('./spec.loader-box')
 
 if (fibjsVersion >= '0.26.0') {
     run('./spec.source-map')
-    fibTypify.loader({
+    Typify.loader({
         compilerOptions: {
             inlineSourceMap: true
         }

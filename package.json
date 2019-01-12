@@ -5,7 +5,8 @@
 	"main": "./lib",
 	"types": "@types/index.d.ts",
 	"bin": {
-		"fib-typify": "./bin/fib-typify"
+		"fib-typify": "./bin/fib-typify",
+        "typify": "./bin/fib-typify"
 	},
 	"scripts": {
 		"build": "fibjs ./bin/fib-typify src -o lib",

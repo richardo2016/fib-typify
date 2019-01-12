@@ -6,7 +6,7 @@ const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
 
-const fibTypify = require('../')
+const Typify = require('../')
 
 const fsFileTestBasic = {
     inputFilepath: path.resolve(__dirname, './ts/basic.ts'),
@@ -35,7 +35,7 @@ describe('fs-file', () => {
     }
 
     it('compileFile', () => {
-        const compiledJScript = fibTypify.compileFile(fsFileTestBasic.inputFilepath)
+        const compiledJScript = Typify.compileFile(fsFileTestBasic.inputFilepath)
         assert.isString(compiledJScript)
 
         const sbox = new vm.SandBox({})
@@ -46,19 +46,19 @@ describe('fs-file', () => {
     })
 
     it('compileFileTo', () => {
-        fibTypify.compileFileTo(fsFileTestBasic.inputFilepath, fsFileTestBasic.outputFilepath)
+        Typify.compileFileTo(fsFileTestBasic.inputFilepath, fsFileTestBasic.outputFilepath)
         assert.equal(fs.exists(fsFileTestBasic.outputFilepath), true)
     })
 
     it('compileFileToSandbox basic', () => {
-        const rawModule = fibTypify.compileFileToSandBox(fsFileTestBasic.inputFilepath, {
+        const rawModule = Typify.compileFileToSandBox(fsFileTestBasic.inputFilepath, {
             sboxName: 'fs-file-basic'
         }).require(fsFileTestBasic.inputFilepath, __dirname)
         assertSandboxForBasicTs(rawModule)
     })
 
     it('compileFileToSandbox interface', () => {
-        const rawModule = fibTypify.compileFileToSandBox(fsFileTestInterface.inputFilepath, {
+        const rawModule = Typify.compileFileToSandBox(fsFileTestInterface.inputFilepath, {
             sboxName: 'fs-file-interface'
         }).require(fsFileTestInterface.inputFilepath, __dirname)
 
@@ -75,7 +75,7 @@ describe('fs-file', () => {
     })
 
     xit('compileFileToSandbox import', () => {
-        const sbox = fibTypify.compileFileToSandBox(fsFileTestImport.inputFilepath, {
+        const sbox = Typify.compileFileToSandBox(fsFileTestImport.inputFilepath, {
             sboxName: 'fs-file-import',
             sboxFallback: (mname) => {
                 console.log('mname', mname)
