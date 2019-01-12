@@ -9,8 +9,9 @@ const errCode = require('./utils/err_code')
 
 const extendCompilerConfigFromTSConfig= require('../core/_utils').extendCompilerConfigFromTSConfig
 const { compileDirectoryTo } = require('../core/fs-directory')
+const { generateLoaderbox } = require('../core/loader-box')
+
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
-const typify = require('../lib')
 
 is_debug() && console.log(process.argv)
 
@@ -87,7 +88,7 @@ function main () {
     tsCompilerOptions.outDir = tsCompilerOptions.outDir || getParamFromArgs(args, argFlags.output)
     is_debug() && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
 
-    const topTsSandbox = typify.loader({ compilerOptions: tsCompilerOptions }).sandbox()
+    const topTsSandbox = generateLoaderbox(tsCompilerOptions)
 
     if (tsCompilerOptions.outDir) {
         /* run :start */
