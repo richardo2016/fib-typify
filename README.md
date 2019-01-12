@@ -183,36 +183,51 @@ High -> Low:
 1. [compileResult]
 1. fileglobsToCopy
 
+
 ## CLI
 Started from `0.2.0`, you can run `fib-typify` in CLI.
+
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpileModule(input, moduleOptions)` as 2nd param.
 
 ```bash
 # compile, source directory(such as `src` above) is required
 fib-typify src -o lib -c .typify.json
+```
 
-# run .ts script directly
+(**Started From 0.5.1**) run .ts script directly.
+```bash
 fib-typify ./src/index.ts
+```
 
-# or compile it to same directory with corresponding filename
-fib-typify ./src/index.ts -o # get compiled script `./script/index.js`
+(**Started From 0.5.1**) or compile it to same directory with corresponding filename
+```bash
+# get compiled script `./script/index.js`
+fib-typify ./src/index.ts -o
+```
 
-# or compile one file to specified position
-fib-typify ./src/index.ts -o /tmp/a.js # get compiled script `/tmp/a.js`
+(**Started From 0.5.1**) or compile one file to specified position
+```bash
+# get compiled script `/tmp/a.js`
+fib-typify ./src/index.ts -o /tmp/a.js
+```
 
-# run index script directly
-fib-typify ./ # which would from `./index.ts`, main script in `package.json`, './index.js', './index.json'...
+(**Started From 0.5.1**) run valid resovable script directly.
+
+```bash
+## which would try to run `./index.ts`, main script in `package.json`, './index.js', './index.json'...
+fib-typify ./
+
+## run `./src/index.js`, `./src/index.ts`, ...
 fib-typify ./src
 ```
 
-Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpile(options)`.
-
-I only provided one simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
+I only provided simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
 
 ### options
 
 `-c, --config-file`: equals to `tsconfig.compilerOptions`, would overwrite the one from `tsconfig.json`
 
-`-o, --out-dir`: equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
+`-o, --out`: (fallback to file when necessary,) equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
 
 ## Warning
 
