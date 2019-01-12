@@ -9,7 +9,7 @@ const { hackFibjs } = require('./compat')
 function generateLoaderbox (tsCompilerOptions) {
     const tsSandbox = new vm.SandBox(UTILs.builtModules)
 
-    if (UTILs.isWithCustomLoaderFunction()) {
+    if (UTILs.isSupportSetModuleCompiler()) {
         UTILs.registerTsCompiler(tsSandbox, tsCompilerOptions)
     } else { // compat old version
         hackFibjs(tsSandbox, tsCompilerOptions)

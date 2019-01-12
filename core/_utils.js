@@ -47,7 +47,7 @@ exports.extendCompilerConfigFromTSConfig = function (origConfig = {}) {
     return origConfig
 }
 
-exports.isWithCustomLoaderFunction = function () {
+exports.isSupportSetModuleCompiler = function () {
     const sbox = new vm.SandBox({})
 
     return util.isFunction(sbox.setModuleCompiler)

@@ -187,7 +187,15 @@ High -> Low:
 Started from `0.2.0`, you can run `fib-typify` in CLI.
 
 ```bash
+# compile, source directory(such as `src` above) is required
 fib-typify src -o lib -c .typify.json
+
+# run .ts script directly
+fib-typify ./src/index.ts
+
+# run index script directly
+fib-typify ./ # which would from `./index.ts`, main script in `package.json`, './index.js', './index.json'...
+fib-typify ./src
 ```
 
 Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpile(options)`.
@@ -207,7 +215,7 @@ From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compile
 
 fib-typify also support `loaderBox` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
 
-- always add `.ts` suffix in `require` and `import` statement
+- always add `.ts` suffix in `require` and `import` statement(**ESPECIALLY** when you run typescript by `fib-typify` CLI directly!)
 - don't `export interface` in pure `.ts` file
 - dont't write loop-requirement with import statement in `.ts`, if you really do it, write `exports.xxx = ...` instead of `export const xxx = ...` in the loop requirement.
 

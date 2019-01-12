@@ -10,6 +10,8 @@ const cmd = process.execPath
 const argFlags = require('../bin/utils/arg_flags')
 const errCode = require('../bin/utils/err_code')
 
+const isSupportSetModuleCompiler = require('../core/_utils').isSupportSetModuleCompiler
+
 describe('fib-typify', () => {
     it('empty args', () => {
         const sproc = process.open(cmd, [
@@ -51,7 +53,7 @@ describe('fib-typify', () => {
         it('relative path: non-index.ts', () => {
             let sproc = process.open(cmd, [
                 path.join(__dirname, '../bin', 'fib-typify'),
-                './entry-point/test',
+                isSupportSetModuleCompiler() ? './entry-point/test' : './entry-point/test.ts',
             ], {
                 env: {
                     FIB_TYPIFY_DEBUG: ""
@@ -64,7 +66,7 @@ describe('fib-typify', () => {
         it('relative path: directory entry', () => {
             let sproc = process.open(cmd, [
                 path.join(__dirname, '../bin', 'fib-typify'),
-                './entry-point',
+                isSupportSetModuleCompiler() ? './entry-point' : './entry-point/index-old.ts',
             ], {
                 env: {
                     FIB_TYPIFY_DEBUG: ""
