@@ -32,25 +32,27 @@ describe('fs-directory', () => {
     it('compileDirectoryTo with filename', () => {
         const inputfile = path.resolve(__dirname, './ts/basic.ts')
         const distfile = path.resolve(__dirname, './ts/basic.js')
+        const customdist = path.resolve(__dirname, './dist/lalala/basic.js')
 
         ;[
-            [false, inputfile],
-            [false, inputfile, inputfile],
-            [true, inputfile, distfile],
-            [true, inputfile, path.resolve(__dirname, './dist/lalala/basic.js')],
-        ].forEach(([assert_require, f, d]) => {
+            [false, inputfile, undefined, distfile],
+            [false, inputfile, inputfile, distfile],
+            [true, inputfile, distfile, distfile],
+            [true, inputfile, customdist, customdist],
+        ].forEach(([assert_require, f, d, expected_d]) => {
             Typify.compileDirectoryTo(f, d)
-            assert.equal( fs.exists(d), true )
+
+            assert.equal( fs.exists(expected_d), true )
 
             if (assert_require) {
-                assert.isObject(require(d))
-                assert.isFunction(require(d).add)
-                assert.isFunction(require(d).http)
-                assert.isFunction(require(d).hello)
+                assert.isObject(require(expected_d))
+                assert.isFunction(require(expected_d).add)
+                assert.isFunction(require(expected_d).http)
+                assert.isFunction(require(expected_d).hello)
             }
 
             try {
-                d && d !== inputfile && fs.exists(d) && fs.unlink(d)
+                fs.exists(expected_d) && fs.unlink(expected_d)
             } catch (e) {
                 console.error(e.stack)
             }
