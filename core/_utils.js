@@ -84,7 +84,7 @@ const saveCacheMap = function (filename, mapContent) {
     zipfile.close();
 
     stream.rewind();
-    fs.setZipFS(`/${filename}.zip`, stream.readAll());
+    fs.setZipFS(`${filename}.zip`, stream.readAll());
 }
 
 const LINE_MARKER = '//# sourceMappingURL=';
