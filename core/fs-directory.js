@@ -60,11 +60,6 @@ const DEFAULT_FILEGLOB_TO_COPY = ['*.js', '*.jsc', '*.json']
 const DEFAULT_INCLUDE_GLOB_LIST = ['*', '!node_modules', '!.ts']
 
 exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOptions) {
-    if (!fs.exists(distDir)) {
-        UTILs.mkdirp(distDir)
-    }
-    const blobNameList = fs.readdir(baseDir)
-
     const {
         filterFileName = _getFilenameFilter(),
         extsToCopy = undefined,
@@ -72,6 +67,23 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
         includeLeveledGlobs = DEFAULT_INCLUDE_GLOB_LIST,
         compilerOptions = null
     } = directoryCompilationOptions || {}
+
+    if (fs.exists(baseDir) && fs.stat(baseDir).isFile()) {
+        let tpath = distDir
+        if (baseDir === tpath)
+            tpath = undefined
+
+        if (!tpath)
+            tpath = UTILs.replaceSuffix(baseDir, '.ts', '.js')
+
+        return compileFile.compileFileTo(baseDir, tpath, compilerOptions)
+    }
+
+    if (!fs.exists(distDir)) {
+        UTILs.mkdirp(distDir)
+    }
+
+    const blobNameList = fs.readdir(baseDir)
 
     /* deal with old api :start */
     let finalFileGlobsToCopy = fileglobsToCopy

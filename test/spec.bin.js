@@ -17,6 +17,7 @@ describe('fib-typify', () => {
         const sproc = process.open(cmd, [
             path.join(__dirname, '../bin', 'fib-typify')
         ])
+
         assert.equal( sproc.readLine(), errCode["noArg:output"] )
     })
 
@@ -37,6 +38,24 @@ describe('fib-typify', () => {
         assert.equal( fs.exists(
             path.resolve(__dirname, '../', outputdist)
         ), true )
+    })
+
+    it(`compile single file`, () => {
+        const inputsrc = './test/ts/basic.ts'
+        const outputdist = path.resolve(__dirname, '../', './test/ts/basic.js')
+
+        process.run(cmd, [
+            path.join(__dirname, '../bin', 'fib-typify'),
+            inputsrc,
+            '-o'
+        ], {
+            env: {
+                FIB_TYPIFY_DEBUG: "1"
+            }
+        })
+
+        assert.equal( fs.exists(outputdist), true )
+        fs.unlink(outputdist)
     })
 
     describe(`run typescript directly`, () => {

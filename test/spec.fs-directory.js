@@ -1,8 +1,6 @@
 const test = require('test');
 test.setup();
 
-const vm = require('vm')
-
 const fs = require('fs')
 const path = require('path')
 
@@ -29,6 +27,34 @@ describe('fs-directory', () => {
         const distDir = path.resolve(distDirPath, './directory')
 
         fibTypify.compileDirectoryTo(baseDir, distDir)
+    })
+
+    it('compileDirectoryTo with filename', () => {
+        const inputfile = path.resolve(__dirname, './ts/basic.ts')
+        const distfile = path.resolve(__dirname, './ts/basic.js')
+
+        ;[
+            [false, inputfile],
+            [false, inputfile, inputfile],
+            [true, inputfile, distfile],
+            [true, inputfile, path.resolve(__dirname, './dist/lalala/basic.js')],
+        ].forEach(([assert_require, f, d]) => {
+            fibTypify.compileDirectoryTo(f, d)
+            assert.equal( fs.exists(d), true )
+
+            if (assert_require) {
+                assert.isObject(require(d))
+                assert.isFunction(require(d).add)
+                assert.isFunction(require(d).http)
+                assert.isFunction(require(d).hello)
+            }
+
+            try {
+                d && d !== inputfile && fs.exists(d) && fs.unlink(d)
+            } catch (e) {
+                console.error(e.stack)
+            }
+        })
     })
 
     it('compileDirectoryTo with compilerOptions1', () => {

@@ -7,13 +7,15 @@ const util = require('util')
 const argFlags = require('./utils/arg_flags')
 const errCode = require('./utils/err_code')
 
-const extendCompilerConfigFromTSConfig= require('../core/_utils').extendCompilerConfigFromTSConfig
+const extendCompilerConfigFromTSConfig = require('../core/_utils').extendCompilerConfigFromTSConfig
+const replaceSuffix = require('../core/_utils').replaceSuffix
+
 const { compileDirectoryTo } = require('../core/fs-directory')
 const { generateLoaderbox } = require('../core/loader-box')
 
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 
-is_debug() && console.log(process.argv)
+is_debug() && console.log('process.argv', process.argv)
 
 function mergeCompilerConfigFromCustomConfig (configFilepath = null, origConfig = {}) {
     configFilepath = configFilepath ? path.resolve(cwd, configFilepath) : null
@@ -36,23 +38,30 @@ function mergeCompilerConfigFromCustomConfig (configFilepath = null, origConfig 
     return origConfig
 }
 
-function getParamFromArgs (args = [], optFlags = []) {
+function getArgIdxFromArgs (args = [], optFlags = []) {
     if (!Array.isArray(optFlags)) {
         optFlags = [optFlags]
     }
     is_debug() && console.log('optFlags', optFlags, args)
 
     const argIndex = args.findIndex(x => optFlags.includes(x))
+    return argIndex
+}
+
+function getParamFromArgs (args = [], optFlags = []) {
+    const argIndex = getArgIdxFromArgs(args, optFlags)
     return argIndex >= 0 ? args[argIndex + 1] : null
 }
 
-function isEntryExists (vbox, entryPoint) {
+function resolveExistedEntry (vbox, entryPoint, cwd = __dirname) {
     // always allow existed file
-    if (fs.exists(entryPoint)) return true;
+
+    if (entryPoint && fs.exists(entryPoint) && fs.stat(entryPoint).isFile())
+        return vbox.resolve(entryPoint, cwd);
 
     let existed = false
     try {
-        vbox.resolve(entryPoint, __dirname)
+        vbox.resolve(entryPoint, cwd)
         existed = true
     } catch (e) {
         existed = false
@@ -72,46 +81,50 @@ function main () {
         ...args
     ] = process.argv || []
 
+    const outputValue = getParamFromArgs(args, argFlags.output)
+    const outputExisted = getArgIdxFromArgs(args, argFlags.output) > -1
+
+    /* collect params :start */
+    tsCompilerOptions = mergeCompilerConfigFromCustomConfig(getParamFromArgs(args, ['-c', '--config-file']), tsCompilerOptions)
+    tsCompilerOptions = extendCompilerConfigFromTSConfig(tsCompilerOptions)
+    tsCompilerOptions.outDir = tsCompilerOptions.outDir || outputValue
+    is_debug() && console.log('tsCompilerOptions', tsCompilerOptions);
+    /* collect params :end */
+
+    const topTsSandbox = generateLoaderbox(tsCompilerOptions)
+    is_debug() && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
+
     // finalParams
     const fP = {
         cwd,
         srcpath,
-        entryPoint: path.resolve(cwd, srcpath)
+        entryPoint: resolveExistedEntry(topTsSandbox, srcpath, cwd)
     }
+    is_debug() && console.log('finalParams', fP)
 
-    /* collect params :start */
-
-    tsCompilerOptions = mergeCompilerConfigFromCustomConfig(getParamFromArgs(args, ['-c', '--config-file']), tsCompilerOptions)
-    tsCompilerOptions = extendCompilerConfigFromTSConfig(tsCompilerOptions)
-    /* collect params :end */
-
-    tsCompilerOptions.outDir = tsCompilerOptions.outDir || getParamFromArgs(args, argFlags.output)
-    is_debug() && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
-
-    const topTsSandbox = generateLoaderbox(tsCompilerOptions)
-
-    if (tsCompilerOptions.outDir) {
-        /* run :start */
+    if (outputExisted) {
         const baseDir = path.resolve(fP.cwd, fP.srcpath)
-        const distDir = path.resolve(fP.cwd, tsCompilerOptions.outDir)
+        const distDir = path.resolve(fP.cwd, outputValue || replaceSuffix(fP.srcpath, '.ts', '.js'))
 
-        is_debug() && console.log('finalParams', fP)
-        is_debug() && console.log('tsCompilerOptions', tsCompilerOptions);
+        if (!fs.exists(baseDir)) {
+            quit(errCode["invalidArg:input"])
+        }
 
-        compileDirectoryTo(baseDir, distDir, {
-            compilerOptions: tsCompilerOptions
-        })
-        /* run :end */
-    } else if (isEntryExists(topTsSandbox, fP.entryPoint)) {
+        compileDirectoryTo(baseDir, distDir, { compilerOptions: tsCompilerOptions })
+    } else if (fP.entryPoint) {
         topTsSandbox.require(fP.entryPoint, __dirname)
     } else {
-        console.error(errCode["noArg:output"])
-        process.exit(-1)
+        quit(errCode["noArg:output"])
     }
 }
 
 function is_debug () {
     return !!process.env.FIB_TYPIFY_DEBUG
+}
+
+function quit (error_msg, code = -1) {
+    console.error(error_msg)
+    process.exit(-1)
 }
 
 main()

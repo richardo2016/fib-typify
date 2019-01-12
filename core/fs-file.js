@@ -43,11 +43,8 @@ exports.compileFileTo = function (filepath = '', targetpath = '', tsCompilerOpti
         throw `${CORE.logPrefix} 'filepath' is not valid path to one file`
     }
 
-    if (fs.exists(targetpath)) {
-        const tstat = fs.stat(targetpath)
-        if (tstat.isDirectory()) {
-            targetpath = path.join(targetpath, sbasename)
-        }
+    if (fs.exists(targetpath) && fs.stat(targetpath).isDirectory()) {
+        targetpath = path.join(targetpath, sbasename)
     }
 
     let tsRaw = fs.readTextFile(filepath)
