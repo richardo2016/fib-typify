@@ -1,3 +1,3 @@
 module.exports = {
-    output: ['-o']
+    output: ['--out', '-o']
 }

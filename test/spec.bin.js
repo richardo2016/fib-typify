@@ -47,7 +47,7 @@ describe('fib-typify', () => {
         process.run(cmd, [
             path.join(__dirname, '../bin', 'fib-typify'),
             inputsrc,
-            '-o'
+            '--out'
         ], {
             env: {
                 FIB_TYPIFY_DEBUG: "1"
