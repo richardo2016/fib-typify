@@ -10,6 +10,7 @@ const errCode = require('./utils/err_code')
 const extendCompilerConfigFromTSConfig= require('../core/_utils').extendCompilerConfigFromTSConfig
 const { compileDirectoryTo } = require('../core/fs-directory')
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
+const typify = require('../lib')
 
 is_debug() && console.log(process.argv)
 
@@ -44,6 +45,20 @@ function getParamFromArgs (args = [], optFlags = []) {
     return argIndex >= 0 ? args[argIndex + 1] : null
 }
 
+function isEntryExists (vbox, entryPoint) {
+    // always allow existed file
+    if (fs.exists(entryPoint)) return true;
+
+    let existed = false
+    try {
+        vbox.resolve(entryPoint, __dirname)
+        existed = true
+    } catch (e) {
+        existed = false
+    }
+    return existed
+}
+
 function main () {
     let tsCompilerOptions = JSON.parse(JSON.stringify(defaultCompilerOptions))
 
@@ -60,7 +75,7 @@ function main () {
     const fP = {
         cwd,
         srcpath,
-        entryPoint: srcpath
+        entryPoint: path.resolve(cwd, srcpath)
     }
 
     /* collect params :start */
@@ -71,6 +86,8 @@ function main () {
 
     tsCompilerOptions.outDir = tsCompilerOptions.outDir || getParamFromArgs(args, argFlags.output)
     is_debug() && console.log('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
+
+    const topTsSandbox = typify.loader({ compilerOptions: tsCompilerOptions }).sandbox()
 
     if (tsCompilerOptions.outDir) {
         /* run :start */
@@ -84,6 +101,8 @@ function main () {
             compilerOptions: tsCompilerOptions
         })
         /* run :end */
+    } else if (isEntryExists(topTsSandbox, fP.entryPoint)) {
+        topTsSandbox.require(fP.entryPoint, __dirname)
     } else {
         console.error(errCode["noArg:output"])
         process.exit(-1)

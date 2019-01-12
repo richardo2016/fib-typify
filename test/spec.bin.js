@@ -12,16 +12,16 @@ const errCode = require('../bin/utils/err_code')
 
 describe('fib-typify', () => {
     it('empty args', () => {
-        const result = process.open(cmd, [
+        const sproc = process.open(cmd, [
             path.join(__dirname, '../bin', 'fib-typify')
         ])
-        assert.equal( result.readLine(), errCode["noArg:output"] )
+        assert.equal( sproc.readLine(), errCode["noArg:output"] )
     })
 
     it(`check ${argFlags.output.join(',')}`, () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
-        const result = process.run(cmd, [
+        process.run(cmd, [
             path.join(__dirname, '../bin', 'fib-typify'),
             inputsrc,
             '-o',
@@ -35,6 +35,45 @@ describe('fib-typify', () => {
         assert.equal( fs.exists(
             path.resolve(__dirname, '../', outputdist)
         ), true )
+    })
+
+    describe(`run typescript directly`, () => {
+        let current = null;
+        before(() => {
+            current = process.cwd();
+            process.chdir(path.resolve(__dirname));
+        })
+
+        after(() => {
+            process.chdir(current);
+        })
+
+        it('relative path: non-index.ts', () => {
+            let sproc = process.open(cmd, [
+                path.join(__dirname, '../bin', 'fib-typify'),
+                './entry-point/test',
+            ], {
+                env: {
+                    FIB_TYPIFY_DEBUG: ""
+                }
+            })
+
+            assert.equal(sproc.readLine(), 'I am from entry-point/test.ts')
+        })
+
+        it('relative path: directory entry', () => {
+            let sproc = process.open(cmd, [
+                path.join(__dirname, '../bin', 'fib-typify'),
+                './entry-point',
+            ], {
+                env: {
+                    FIB_TYPIFY_DEBUG: ""
+                }
+            })
+
+            assert.equal(sproc.readLine(), 'I am from entry-point/test.ts')
+            assert.equal(sproc.readLine(), 'I am from entry-point/index.ts')
+        })
     })
 })
 

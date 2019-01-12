@@ -111,18 +111,23 @@ exports.registerTsCompiler = (
             sandbox.require(sourceMapInstallScriptFilename, __dirname)
     }
 
-    sandbox.setModuleCompiler(TS_SUFFIX, (buf, args) => {
-        const compiledModule = compileCallback(buf, args, moduleOptions)
+    ;[
+        TS_SUFFIX,
+        '.tsx'
+    ].forEach(tsSuffix => {
+        sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
+            const compiledModule = compileCallback(buf, args, moduleOptions)
 
-        if (moduleOptions.compilerOptions.inlineSourceMap) {
-            const sourceMapURL = compiledModule.outputText.slice(
-                compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
-            )
-            saveCacheMap(args.filename, LINE_MARKER + sourceMapURL)
-            // sandbox.add(args.filename + SOURCEMAP_SUFFIX, sourceMapURL)
-        }
+            if (moduleOptions.compilerOptions.inlineSourceMap) {
+                const sourceMapURL = compiledModule.outputText.slice(
+                    compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
+                )
+                saveCacheMap(args.filename, LINE_MARKER + sourceMapURL)
+                // sandbox.add(args.filename + SOURCEMAP_SUFFIX, sourceMapURL)
+            }
 
-        return compiledModule.outputText
+            return compiledModule.outputText
+        })
     })
 }
 
