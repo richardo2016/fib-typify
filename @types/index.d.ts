@@ -50,5 +50,5 @@ declare namespace FibTypify {
 }
 
 declare module "fib-typify" {
-    export default FibTypify.ChainLoader
+    export = FibTypify.ChainLoader
 }
