@@ -1,7 +1,13 @@
 
-v0.5.1 / 2019-01-12
+v0.5.2 / 2019-01-18
 ==================
 
+  * typo fix.
+
+v0.5.1 / 2019-01-12
+===================
+
+  * Release v0.5.1
   * fix implement of `resolveExistedEntry`.
   * test case fix.
   * normalize README.md
