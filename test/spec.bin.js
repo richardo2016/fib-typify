@@ -15,17 +15,17 @@ const isSupportSetModuleCompiler = require('../core/_utils').isSupportSetModuleC
 describe('fib-typify', () => {
     it('empty args', () => {
         const sproc = process.open(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify')
+            path.join(__dirname, '../bin', 'fib-typify.js')
         ])
 
         assert.equal( sproc.readLine(), errCode["noArg:output"] )
     })
 
-    it(`check ${argFlags.output.join(',')}`, () => {
+    it(`check ${argFlags.output.join(', ')}`, () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
         process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify'),
+            path.join(__dirname, '../bin', 'fib-typify.js'),
             inputsrc,
             '-o',
             outputdist
@@ -45,7 +45,7 @@ describe('fib-typify', () => {
         const outputdist = path.resolve(__dirname, '../', './test/ts/basic.js')
 
         process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify'),
+            path.join(__dirname, '../bin', 'fib-typify.js'),
             inputsrc,
             '--out'
         ], {
@@ -71,7 +71,7 @@ describe('fib-typify', () => {
 
         it('relative path: non-index.ts', () => {
             let sproc = process.open(cmd, [
-                path.join(__dirname, '../bin', 'fib-typify'),
+                path.join(__dirname, '../bin', 'fib-typify.js'),
                 isSupportSetModuleCompiler() ? './entry-point/test' : './entry-point/test.ts',
             ], {
                 env: {
@@ -84,7 +84,7 @@ describe('fib-typify', () => {
 
         it('relative path: directory entry', () => {
             let sproc = process.open(cmd, [
-                path.join(__dirname, '../bin', 'fib-typify'),
+                path.join(__dirname, '../bin', 'fib-typify.js'),
                 isSupportSetModuleCompiler() ? './entry-point' : './entry-point/index-old.ts',
             ], {
                 env: {
