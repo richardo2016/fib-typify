@@ -8,13 +8,13 @@ if (fibjsVersion <= '0.21.0')
 
 const Typify = require('../')
 
-run('./spec.raw')
-run('./spec.fs-file')
-run('./spec.fs-directory')
+require('./spec.raw')
+require('./spec.fs-file')
+require('./spec.fs-directory')
 
-run('./spec.bin')
+require('./spec.bin')
 
-run('./spec.loader-box')
+require('./spec.loader-box')
 
 if (fibjsVersion >= '0.26.0') {
     run('./spec.source-map')
