@@ -1,6 +1,6 @@
 {
 	"name": "fib-typify",
-	"version": "0.5.2",
+	"version": "0.6.0",
 	"description": "just write fibjs with typescript : )",
 	"main": "./lib",
 	"types": "@types/index.d.ts",

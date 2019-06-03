@@ -1,7 +1,16 @@
 
-v0.5.2 / 2019-01-18
+v0.6.0 / 2019-06-03
 ==================
 
+  * upgrade dependency
+  * keep shebang
+  * replace @types/fibjs with @fibjs/types.
+  * use @fxjs/cli as cli maker.
+
+v0.5.2 / 2019-01-18
+===================
+
+  * Release v0.5.2
   * typo fix.
 
 v0.5.1 / 2019-01-12
