@@ -1,3 +1,6 @@
+/// <reference no-default-lib="true"/>
+/// <reference types="@fibjs/types" />
+
 declare namespace FibTypify {
     interface LoaderSandbox extends Class_SandBox {
         loader(): ChainLoader
