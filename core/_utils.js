@@ -144,7 +144,6 @@ exports.fixTsRaw = function (tsRaw) {
 
 function compileCallback (buf, args, moduleOptions) {
    let tsScriptString = buf + ''
-   tsScriptString = exports.fixTsRaw(tsScriptString)
 
     if (!tsScriptString) return undefined
 
