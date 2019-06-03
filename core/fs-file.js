@@ -30,7 +30,6 @@ exports.compileFile = function (filepath = '', tsCompilerOptions) {
         }
         tsRaw = ''
     }
-    tsRaw = UTILs.fixTsRaw(tsRaw)
 
     return CORE._getTranspilor(tsCompilerOptions)(tsRaw)
 }
@@ -54,7 +53,6 @@ exports.compileFileTo = function (filepath = '', targetpath = '', tsCompilerOpti
         }
         tsRaw = ''
     }
-    tsRaw = UTILs.fixTsRaw(tsRaw)
 
     return raw.compileRawToFile(tsRaw, targetpath, tsCompilerOptions)
 }
@@ -72,7 +70,6 @@ exports.compileFileToSandBox = function (filepath = '', sboxOpts, tsCompilerOpti
         }
         tsRaw = ''
     }
-    tsRaw = UTILs.fixTsRaw(tsRaw)
 
     return raw.compileRawToSandBox(tsRaw, util.extend({
         moduleName: filepath,

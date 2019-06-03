@@ -3,7 +3,6 @@ test.setup();
 
 const fs = require('fs')
 const path = require('path')
-const process = require('process')
 
 const cmd = process.execPath
 
@@ -55,6 +54,25 @@ describe('fib-typify', () => {
         })
 
         assert.equal( fs.exists(outputdist), true )
+        fs.unlink(outputdist)
+    })
+
+    it(`compile single file with shebang`, () => {
+        const inputsrc = './test/ts_files/basic.ts'
+        const outputdist = path.resolve(__dirname, '../', './test/ts_files/basic.js')
+
+        process.run(cmd, [
+            path.join(__dirname, '../bin', 'fib-typify.js'),
+            inputsrc,
+            '--out'
+        ], {
+            env: {
+                FIB_TYPIFY_DEBUG: "1"
+            }
+        })
+
+        assert.equal( fs.exists(outputdist), true )
+        assert.isTrue( fs.readTextFile(outputdist).indexOf('#!') === 0 )
         fs.unlink(outputdist)
     })
 
