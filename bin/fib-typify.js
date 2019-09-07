@@ -55,7 +55,7 @@ cli
         if (outputExisted) {
             // compile mode
             const baseDir = path.resolve(fP.cwd, fP.srcpath)
-            const distDir = path.resolve(fP.cwd, outputValue || replaceSuffix(fP.srcpath, '.ts', '.js'))
+            const distDir = path.resolve(fP.cwd, outputValue || replaceSuffix(fP.srcpath))
 
             if (!fs.exists(baseDir)) {
                 quit(errCode["invalidArg:input"], 1)

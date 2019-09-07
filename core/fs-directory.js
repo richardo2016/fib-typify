@@ -5,7 +5,7 @@ const mm = require('micromatch')
 const compileFile = require('./fs-file')
 const UTILs = require('./_utils')
 
-const _includeExts = ['.ts']
+const _includeExts = ['.ts', '.tsx']
 const _excludeExts = ['.d.ts']
 function filterFilenameByExt (
     filename = '',
@@ -36,12 +36,8 @@ function _assertExt (extName) {
     return true
 }
 
-function _ext2globrule (extname) {
-    return _assertExt(extname) && `*${extname}`
-}
-
 function _getCopyWhiteListViaGlobrule (globRules = []) {
-    function _handler ({
+    return function _handler ({
         baseDir, distDir, filename
     }) {
         const srcpath = path.resolve(baseDir, filename)
@@ -52,17 +48,14 @@ function _getCopyWhiteListViaGlobrule (globRules = []) {
             UTILs.overwriteFile(srcpath, distpath)
         }
     }
-
-    return _handler
 }
 
 const DEFAULT_FILEGLOB_TO_COPY = ['*.js', '*.jsc', '*.json']
-const DEFAULT_INCLUDE_GLOB_LIST = ['*', '!node_modules', '!.ts']
+const DEFAULT_INCLUDE_GLOB_LIST = ['*', '!node_modules', '!.ts', '!.tsx']
 
 exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOptions) {
     const {
         filterFileName = _getFilenameFilter(),
-        extsToCopy = undefined,
         fileglobsToCopy = DEFAULT_FILEGLOB_TO_COPY,
         includeLeveledGlobs = DEFAULT_INCLUDE_GLOB_LIST,
         compilerOptions = null
@@ -74,7 +67,7 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
             tpath = undefined
 
         if (!tpath)
-            tpath = UTILs.replaceSuffix(baseDir, '.ts', '.js')
+            tpath = UTILs.replaceSuffix(baseDir)
 
         return compileFile.compileFileTo(baseDir, tpath, compilerOptions)
     }
@@ -86,18 +79,7 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
     const blobNameList = fs.readdir(baseDir)
 
     /* deal with old api :start */
-    let finalFileGlobsToCopy = fileglobsToCopy
-    let _globRulesForOldApi
-    if (Array.isArray(extsToCopy)) {
-        _globRulesForOldApi = extsToCopy.map(_ext2globrule)
-    } else if (extsToCopy === '*') {
-        _globRulesForOldApi = ['*']
-    }
-    /* deal with old api :end */
-    if (Array.isArray(_globRulesForOldApi)) {
-        finalFileGlobsToCopy = _globRulesForOldApi
-    }
-    const _onFile = _getCopyWhiteListViaGlobrule(finalFileGlobsToCopy)
+    const _onFile = _getCopyWhiteListViaGlobrule(fileglobsToCopy)
 
     const filteredBlobNameList = mm(blobNameList, includeLeveledGlobs)
 
@@ -112,9 +94,8 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
                 directoryCompilationOptions
             )
             return
-        } else if (!stat.isFile()) {
+        } else if (!stat.isFile())
             return
-        }
 
         _onFile({
             baseDir,
@@ -122,11 +103,10 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
             filename: blobname
         })
 
-        if (!filterFileName(blobname)) {
+        if (!filterFileName(blobname))
             return
-        }
 
-        const tbasename = UTILs.replaceSuffix(blobname, '.ts', '.js')
+        const tbasename = UTILs.replaceSuffix(blobname)
         const tpath = path.join(distDir, tbasename)
 
         compileFile.compileFileTo(fullspath, tpath, compilerOptions)

@@ -90,7 +90,7 @@ describe('fs-directory', () => {
     it('compileDirectoryTo with other files: allcopystrategy_copy', () => {
         const allCopyStrategyDir = path.resolve(distDirPath, './allcopystrategy_copy')
         Typify.compileDirectoryTo(baseDir, allCopyStrategyDir, {
-            extsToCopy: '*'
+            fileglobsToCopy: ['*'],
         })
 
         assert.equal( fs.exists(path.resolve(allCopyStrategyDir, '1.txt')), true )
@@ -104,13 +104,8 @@ describe('fs-directory', () => {
 
     it('compileDirectoryTo with other files: customized_copy', () => {
         const customizedCopyDir = path.resolve(distDirPath, './customized_copy')
-        assert.throws(() => {
-            Typify.compileDirectoryTo(baseDir, customizedCopyDir, {
-                extsToCopy: ['.txt', 'cpp', 'makefile']
-            })
-        })
         Typify.compileDirectoryTo(baseDir, customizedCopyDir, {
-            extsToCopy: ['.txt'],
+            fileglobsToCopy: ['*.txt'],
             includeLeveledGlobs: ['*', '!node_modules', 'glob_to_include', '!glob_to_exclude*']
         })
 

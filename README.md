@@ -138,9 +138,6 @@ default typescript compiler options. More detail in [typescript's compiler optio
 | includeLeveledGlobs | string | string[] | N / `['*', '!node_modules', '!.ts']` | glob descriptor list to exclude on walk to every directory level, view detail in [micromatch] |
 | filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled if returning `true` |
 
-<!-- | extsToCopy | Array, '*' | N / `['.js', '.jsc', '.json']` | whitelist for extensions of filename to copy when recursive walk to one file -->
-**notice** `directoryCompilationOptions.extsToCopy` is depreacated, if you pass it,`directoryCompilationOptions.fileglobsToCopy` get invalid.
-
 ## loaderBox
 
 loaderBox is one new feature started from fib-typify`>= 0.3`, it depends on new API `Sandbox::setModuleCompiler` in fibjs`>= 0.26.0`, but it also work in fibjs `>= 0.22.0 < 0.26.0 ` **partly**
