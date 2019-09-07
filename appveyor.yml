@@ -1,13 +1,10 @@
 environment:
   nodejs_version: '6'
   matrix:
-    - VERSION: 0.21.0
-    - VERSION: 0.22.0
-    - VERSION: 0.23.0
-    - VERSION: 0.24.0
-    - VERSION: 0.25.0
     - VERSION: 0.26.0
     - VERSION: 0.26.1
+    - VERSION: 0.27.0
+    - VERSION: 0.28.0
 
 install:
   - ps: Install-Product node $env:nodejs_version
