@@ -1,8 +1,3 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "alwaysStrict": false
-    }
+    "extends": "tsconfig.dtf.json"
 }

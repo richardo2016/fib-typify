@@ -53,11 +53,7 @@ exports.isSupportSetModuleCompiler = function () {
     return util.isFunction(sbox.setModuleCompiler)
 }
 
-exports.defaultCompilerOptions = {
-    target: 'es6',
-    module: 'commonjs',
-    noImplicitUseStrict: true
-}
+exports.defaultCompilerOptions = require('../tsconfig.dft.json')
 
 exports.getCwdTsCompilerOptions = function () {
     return exports.extendCompilerConfigFromTSConfig(util.extend({}, exports.defaultCompilerOptions))

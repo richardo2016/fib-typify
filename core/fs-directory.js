@@ -12,13 +12,8 @@ function filterFilenameByExt (
     includeExts = [],
     excludeExts = []
 ) {
-    const valid = includeExts.every(ext => {
-        return filename.lastIndexOf(ext) === filename.length - ext.length
-    })
-
-    const invalid = excludeExts.some(ext => {
-        return filename.lastIndexOf(ext) === filename.length - ext.length
-    })
+    const valid = includeExts.some(ext => path.extname(filename) === ext)
+    const invalid = excludeExts.some(ext => path.extname(filename) === ext)
 
     return valid && !invalid
 }
@@ -103,8 +98,7 @@ exports.compileDirectoryTo = function (baseDir, distDir, directoryCompilationOpt
             filename: blobname
         })
 
-        if (!filterFileName(blobname))
-            return
+        if (!filterFileName(blobname)) return
 
         const tbasename = UTILs.replaceSuffix(blobname)
         const tpath = path.join(distDir, tbasename)

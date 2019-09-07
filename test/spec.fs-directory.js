@@ -14,6 +14,11 @@ const compilerOptions2 = {
     target: 'es5',
     module: 'commonjs'
 }
+const compilerOptionsJsx = {
+    target: 'es6',
+    module: 'commonjs',
+    jsx: "react"
+}
 
 const distDirPath = path.resolve(__dirname, 'dist')
 
@@ -72,6 +77,33 @@ describe('fs-directory', () => {
 
         Typify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptions2 })
     })
+
+    describe('compileDirectoryTo with compilerOptionsJsx', () => {
+        it('default', () => {
+            const baseDir = path.resolve(__dirname, './tsx')
+            const distDir = path.resolve(distDirPath, './directory-jsx')
+
+            Typify.compileDirectoryTo(baseDir, distDir, { compilerOptions: compilerOptionsJsx })
+
+            assert.equal( fs.exists(path.resolve(distDir, 'react-dom.js')), true )
+            assert.ok( fs.readTextFile(path.resolve(distDir, 'react-dom.js')).includes(`React.createElement`))
+            assert.equal( fs.exists(path.resolve(distDir, 'react-dom.jsx')), false )
+
+            assert.equal( fs.exists(path.resolve(distDir, 'noop.js')), true )
+            assert.ok( fs.readTextFile(path.resolve(distDir, 'noop.js')).includes(`React.createElement(React.Fragment`))
+        })
+
+        it('jsxFactory: "React.createElement"', () => {
+            const baseDir = path.resolve(__dirname, './tsx')
+            const distDir = path.resolve(distDirPath, './directory-jsx1')
+
+            Typify.compileDirectoryTo(baseDir, distDir, { compilerOptions: {...compilerOptionsJsx, jsxFactory: 'React.createElement'} })
+
+            assert.equal( fs.exists(path.resolve(distDir, 'noop.js')), true )
+            assert.ok( fs.readTextFile(path.resolve(distDir, 'noop.js')).includes(`React.createElement(React.Fragment`))
+        })
+    })
+
 
     const baseDir = path.resolve(__dirname, './dir_to_copy')
 
