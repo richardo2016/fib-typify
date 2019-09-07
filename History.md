@@ -1,7 +1,15 @@
 
-v0.6.0 / 2019-06-03
+v0.7.0 / 2019-09-07
 ==================
 
+  * support compile .tsx to .js
+  * upgrade ci config.
+  * upgrade dependencies; deprecate old api.
+
+v0.6.0 / 2019-06-03
+===================
+
+  * Release v0.6.0
   * upgrade dependency
   * keep shebang
   * replace @types/fibjs with @fibjs/types.
