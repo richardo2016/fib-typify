@@ -12,7 +12,7 @@ const errCode = require('./utils/err_code')
 const extendCompilerConfigFromTSConfig = require('../core/_utils').extendCompilerConfigFromTSConfig
 const replaceSuffix = require('../core/_utils').replaceSuffix
 
-const { compileDirectoryTo } = require('../core/fs-directory')
+const { compileDirectoryTo } = require('../core/transpile/fs-directory')
 const { generateLoaderbox } = require('../core/loader-box')
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 

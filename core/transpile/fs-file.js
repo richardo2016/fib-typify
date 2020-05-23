@@ -2,9 +2,11 @@ const fs = require('fs')
 const path = require('path')
 const util = require('util')
 
-const CORE = require('./core')
+const { getTranspilor } = require('../ts-apis/transpilor')
+const CORE = require('../core')
+const UTILs = require('../_utils')
+
 const raw = require('./raw')
-const UTILs = require('./_utils')
 
 function _checkSrcFilepath (filepath) {
     if (!fs.exists(filepath)) {
@@ -31,7 +33,7 @@ exports.compileFile = function (filepath = '', tsCompilerOptions) {
         tsRaw = ''
     }
 
-    return CORE._getTranspilor(tsCompilerOptions)(tsRaw)
+    return getTranspilor(tsCompilerOptions)(tsRaw)
 }
 
 exports.compileFileTo = function (filepath = '', targetpath = '', tsCompilerOptions) {

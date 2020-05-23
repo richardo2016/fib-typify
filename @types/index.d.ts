@@ -1,4 +1,3 @@
-/// <reference no-default-lib="true"/>
 /// <reference types="@fibjs/types" />
 
 declare namespace FibTypify {

@@ -2,16 +2,18 @@
 
 import vm = require('vm')
 
-const compileModule = require('../core/module').compileModule
-const compileRaw = require('../core/raw').compileRaw
-const compileRawToFile = require('../core/raw').compileRawToFile
-const compileRawToSandBox = require('../core/raw').compileRawToSandBox
-const compileFile = require('../core/fs-file').compileFile
-const compileFileTo = require('../core/fs-file').compileFileTo
-const compileFileToSandBox = require('../core/fs-file').compileFileToSandBox
-const compileDirectoryTo = require('../core/fs-directory').compileDirectoryTo
+const compileModule = require('../core/transpile/module').compileModule
+const compileRaw = require('../core/transpile/raw').compileRaw
+const compileRawToFile = require('../core/transpile/raw').compileRawToFile
+const compileRawToSandBox = require('../core/transpile/raw').compileRawToSandBox
+const compileFile = require('../core/transpile/fs-file').compileFile
+const compileFileTo = require('../core/transpile/fs-file').compileFileTo
+const compileFileToSandBox = require('../core/transpile/fs-file').compileFileToSandBox
+const compileDirectoryTo = require('../core/transpile/fs-directory').compileDirectoryTo
+
 const loaderBox = require('../core/loader-box').defaultBox
 const generateLoaderbox = require('../core/loader-box').generateLoaderbox
+
 const builtModules = require('../core/_utils').builtModules
 const registerTsCompiler = require('../core/_utils').registerTsCompiler
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions

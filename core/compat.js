@@ -1,7 +1,16 @@
 const fs = require('fs')
+const util = require('util')
 const path = require('path')
-const FILE = require('./fs-file')
+const vm = require('vm')
+
+const FILE = require('./transpile/fs-file')
 const UTILs = require('./_utils')
+
+exports.isSupportSetModuleCompiler = function () {
+    const sbox = new vm.SandBox({})
+
+    return util.isFunction(sbox.setModuleCompiler)
+}
 
 exports.hackFibjs = function (tsSandbox, tsCompilerOptions) {
     const basedir = __dirname

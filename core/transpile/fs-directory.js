@@ -3,7 +3,7 @@ const path = require('path')
 const mm = require('micromatch')
 
 const compileFile = require('./fs-file')
-const UTILs = require('./_utils')
+const UTILs = require('../_utils')
 
 const _includeExts = ['.ts', '.tsx']
 const _excludeExts = ['.d.ts']
