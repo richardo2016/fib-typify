@@ -1,15 +1,23 @@
-/// <reference path="../@types/index.d.ts" />
+/// <reference types="@fibjs/types" />
 
 import vm = require('vm')
 
 const compileModule = require('../core/transpile/module').compileModule
-const compileRaw = require('../core/transpile/raw').compileRaw
-const compileRawToFile = require('../core/transpile/raw').compileRawToFile
-const compileRawToSandBox = require('../core/transpile/raw').compileRawToSandBox
-const compileFile = require('../core/transpile/fs-file').compileFile
-const compileFileTo = require('../core/transpile/fs-file').compileFileTo
-const compileFileToSandBox = require('../core/transpile/fs-file').compileFileToSandBox
-const compileDirectoryTo = require('../core/transpile/fs-directory').compileDirectoryTo
+const {
+    compileRaw,
+    compileRawToFile,
+    compileRawToSandBox,
+} = require('../core/transpile/raw')
+
+const {
+    compileFile,
+    compileFileTo,
+    compileFileToSandBox,
+} = require('../core/transpile/fs-file')
+
+const {
+    compileDirectoryTo
+} = require('../core/transpile/fs-directory')
 
 const loaderBox = require('../core/loader-box').defaultBox
 const generateLoaderbox = require('../core/loader-box').generateLoaderbox
@@ -20,28 +28,16 @@ const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 
 const defaultSandboxFallback = require('../core/_utils').defaultSandboxFallback
 
-export = class ChainLoader implements FibTypify.ChainLoader {
-    static default = ChainLoader;
-    static compileModule = compileModule;
-    static compileRaw = compileRaw;
-    static compileRawToFile = compileRawToFile;
-    static compileRawToSandBox = compileRawToSandBox;
-    static compileFile = compileFile;
-    static compileFileTo = compileFileTo;
-    static compileFileToSandBox = compileFileToSandBox;
-    static compileDirectoryTo = compileDirectoryTo;
-    static loaderBox = loaderBox;
-    static generateLoaderbox = generateLoaderbox;
-    static builtModules = builtModules;
-    static registerTsCompiler = registerTsCompiler;
-    static defaultCompilerOptions = defaultCompilerOptions;
+interface LoaderSandbox extends Class_SandBox {
+    loader(): ChainLoader
+}
 
-    static loader(...args: any[]): ChainLoader {
-        const loader = new ChainLoader(args[0], args[1], args[2])
-        return loader
-    }
+interface SetLoaderCallback {
+    (loader: ChainLoader): void
+}
 
-    private _sandbox: FibTypify.LoaderSandbox
+export class ChainLoader {
+    private _sandbox: ChainLoader
     private _moduleOptions: any
     private _sourceMapConfig: any
 
@@ -59,6 +55,10 @@ export = class ChainLoader implements FibTypify.ChainLoader {
     setSourceMapConfig (_sourceMapConfig) {
         this._sourceMapConfig = _sourceMapConfig || {}
     }
+
+    sandbox(): LoaderSandbox
+    sandbox(box: Class_SandBox | LoaderSandbox, func?: SetLoaderCallback): LoaderSandbox
+    sandbox(mods: object, require: Function, global: object, func?: SetLoaderCallback): LoaderSandbox
 
     sandbox(...args: any[]) {
         if (this._sandbox)
@@ -88,4 +88,30 @@ export = class ChainLoader implements FibTypify.ChainLoader {
 
         return this.sandbox()
     }
+}
+
+const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
+export { createProgram, createCompilerHost }
+
+export {
+    builtModules,
+    registerTsCompiler,
+    defaultCompilerOptions,
+
+    compileModule,
+    compileRaw,
+    compileRawToFile,
+    compileRawToSandBox,
+    compileFile,
+    compileFileTo,
+    compileFileToSandBox,
+    compileDirectoryTo,
+    
+    loaderBox,
+    generateLoaderbox,
+};
+
+export function loader(...args: any[]): ChainLoader {
+    const loader = new ChainLoader(args[0], args[1], args[2])
+    return loader
 }

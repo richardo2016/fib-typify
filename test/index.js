@@ -16,7 +16,9 @@ require('./spec.bin')
 
 require('./spec.loader-box')
 
-if (fibjsVersion >= '0.26.0') {
+// require('./spec.program')
+
+if (false && fibjsVersion >= '0.26.0') {
     run('./spec.source-map')
     Typify.loader({
         compilerOptions: {

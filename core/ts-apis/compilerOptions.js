@@ -14,3 +14,11 @@ exports.filterCompilerOptions = function (compilerOptions) {
         compilerOptions.inlineSourceMap = true
     }
 }
+
+/**
+ * @description return one ts.ParseConfigHost
+ */
+exports.getParseConfigHost = (compilerHost, cwd) => {
+    // this API is from typescript, not documented
+    return ts.createCachedDirectoryStructureHost(compilerHost, cwd, process.platform !== 'win32')
+}
