@@ -1,4 +1,5 @@
 /// <reference types="@fibjs/types" />
+import ts = require('typescript');
 declare const compileModule: any;
 declare const compileRaw: any, compileRawToFile: any, compileRawToSandBox: any;
 declare const compileFile: any, compileFileTo: any, compileFileToSandBox: any;
@@ -25,7 +26,7 @@ export declare class ChainLoader {
     sandbox(box: Class_SandBox | LoaderSandbox, func?: SetLoaderCallback): LoaderSandbox;
     sandbox(mods: object, require: Function, global: object, func?: SetLoaderCallback): LoaderSandbox;
 }
-declare const createProgram: any, createCompilerHost: any;
-export { createProgram, createCompilerHost };
+export declare const createCompilerHost: (compilerOptions: ts.CompilerOptions) => ts.ProgramHost<ts.BuilderProgram>;
+export declare const createProgram: (compilerOptions: ts.CompilerOptions, fileNames: string[], host: ts.ProgramHost<ts.BuilderProgram>) => ts.Program;
 export { builtModules, registerTsCompiler, defaultCompilerOptions, compileModule, compileRaw, compileRawToFile, compileRawToSandBox, compileFile, compileFileTo, compileFileToSandBox, compileDirectoryTo, loaderBox, generateLoaderbox, };
 export declare function loader(...args: any[]): ChainLoader;

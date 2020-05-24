@@ -1,6 +1,7 @@
 /// <reference types="@fibjs/types" />
 
 import vm = require('vm')
+import ts = require('typescript')
 
 const compileModule = require('../core/transpile/module').compileModule
 const {
@@ -90,8 +91,9 @@ export class ChainLoader {
     }
 }
 
-const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
-export { createProgram, createCompilerHost }
+const programApis = require('../core/ts-apis/program')
+export const createCompilerHost = programApis.createCompilerHost as (compilerOptions: ts.CompilerOptions) => ts.ProgramHost<ts.BuilderProgram>
+export const createProgram = programApis.createProgram as (compilerOptions: ts.CompilerOptions, fileNames: string[], host: ts.ProgramHost<ts.BuilderProgram>) => ts.Program
 
 export {
     builtModules,
