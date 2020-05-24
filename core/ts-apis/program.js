@@ -29,7 +29,7 @@ const createCompilerHost = exports.createCompilerHost = function createCompilerH
   return host;
 }
 
-exports.createProgram = function createProgram(
+const createProgram = exports.createProgram = function createProgram(
   fileNames,
   compilerOptions,
   host = createCompilerHost(compilerOptions)

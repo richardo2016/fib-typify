@@ -3,12 +3,12 @@ const path = require('path');
 
 const ts = require('typescript')
 const rmdirr = require('@fibjs/rmdirr')
-const { TsProgram } = require('../../')
+const { simpleCompile } = require('../../core/ts-apis/test-program')
 const UnitTestDir = path.resolve(__dirname, '.')
 
-describe('TsProgram.compile - single entry', () => {
+describe('ts simple compile single entry', () => {
     it("just compile", () => {
-        const emitResult = TsProgram.compile(
+        const emitResult = simpleCompile(
             [
                 path.resolve(UnitTestDir, './just-compile/ts.dir/index.ts')
             ],
@@ -34,26 +34,26 @@ describe('TsProgram.compile - single entry', () => {
     });
 
     it("with-error", () => {
-        const emitResult = TsProgram.compile(
-            [
-                path.resolve(UnitTestDir, './with-error/ts.dir/index.ts')
-            ],
-            {
-                noEmit: true,
-                noImplicitAny: true,
-                target: ts.ScriptTarget.ES6,
-                module: ts.ModuleKind.CommonJS,
-            }
-        )
-
-        assert.ok(emitResult.emitSkipped)
+        assert.throws(() => {
+            const emitResult = simpleCompile(
+                [
+                    path.resolve(UnitTestDir, './with-error/ts.dir/index.ts')
+                ],
+                {
+                    noEmit: true,
+                    noImplicitAny: true,
+                    target: ts.ScriptTarget.ES6,
+                    module: ts.ModuleKind.CommonJS,
+                }
+            )
+        })
     });
 
     it("emit declaration", () => {
         rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.dts.dir'))
         rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.js.dir'))
 
-        const emitResult = TsProgram.compile(
+        const emitResult = simpleCompile(
             [
                 path.resolve(UnitTestDir, './emit-declartion/ts.dir/index.ts')
             ],
@@ -84,7 +84,7 @@ describe('TsProgram.compile - single entry', () => {
         rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir'))
         rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir'))
 
-        const emitResult = TsProgram.compile(
+        const emitResult = simpleCompile(
             [
                 path.resolve(UnitTestDir, './emit-declartion-only/ts.dir/index.ts')
             ],
