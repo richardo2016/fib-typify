@@ -1,7 +1,13 @@
 
-v0.8.1 / 2020-05-25
+v0.8.2 / 2020-05-25
 ==================
 
+
+
+v0.8.1 / 2020-05-25
+===================
+
+  * Release v0.8.1
   * feat: support more ts build options to ftsc, add test basic sample for ftsc.
   * chore: update doc.
 
