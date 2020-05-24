@@ -1,10 +1,10 @@
-const vm = require('vm')
 const fs = require('fs')
 const path = require('path')
 const util = require('util')
 
 const mkdirp = require('@fibjs/mkdirp')
 
+const { filterCompilerOptions } = require('./ts-apis/compilerOptions')
 const CORE = require('./core')
 
 function time () {
@@ -47,12 +47,6 @@ exports.extendCompilerConfigFromTSConfig = function (origConfig = {}) {
     return origConfig
 }
 
-exports.isSupportSetModuleCompiler = function () {
-    const sbox = new vm.SandBox({})
-
-    return util.isFunction(sbox.setModuleCompiler)
-}
-
 exports.defaultCompilerOptions = require('../tsconfig.dft.json')
 
 exports.getCwdTsCompilerOptions = function () {
@@ -67,7 +61,7 @@ exports.defaultSandboxFallback = function (name) {
     return require(name)
 }
 
-const compileModule = require('./module').compileModule
+const compileModule = require('./transpile/module').compileModule
 const defaultSourceMapInstallScriptName = exports.defaultSourceMapInstallScriptName = path.resolve(__dirname, './runtime/source-map-install.js')
 
 const saveCacheMap = function (filename, mapContent) {
@@ -97,7 +91,7 @@ exports.registerTsCompiler = (
 
     moduleOptions.compilerOptions = util.extend({}, tsCompilerOptions, moduleOptions.compilerOptions)
 
-    CORE._filterCompilerOptions(moduleOptions.compilerOptions)
+    filterCompilerOptions(moduleOptions.compilerOptions)
 
     if (moduleOptions.compilerOptions.inlineSourceMap) {
         // sandbox.setModuleCompiler(SOURCEMAP_SUFFIX, buf => buf + '')

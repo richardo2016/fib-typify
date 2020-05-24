@@ -2,11 +2,12 @@ const fs = require('fs')
 const path = require('path')
 const vm = require('vm')
 
-const CORE = require('./core')
-const UTILs = require('./_utils')
+const { getTranspilor } = require('../ts-apis/transpilor')
+const CORE = require('../core')
+const UTILs = require('../_utils')
 
 exports.compileRaw = function (tsRaw = '', tsCompilerOptions, filename, diagnostics, moduleName) {
-    return CORE._getTranspilor(tsCompilerOptions, filename, diagnostics, moduleName)(tsRaw)
+    return getTranspilor(tsCompilerOptions, filename, diagnostics, moduleName)(tsRaw)
 }
 
 exports.compileRawToFile = function (tsRaw = '', targetpath = '', tsCompilerOptions) {

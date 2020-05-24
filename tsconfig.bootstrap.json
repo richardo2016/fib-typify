@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.dft.json",
+    "compilerOptions": {
+        "declaration": true,
+        "declarationDir": "./typings",
+        "noEmitOnError": true
+    }
+}

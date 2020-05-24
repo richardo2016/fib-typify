@@ -9,7 +9,14 @@ const cmd = process.execPath
 const argFlags = require('../bin/utils/arg_flags')
 const errCode = require('../bin/utils/err_code')
 
-const isSupportSetModuleCompiler = require('../core/_utils').isSupportSetModuleCompiler
+const { isSupportSetModuleCompiler } = require('../core/compat')
+
+const readSubProcessLine = (sp) => {
+    if (typeof sp.readLine === 'function')
+        return sp.readLine()
+
+    return sp.stdout.readLine()
+}
 
 describe('fib-typify', () => {
     it('empty args', () => {
@@ -17,7 +24,7 @@ describe('fib-typify', () => {
             path.join(__dirname, '../bin', 'fib-typify.js')
         ])
 
-        assert.equal( sproc.readLine(), errCode["noArg:output"] )
+        assert.equal( readSubProcessLine(sproc), errCode["noArg:output"] )
     })
 
     it(`check ${argFlags.output.join(', ')}`, () => {
@@ -97,7 +104,7 @@ describe('fib-typify', () => {
                 }
             })
 
-            assert.equal(sproc.readLine(), 'I am from entry-point/test.ts')
+            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/test.ts')
         })
 
         it('relative path: directory entry', () => {
@@ -110,8 +117,8 @@ describe('fib-typify', () => {
                 }
             })
 
-            assert.equal(sproc.readLine(), 'I am from entry-point/test.ts')
-            assert.equal(sproc.readLine(), 'I am from entry-point/index.ts')
+            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/test.ts')
+            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/index.ts')
         })
     })
 })
