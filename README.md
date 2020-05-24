@@ -4,13 +4,25 @@
 [![Build Status](https://travis-ci.com/richardo2016/fib-typify.svg?branch=master)](https://travis-ci.org/richardo2016/fib-typify)
 [![Build status](https://ci.appveyor.com/api/projects/status/lmp5jopw8m149v9h?svg=true)](https://ci.appveyor.com/project/richardo2016/fib-typify)
 
-just write fibjs with typescript : )
+🚀 Just coding fibjs program with typescript
+ 
+## Introduction**
+`fib-typify` allows you to write fibjs with [typescript] at compilation or at runtime. It depends on official [typescript]'s [internal compiler API](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API).
 
-## Pre-requisite
+As typescript is written with **nodejs**, it's not restricted in nodejs runtime only --- you can also compile typescript in browser or _ANY_ other pure Javascript runtime. That is, you can use it in fibjs also.
+
+## Pre-requisites
 
 - fibjs `>= 0.27.0`
 
 ## Usage
+
+```bash
+# locally
+npm i -S fib-typify
+# or globally
+npm i -g fib-typify
+```
 
 **Via Javascript**
 
@@ -37,19 +49,45 @@ export function foo (str: string): string {
 
 Started from `0.8.0`, you can run `ftsc`, it's command line like `tsc` from typescript, but it's for fibjs.
 
-Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpileModule(input, moduleOptions)` as 2nd param.
-
 ```bash
-# compile, source directory(such as `src` above) is required
+# compile, source directory(such as `src/*` below) is required
 ./node_modules/.bin/ftsc src/* --outDir lib
 ```
 
-#### `fib-typify`
+Most general options of `tsc` are supported:
 
-run .ts script directly.
+- `--target`
+- `--module`
+- `--moduleResolution`
+- **`--jsx`**
+- **`--declaration`**
+- `--declarationDir`
+- `--emitDeclarationOnly`
+- **`--outDir`**
+- `--allowJs`
+- `--noEmit`
+- ...
+
+You can just pass those options to `ftsc` as arguments(flags), just like what you did with `tsc`.
+
+```bash
+# compile your project's source to `lib` directory, with dts files emitted 🚀
+ftsc ./src/* \ 
+    --outDir ./lib \
+    --declaration \
+    --declarationDir ./typings
+    --allowJs \
+```
+
+#### `fib-typify`(deprecated)
+
+Run .ts script directly.
+
 ```bash
 ./node_modules/.bin/fib-typify ./src/index.ts
 ```
+
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpileModule(input, moduleOptions)` as 2nd param `moduleOptions`.
 
 <!-- Or compile it to same directory with corresponding filename
 ```bash
@@ -81,19 +119,6 @@ I only provided simple and crude error exception mechanism, so in some cases the
 
 `-o, --out`: (fallback to file when necessary,) equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
 
- 
-**Introduction**
-`fib-typify` allows you to write fibjs with [typescript] in compilation or in runtime. It depends on original [typescript] stable version. As typescript is written with **nodejs**, it's not restricted in nodejs runtime: you can also compile typescript in browser or _ANY_ other pure Javascript runtime. That is, you can use it in fibjs also.
-
-**Usage**
-
-```bash
-# locally
-npm i -S fib-typify
-# or globally
-npm i -g fib-typify
-```
-
 ## default tsCompilerOptions
 
 ### internal default compilerOptions
@@ -104,16 +129,6 @@ npm i -g fib-typify
     noImplicitUseStrict: true
 }
 ```
-
-### `tsconfig.json`
-
-Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite built-in default compilerOptions.
-
-### priority of overwriting
-
-1. compilerOptions passed to `function params`
-1. compilerOptions in `tsconfig.json`
-1. internal default compilerOptions
 
 ### Baisc Usage
 
@@ -132,32 +147,6 @@ generate one [ChainLoader]'s sandbox
 
 ---
 
-* `compileRaw: (tsRaw: string, tsCompilerOptions: TSCompilerOptions) => string`
-
-compile `tsRaw` to javascript.
-
-* `compileRawToFile: (tsRaw: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
-
-compile `tsRaw` to javascript, then write to `targetpath`.
-
-* `compileFile: (filepath?: string, tsCompilerOptions: TSCompilerOptions) => string`
-
-compile content in `filepath` to javascript.
-
-* `compileFileTo: (srcpath?: string, targetpath: string, tsCompilerOptions: TSCompilerOptions) => void`
-
-compile content in `filepath` to javascript, then write to `targetpath`.
-
-* `compileDirectoryTo: (baseDir: string, distDir: string, directoryCompilationOptions: any) => void`
-
-| Param | Type | Required/Default |
-| -------- | -------- | -------- |
-| baseDir   | string   | Y / -   |
-| distDir   | string   | Y / -   |
-| directoryCompilationOptions | [directoryCompilationOptions] | N / - |
-
-compile files in directory `baseDir` recursively to `distDir`, view options in view [directoryCompilationOptions].
-
 * `generateLoaderbox(tsCompilerOptions: TSCompilerOptions, basedir: string)`
 
 generate one loaderBox with compilation options `tsCompilerOptions`.
@@ -175,15 +164,6 @@ default loaderBox of `fib-typify`, it use **default tsCompilerOptions** as compi
 default typescript compiler options. More detail in [typescript's compiler options]
 
 ---
-
-### directoryCompilationOptions
-
-| Field | Type | Required/Default | Explanation |
-| -------- | -------- | -------- | --------- |
-| compilerOptions   | boolean   | Y / `false`    | typescript's [compilerOptions] |
-| fileglobsToCopy | Array, '*' | N / `['*.js', '*.jsc', '*.json']` | whitelist for extensions of globnames to copy when recursive walk to one
-| includeLeveledGlobs | string | string[] | N / `['*', '!node_modules', '!.ts']` | glob descriptor list to exclude on walk to every directory level, view detail in [micromatch] |
-| filterFileName   | (filename: string): boolean   | N / -    | whether compile File, file would be compiled if returning `true` |
 
 ## loaderBox
 
@@ -217,24 +197,13 @@ const loaderBox = Typify.loader({
 const module = loaderBox.require('./index.ts', __dirname)
 ```
 
-### File Filter Priority
-
-High -> Low:
-1. includeLeveledGlobs
-1. fileglobsToCopy
-1. filterFileName
-
-### File Writing Priority
-1. [compileResult]
-1. fileglobsToCopy
-
 ## Warning
 
 ### `loaderBox` Limitations when `fibjs < 0.25.0`
 
-**NOTE** it's not recommended to use fib-typify in fibjs <= 0.26.x.
+**NOTE** it's **NOT** recommended to use fib-typify in fibjs <= 0.26.x.
 
-From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compiler for specified extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loaderBox`.
+From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API which allow to customize compiler for module with explicit extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loaderBox`.
 
 fib-typify also support `loaderBox` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
 
@@ -244,7 +213,7 @@ fib-typify also support `loaderBox` feature in lower version fibjs(`< 0.25.0`), 
 
 so it's better to upgrade fibjs to version`>=0.25.0`, best to `>=0.26.0`, which resolves typescript source faster than previous version fibjs in fib-typify.
 
-### compile `.ts` to `.js` before your deploy
+### compile `.ts` to `.js` before your deployment
 
 By the way, although I have tested in some cases, but it's not enough to improve "fib-typify's loaderBox can run in production directly". In my own work, I use fib-typify's loaderBox to load all source code when app's in developing stage, but I would
 compile source to **pure javascript** code before publishing.
