@@ -8,9 +8,11 @@ just write fibjs with typescript : )
 
 ## Pre-requisite
 
-- fibjs `>= 0.26.0`
+- fibjs `>= 0.27.0`
 
 ## Usage
+
+**Via Javascript**
 
 ```javascript
 // entry.js
@@ -29,22 +31,67 @@ export function foo (str: string): string {
 }
 ```
 
-## Introduction
-`fib-typify` allows you write fibjs with [typescript] in compilation or in runtime. It depends on original [typescript] stable version. As typescript is written with **nodejs**, it's not restricted in nodejs runtime: you can also compile typescript in browser or _ANY_ other pure Javascript runtime. That is, you can use it in fibjs also.
+**Via CLI**
 
-## renderer
-`fib-typify`'s core is [jstransformer-typescript]-like ([jstransformer-typescript] is one [jstransformer] aimed to typescript), but this core is only valid in fibjs rather than pure javascript
+#### `fstc`
 
-## Usage
+Started from `0.8.0`, you can run `ftsc`, it's command line like `tsc` from typescript, but it's for fibjs.
+
+Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpileModule(input, moduleOptions)` as 2nd param.
+
+```bash
+# compile, source directory(such as `src` above) is required
+./node_modules/.bin/ftsc src/* --outDir lib
+```
+
+#### `fib-typify`
+
+run .ts script directly.
+```bash
+./node_modules/.bin/fib-typify ./src/index.ts
+```
+
+<!-- Or compile it to same directory with corresponding filename
+```bash
+# get compiled script `./script/index.js`
+fib-typify ./src/index.ts -o
+``` -->
+
+<!-- Or compile one file to specified position
+```bash
+# get compiled script `/tmp/a.js`
+fib-typify ./src/index.ts -o /tmp/a.js
+``` -->
+
+run valid resolvable script directly.
+
+```bash
+## which would try to run `./index.ts`, main script in `package.json`, './index.js', './index.json'...
+fib-typify ./
+
+## run `./src/index.js`, `./src/index.ts`, ...
+fib-typify ./src
+```
+
+I only provided simple and crude error exception mechanism, so in some cases the error emitted may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
+
+**options**
+
+`-c, --config-file`: equals to `tsconfig.compilerOptions`, would overwrite the one from `tsconfig.json`
+
+`-o, --out`: (fallback to file when necessary,) equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
+
+ 
+**Introduction**
+`fib-typify` allows you to write fibjs with [typescript] in compilation or in runtime. It depends on original [typescript] stable version. As typescript is written with **nodejs**, it's not restricted in nodejs runtime: you can also compile typescript in browser or _ANY_ other pure Javascript runtime. That is, you can use it in fibjs also.
+
+**Usage**
 
 ```bash
 # locally
-fibjs --install fib-typify
+npm i -S fib-typify
 # or globally
 npm i -g fib-typify
-
-# compile code in ./src to ./dist recursively
-fib-typify ./src -o ./dist
 ```
 
 ## default tsCompilerOptions
@@ -60,7 +107,7 @@ fib-typify ./src -o ./dist
 
 ### `tsconfig.json`
 
-Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite internal default compilerOptions.
+Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite built-in default compilerOptions.
 
 ### priority of overwriting
 
@@ -70,7 +117,7 @@ Start from `0.4.0`, `compilerOptions` from `CWD/tsconfig.json` would overwrite i
 
 ### Baisc Usage
 
-* `loader(moduleOptions: any, sourceMapConfig: any, sandBoxCfg?: SandBoxInitialConfig): ChainLoader`
+* `loader(moduleOptions: any, sandBoxCfg?: SandBoxInitialConfig): ChainLoader`
 
 generate one [ChainLoader]
 
@@ -152,6 +199,7 @@ const module = Typify.loaderBox.require('./index.ts', __dirname)
 ```
 
 ### require typescript directly by customized loaderBox
+
 ```javascript
 // customized-loader.js
 const Typify = require('fib-typify')
@@ -180,55 +228,12 @@ High -> Low:
 1. [compileResult]
 1. fileglobsToCopy
 
-
-## CLI
-Started from `0.2.0`, you can run `fib-typify` in CLI.
-
-Command above means compiling directory `src` to directory `lib` with configuration file `.typify.json`, which would be passed to `typescript.transpileModule(input, moduleOptions)` as 2nd param.
-
-```bash
-# compile, source directory(such as `src` above) is required
-fib-typify src -o lib -c .typify.json
-```
-
-(**Started From 0.5.1**) run .ts script directly.
-```bash
-fib-typify ./src/index.ts
-```
-
-(**Started From 0.5.1**) or compile it to same directory with corresponding filename
-```bash
-# get compiled script `./script/index.js`
-fib-typify ./src/index.ts -o
-```
-
-(**Started From 0.5.1**) or compile one file to specified position
-```bash
-# get compiled script `/tmp/a.js`
-fib-typify ./src/index.ts -o /tmp/a.js
-```
-
-(**Started From 0.5.1**) run valid resovable script directly.
-
-```bash
-## which would try to run `./index.ts`, main script in `package.json`, './index.js', './index.json'...
-fib-typify ./
-
-## run `./src/index.js`, `./src/index.ts`, ...
-fib-typify ./src
-```
-
-I only provided simple and crude error exception mechanism, so in some cases it may be not friendly as you like, it's welcome to take PR to help optimizting this part of `fib-typify` :)
-
-### options
-
-`-c, --config-file`: equals to `tsconfig.compilerOptions`, would overwrite the one from `tsconfig.json`
-
-`-o, --out`: (fallback to file when necessary,) equals to `tsconfig.outDir`, would overwrite the one from `tsconfig.json`
-
 ## Warning
 
 ### `loaderBox` Limitations when `fibjs < 0.25.0`
+
+**NOTE** it's not recommended to use fib-typify in fibjs <= 0.26.x.
+
 From fibjs `0.26.0`, fibjs supports `setModuleCompiler` API to customize compiler for specified extension, so we can require typescript file directly by providing compiler for `.ts` file, which provided by fib-typify's `loaderBox`.
 
 fib-typify also support `loaderBox` feature in lower version fibjs(`< 0.25.0`), but not full-feature support, so there are some advices for your application depending on fib-typify in fibjs(`< 0.25.0`):
