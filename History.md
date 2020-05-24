@@ -1,7 +1,14 @@
 
-v0.7.0 / 2019-09-07
+v0.8.0 / 2020-05-24
 ==================
 
+  * feat: replace program API in registerTsCompiler
+  * feat: use customized ts program (#14)
+
+v0.7.0 / 2019-09-07
+===================
+
+  * Release v0.7.0
   * support compile .tsx to .js
   * upgrade ci config.
   * upgrade dependencies; deprecate old api.
