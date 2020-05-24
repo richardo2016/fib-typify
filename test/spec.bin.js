@@ -10,13 +10,7 @@ const argFlags = require('../bin/utils/arg_flags')
 const errCode = require('../bin/utils/err_code')
 
 const { isSupportSetModuleCompiler } = require('../core/compat')
-
-const readSubProcessLine = (sp) => {
-    if (typeof sp.readLine === 'function')
-        return sp.readLine()
-
-    return sp.stdout.readLine()
-}
+const { readSubProcessLine } = require('./utils')
 
 describe('fib-typify', () => {
     it('empty args', () => {

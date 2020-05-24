@@ -10,7 +10,7 @@
 		"typify": "./bin/fib-typify.js"
 	},
 	"scripts": {
-		"build": "fibjs ./bin/ftsc.js src/* --outDir ./lib -p tsconfig.bootstrap.json",
+		"build": "fibjs ./bin/ftsc.js src/* -p tsconfig.bootstrap.json --outDir ./lib",
 		"bootstrap": "fibjs ./scripts/bootstrap",
 		"test": "fibjs test/index.js",
 		"ci": "npm run build && npm run test",

@@ -10,25 +10,26 @@ const readdirr = require('@fibjs/fs-readdir-recursive')
 const mm = require('micromatch')
 
 const pkgJson = require('../package.json')
-const cli = require('@fxjs/cli')(pkgJson.name)
+const cli = require('@fxjs/cli')('ftsc')
 
 const CWD = process.cwd()
 
 const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
 const { getParseConfigHost } = require('../core/ts-apis/compilerOptions')
 
-const runProgram = (fileNames, cmdLineOptions) => {
-    const compilerOptions = util.pick(cmdLineOptions, [
-        'noEmit',
-        'project',
-        'outDir'
-    ])
+const runProgram = (fileNames, compilerOptions, cmdLineOptions) => {
     const host = createCompilerHost(compilerOptions)
 
-    if (!cmdLineOptions.project) cmdLineOptions.project = 'tsconfig.json'
-    cmdLineOptions.project = fixNonAbsolutePath(cmdLineOptions.project, CWD)
+    let parsedTSConfig
+    // make compilerOptions.project absolute path.
+    compilerOptions.project = fixNonAbsolutePath(compilerOptions.project || 'tsconfig.json', CWD)
 
-    const configParsedResult = ts.parseConfigFileTextToJson(cmdLineOptions.project, fs.readTextFile(cmdLineOptions.project))
+    let tsconfigContent = JSON.stringify({})
+    try {
+        tsconfigContent = fs.readTextFile(compilerOptions.project)
+    } catch (error) {}
+
+    const configParsedResult = ts.parseConfigFileTextToJson(compilerOptions.project, tsconfigContent)
     
     if (configParsedResult.error)
         throw new Error(configParsedResult.error)
@@ -37,7 +38,7 @@ const runProgram = (fileNames, cmdLineOptions) => {
     inputTSConfig.files = fileNames
 
     // TODO: learn about ts.ParsedTsConfig, why its real value is augument of its declartion(in types)
-    const parsedTSConfig = ts.parseJsonConfigFileContent(
+    parsedTSConfig = ts.parseJsonConfigFileContent(
         inputTSConfig,
         /* parseConfigHost */getParseConfigHost(host, CWD),
         /* basePath */CWD,
@@ -84,27 +85,61 @@ function fixNonAbsolutePath(input, basedir) {
     return path.isAbsolute(input) ? input : path.resolve(basedir, input)
 }
 
-cli
-    .command('[...files]', 'source file')
-    // @TODO: use tyepscript's built-in 18n resources.
-    .option('--noEmit <noEmit>', 'Do not emit outputs.', {
-        default: false
+const topCmd = cli
+    .command('[...files]', 'source files', {
+        allowUnknownOptions: true
     })
-    .option('-p, --project <project>', 'tsconfig.json path', {
-        default: path.resolve(CWD, './tsconfig.json')
-    })
-    .option('--outDir [target]', 'output target', {
-        default: path.resolve(CWD)
-    })
+
+/**
+ * cmd options to be supported in the future.
+ * 
+ * - [ ] ts.optionsForWatch
+ * - [x] ts.optionDeclarations
+ * - [ ] ts.transpileOptionValueCompilerOptions
+ * - [ ] ts.buildOpts
+ */
+ts.optionDeclarations.forEach(cmdOptionWithBuild => {
+    if (cmdOptionWithBuild.name === 'help') return ;
+    if (cmdOptionWithBuild.showInSimplifiedHelpView === false) return ;
+    if (cmdOptionWithBuild.category && [
+        ts.Diagnostics.Basic_Options,
+        ts.Diagnostics.Command_line_Options,
+        ts.Diagnostics.Advanced_Options,
+    ].indexOf(cmdOptionWithBuild.category) === -1) return ;
+
+    topCmd.option([
+        cmdOptionWithBuild.shortName ? `--${cmdOptionWithBuild.shortName} ` : '',
+        `--${cmdOptionWithBuild.name} `,
+        // `[XTS_${cmdOptionWithBuild.name}]`
+    ].filter(x => x).join(''), [
+        /**
+         * @what if cmdOptionWithBuild.type !== 'string' but cmdOptionWithBuild.type is not empty, maybe it's ReturnType<ts.createMapFromTemplate()>
+         */
+        cmdOptionWithBuild.type && typeof cmdOptionWithBuild.type === 'string' ? `( type: ${cmdOptionWithBuild.type.padEnd(7, ' ')} ) ` : '',
+        cmdOptionWithBuild.description ? `TS: ${cmdOptionWithBuild.description.message}` : ''
+    ].filter(x => x).join(''))
+})
+
+topCmd
+    // .option('--fib:cwd <fib_cwd>', 'just sample option', {
+    //     default: path.resolve(CWD)
+    // })
     .action(function (files, cmdLineOptions) {
-        if (!files.length) {
-            console.log('[ftsc] getCwdFilenamesR()', getCwdFilenamesR());
-            // by default, when no files input specified, ftsc use all ts(x) files at current directory as input.
+        if (files.length) {
+            // when files is not empty, use it as glob
+            files = mm(getCwdFilenamesR(), files)
+        } else {
+            // if files empty, try to find all files with expected extentensions in CURRENT DIRECTORY
             files = mm(getCwdFilenamesR(), ['*.ts', '*.tsx'])
         }
+        
+        const parsedCommandLine = ts.parseCommandLine(process.argv.slice(2), fname => fs.readTextFile(fname))
+        if (parsedCommandLine.errors.length)
+            throw new Error(parsedCommandLine.errors[0].messageText)
 
-        runProgram(files, cmdLineOptions)
+        runProgram(files, parsedCommandLine.options, cmdLineOptions)
     })
+
 
 cli.help()
 cli.version(pkgJson.version)
