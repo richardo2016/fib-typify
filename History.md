@@ -1,7 +1,14 @@
 
-v0.8.0 / 2020-05-24
+v0.8.1 / 2020-05-25
 ==================
 
+  * feat: support more ts build options to ftsc, add test basic sample for ftsc.
+  * chore: update doc.
+
+v0.8.0 / 2020-05-24
+===================
+
+  * Release v0.8.0
   * feat: replace program API in registerTsCompiler
   * feat: use customized ts program (#14)
 
