@@ -18,15 +18,6 @@ require('./spec.loader-box')
 
 require('./spec.program')
 
-if (fibjsVersion >= '0.26.0') {
-    run('./spec.source-map')
-    Typify.loader({
-        compilerOptions: {
-            inlineSourceMap: true
-        }
-    }).sandbox().require('./spec.source-map', __dirname)
-}
-
 if (require.main === module) {
     test.run(console.DEBUG)
 }

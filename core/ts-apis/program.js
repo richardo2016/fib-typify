@@ -22,14 +22,10 @@ const createCompilerHost = exports.createCompilerHost = function createCompilerH
     return contents;
   }
 
-  // host.readFile = (fileName) => {
-  //   return fs.readTextFile(fileName)
-  // }
-
   return host;
 }
 
-const createProgram = exports.createProgram = function createProgram(
+exports.createProgram = function createProgram(
   fileNames,
   compilerOptions,
   host = createCompilerHost(compilerOptions)

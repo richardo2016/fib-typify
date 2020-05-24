@@ -27,7 +27,7 @@ const builtModules = require('../core/_utils').builtModules
 const registerTsCompiler = require('../core/_utils').registerTsCompiler
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 
-const defaultSandboxFallback = require('../core/_utils').defaultSandboxFallback
+const defaultSandboxFallback = name => require(name)
 
 interface LoaderSandbox extends Class_SandBox {
     loader(): ChainLoader
@@ -40,21 +40,15 @@ interface SetLoaderCallback {
 export class ChainLoader {
     private _sandbox: ChainLoader
     private _moduleOptions: any
-    private _sourceMapConfig: any
 
-    constructor(moduleOptions?, sourceMapConfig?, sandboxOptions?) {
+    constructor(moduleOptions?, sandboxOptions?) {
         this._moduleOptions = this.setModuleOptions(moduleOptions);
-        this._sourceMapConfig = this.setSourceMapConfig(sourceMapConfig);
 
         sandboxOptions && typeof sandboxOptions === 'object' && this.sandbox(sandboxOptions['modules'], sandboxOptions['fallback'], sandboxOptions['global'])
     }
 
     setModuleOptions (_moduleOptions) {
         this._moduleOptions = _moduleOptions || {}
-    }
-
-    setSourceMapConfig (_sourceMapConfig) {
-        this._sourceMapConfig = _sourceMapConfig || {}
     }
 
     sandbox(): LoaderSandbox
@@ -85,7 +79,7 @@ export class ChainLoader {
         if (typeof set_loader === 'function')
             set_loader(this)
 
-        registerTsCompiler(this._sandbox, null, this._moduleOptions, this._sourceMapConfig)
+        registerTsCompiler(this._sandbox, null, this._moduleOptions)
 
         return this.sandbox()
     }
@@ -114,6 +108,6 @@ export {
 };
 
 export function loader(...args: any[]): ChainLoader {
-    const loader = new ChainLoader(args[0], args[1], args[2])
+    const loader = new ChainLoader(args[0], args[1])
     return loader
 }

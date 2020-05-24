@@ -7,6 +7,9 @@ const mkdirp = require('@fibjs/mkdirp')
 const { filterCompilerOptions } = require('./ts-apis/compilerOptions')
 const CORE = require('./core')
 
+const { createCompilerHostForSandboxRegister } = require('./vm/sandbox')
+const { createProgram } = require('./ts-apis/program')
+
 function time () {
     return new Date()
 }
@@ -54,69 +57,37 @@ exports.getCwdTsCompilerOptions = function () {
 }
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
-const SOURCEMAP_SUFFIX = exports.SOURCEMAP_SUFFIX = '.map'
 
 exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-module-hash')()
-exports.defaultSandboxFallback = function (name) {
-    return require(name)
-}
 
-const compileModule = require('./transpile/module').compileModule
-const defaultSourceMapInstallScriptName = exports.defaultSourceMapInstallScriptName = path.resolve(__dirname, './runtime/source-map-install.js')
-
-const saveCacheMap = function (filename, mapContent) {
-    const io = require('io')
-    const zip = require('zip')
-
-    const stream = new io.MemoryStream();
-    const zipfile = zip.open(stream, "w");
-    zipfile.write(new Buffer(mapContent), 'index.map');
-    zipfile.close();
-
-    stream.rewind();
-    fs.setZipFS(`${filename}.zip`, stream.readAll());
-}
-
-const LINE_MARKER = '//# sourceMappingURL=';
 exports.registerTsCompiler = (
     sandbox,
-    tsCompilerOptions = exports.getCwdTsCompilerOptions(),
+    tsCompilerOptions = {},
     moduleOptions = {},
-    sourceMapConfig
 ) => {
-    const {
-        sourceMapInstallScriptFilename = defaultSourceMapInstallScriptName,
-        sourceMapInstallScript = ''
-    } = sourceMapConfig || {}
-
     moduleOptions.compilerOptions = util.extend({}, tsCompilerOptions, moduleOptions.compilerOptions)
 
     filterCompilerOptions(moduleOptions.compilerOptions)
-
-    if (moduleOptions.compilerOptions.inlineSourceMap) {
-        // sandbox.setModuleCompiler(SOURCEMAP_SUFFIX, buf => buf + '')
-        if (sourceMapInstallScript)
-            sandbox.add('source-map-install.js', sourceMapInstallScript)
-        else if (sourceMapInstallScriptFilename && fs.exists(sourceMapInstallScriptFilename))
-            sandbox.require(sourceMapInstallScriptFilename, __dirname)
-    }
+    const { host, getByFilename } = createCompilerHostForSandboxRegister(tsCompilerOptions)
 
     ;[
         TS_SUFFIX,
         '.tsx'
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
-            const compiledModule = compileCallback(buf, args, moduleOptions)
-
-            if (moduleOptions.compilerOptions.inlineSourceMap) {
-                const sourceMapURL = compiledModule.outputText.slice(
-                    compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
-                )
-                saveCacheMap(args.filename, LINE_MARKER + sourceMapURL)
-                // sandbox.add(args.filename + SOURCEMAP_SUFFIX, sourceMapURL)
+            const filename = path.normalize(args.filename)
+            let result = getByFilename(filename)
+            if (!result) {
+                const program = createProgram([ filename ], {
+                    ...tsCompilerOptions,
+                }, host)
+    
+                program.emit()
+                
+                result = getByFilename(filename)
             }
 
-            return compiledModule.outputText
+            return result
         })
     })
 }
@@ -132,19 +103,6 @@ exports.fixTsRaw = function (tsRaw) {
     return tsRaw
 }
 
-function compileCallback (buf, args, moduleOptions) {
-   let tsScriptString = buf + ''
-
-    if (!tsScriptString) return undefined
-
-    const compiledModule = compileModule(tsScriptString, {
-        ...moduleOptions,
-        fileName: args.filename,
-        moduleName: args.filename
-    })
-    return compiledModule
-}
-
 exports.replaceSuffix = function (target = '', {
     to_replace = /.tsx?$/,
     replace_to = '.js'
@@ -155,4 +113,8 @@ exports.replaceSuffix = function (target = '', {
         to_replace = new RegExp(`${to_replace}$`)
 
     return target.replace(to_replace, replace_to)
+}
+
+exports.fixNonAbsolutePath = function (input, basedir) {
+    return path.isAbsolute(input) ? input : path.resolve(basedir, input)
 }

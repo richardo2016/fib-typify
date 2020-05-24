@@ -18,10 +18,8 @@ interface SetLoaderCallback {
 export declare class ChainLoader {
     private _sandbox;
     private _moduleOptions;
-    private _sourceMapConfig;
-    constructor(moduleOptions?: any, sourceMapConfig?: any, sandboxOptions?: any);
+    constructor(moduleOptions?: any, sandboxOptions?: any);
     setModuleOptions(_moduleOptions: any): void;
-    setSourceMapConfig(_sourceMapConfig: any): void;
     sandbox(): LoaderSandbox;
     sandbox(box: Class_SandBox | LoaderSandbox, func?: SetLoaderCallback): LoaderSandbox;
     sandbox(mods: object, require: Function, global: object, func?: SetLoaderCallback): LoaderSandbox;
