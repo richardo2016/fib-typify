@@ -230,6 +230,14 @@ Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API 
 
 If you wanna contribute to this package, just learn about [fibjs] first, then fork this repo :)
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 [typescript]:https://github.com/Microsoft/TypeScript
 [fibjs]:http://fibjs.org/
 [jstransformer-typescript]:https://github.com/jstransformers/jstransformer-typescript
