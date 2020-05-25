@@ -4,7 +4,6 @@ const util = require('util')
 
 const mkdirp = require('@fibjs/mkdirp')
 
-const { filterCompilerOptions } = require('./ts-apis/compilerOptions')
 const CORE = require('./core')
 
 const { getInternalVMTSFilename, createCompilerHostForSandboxRegister } = require('./vm/sandbox')
@@ -38,7 +37,7 @@ exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'acti
     return `${CORE.logPrefix}[${domain}:${action}] - [${time()}]  `
 }
 
-exports.defaultCompilerOptions = require('../tsconfig.dft.json')
+exports.defaultCompilerOptions = require('../tsconfig.dft.json').compilerOptions
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
 

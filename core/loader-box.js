@@ -6,7 +6,7 @@ const vm = require('vm')
 const UTILs = require('./_utils')
 const { isSupportSetModuleCompiler, hackFibjs } = require('./compat')
 
-function generateLoaderbox (tsCompilerOptions) {
+const generateLoaderbox = exports.generateLoaderbox = function (tsCompilerOptions) {
     const tsSandbox = new vm.SandBox(UTILs.builtModules)
 
     if (isSupportSetModuleCompiler()) {
@@ -18,5 +18,4 @@ function generateLoaderbox (tsCompilerOptions) {
     return tsSandbox
 }
 
-exports.generateLoaderbox = generateLoaderbox
 exports.defaultBox = generateLoaderbox()

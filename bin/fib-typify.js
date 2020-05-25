@@ -30,18 +30,18 @@ cli
         const [srcpath] = files
 
         const outputValue = typeof options.o === 'string' ? options.o : ''
-        const outputExisted = getArgIdxFromArgs(cli.rawArgs, argFlags.output) > -1
+        const outputMode = getArgIdxFromArgs(cli.rawArgs, argFlags.output) > -1
 
         let tsCompilerOptions = JSON.parse(JSON.stringify(defaultCompilerOptions))
-        if (!tsCompilerOptions.outDir && outputValue) {
-            tsCompilerOptions.outDir = outputValue
-        }
 
-        if (!tsCompilerOptions.outDir) {
-            tsCompilerOptions.noEmit = true
-            tsCompilerOptions.declaration = false
-            tsCompilerOptions.sourceMap = false
-            tsCompilerOptions.inlineSourceMap = false
+        if (!outputMode) {
+            tsCompilerOptions.outDir = ''
+        } else if (fs.exists(outputValue)) {
+            const stat = fs.stat(outputValue)
+            if (stat.isDirectory()) tsCompilerOptions.outDir = outputValue
+            else if (stat.isFile()) tsCompilerOptions.outDir = path.dirname(outputValue)
+        } else {
+            tsCompilerOptions.outDir = outputValue
         }
 
         const CWD = process.cwd()
@@ -55,20 +55,18 @@ cli
         
         is_debug() && console.notice('tsCompilerOptions', tsCompilerOptions);
 
-        const topTsSandbox = generateLoaderbox(tsCompilerOptions)
+        const topTsSandbox = generateLoaderbox(parsedTsConfig.options)
         is_debug() && console.notice('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
 
         // finalParams
         const entryPoint = resolveExistedEntry(topTsSandbox, srcpath, CWD)
 
-        if (outputExisted) {
+        if (outputMode) {
             // compile mode
             const baseDir = path.resolve(CWD, srcpath)
             const distDir = path.resolve(CWD, outputValue || replaceSuffix(srcpath))
 
-            if (!fs.exists(baseDir)) {
-                quit(errCode["invalidArg:input"], 1)
-            }
+            if (!fs.exists(baseDir)) quit(errCode["invalidArg:input"], 1)
 
             compileDirectoryTo(baseDir, distDir, { compilerOptions: tsCompilerOptions })
         } else if (entryPoint) {
@@ -90,28 +88,6 @@ function is_debug () {
 function quit (error_msg, code = -1) {
     console.error(error_msg)
     process.exit(code)
-}
-
-function mergeCompilerConfigFromCustomConfig (configFilePath = null, origConfig = {}, cwd) {
-    configFilePath = configFilePath ? path.resolve(cwd, configFilePath) : null
-    console.log('configFilePath', configFilePath);
-
-    if (configFilePath && fs.exists(configFilePath)) {
-        let config = {}
-        if (['.json', '.js', '.jsc'].some(ext => configFilePath.endsWith(ext))) {
-            config = require(configFilePath)
-            is_debug() && console.notice('internal extension', config)
-        } else {
-            try {
-                config = JSON.parse(fs.readTextFile(configFilePath))
-            } catch (e) {
-                console.warn(`error occured when trying to parse config file: ${configFilePath}`)
-            }
-        }
-
-        origConfig = util.extend({}, origConfig, config)
-    }
-    return origConfig
 }
 
 function resolveExistedEntry (vbox, entryPoint, cwd = __dirname) {

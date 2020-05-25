@@ -15,7 +15,7 @@ const fibTypify = path.resolve(PKG_ROOT, './bin/fib-typify.js')
 describe('./node_modules/.bin/fib-typify', () => {
     it("tsconfig1", () => {
         chDirAndDo(path.resolve(UnitTestDir, './tsconfig1'), () => {
-            let sproc = process.run(cmd, [
+            let sproc = process.open(cmd, [
                 fibTypify,
                 './index.ts'
             ], {
@@ -24,7 +24,22 @@ describe('./node_modules/.bin/fib-typify', () => {
                 }
             })
 
-            // assert.equal(readSubProcessLine(sproc), 'bar')
+            assert.equal(readSubProcessLine(sproc), 'bar')
+        })
+    });
+
+    it("tsconfig2", () => {
+        chDirAndDo(path.resolve(UnitTestDir, './tsconfig2'), () => {
+            let sproc = process.open(cmd, [
+                fibTypify,
+                './dev.ts'
+            ], {
+                env: {
+                    FIB_TYPIFY_DEBUG: ""
+                }
+            })
+
+            assert.equal(readSubProcessLine(sproc), 'tsconfig2')
         })
     });
 });
