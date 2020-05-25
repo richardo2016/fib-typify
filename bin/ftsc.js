@@ -2,7 +2,6 @@
 'use strict';
 
 const path = require('path')
-const util = require('util')
 
 const fs = require('fs')
 
@@ -18,11 +17,14 @@ const CWD = process.cwd()
 const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
 const { resolveCwdTsProject } = require('../core/ts-apis/compilerOptions')
 
-const runProgram = (fileNames, compilerOptions, cmdLineOptions) => {
-    const parsedTsConfig = resolveCwdTsProject(compilerOptions.project, { compilerHost: createCompilerHost(compilerOptions), cwd: CWD })
+const runProgram = (fileNames, compilerOptions) => {
+    const parsedTsConfig = resolveCwdTsProject(compilerOptions.project, {
+        compilerHost: createCompilerHost(compilerOptions),
+        files: fileNames,
+        cwd: CWD
+    })
     if (parsedTsConfig.errors.length)
-        // TODO: test it
-        throw new Error(parsedTsConfig.errors[0])
+        throw new Error(parsedTsConfig.errors[0].messageText)
 
     const program = createProgram(fileNames, {
         "noEmitOnError": true,
