@@ -12,12 +12,12 @@ const { chDirAndDo } = require('../utils')
 const cmd = process.execPath
 const ftsc = path.resolve(PKG_ROOT, './bin/ftsc.js')
 
-describe.only('./node_modules/.bin/ftsc', () => {
+describe('./node_modules/.bin/ftsc', () => {
     it("emit declaration", () => {
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.dts.dir'))
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.js.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration/output.dts.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration/output.js.dir'))
 
-        chDirAndDo(path.resolve(UnitTestDir, './emit-declartion'), () => {
+        chDirAndDo(path.resolve(UnitTestDir, './emit-declaration'), () => {
             const pcode = process.run(cmd,  [
                 ftsc,
                 './ts.dir/*',
@@ -31,20 +31,20 @@ describe.only('./node_modules/.bin/ftsc', () => {
             assert.equal(pcode, 0)
 
             assert.ok(
-                fs.exists(path.resolve(UnitTestDir, './emit-declartion/output.js.dir/index.js'))
+                fs.exists(path.resolve(UnitTestDir, './emit-declaration/output.js.dir/index.js'))
             )
 
             assert.ok(
-                fs.exists(path.resolve(UnitTestDir, './emit-declartion/output.dts.dir/index.d.ts'))
+                fs.exists(path.resolve(UnitTestDir, './emit-declaration/output.dts.dir/index.d.ts'))
             )
         })
     });
 
     it("emit declaration only", () => {
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir'))
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration-only/output.dts.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration-only/output.js.dir'))
 
-        chDirAndDo(path.resolve(UnitTestDir, './emit-declartion-only'), () => {
+        chDirAndDo(path.resolve(UnitTestDir, './emit-declaration-only'), () => {
             const pcode = process.run(cmd,  [
                 ftsc,
                 './ts.dir/*',
@@ -57,11 +57,11 @@ describe.only('./node_modules/.bin/ftsc', () => {
             assert.equal(pcode, 0)
     
             assert.isFalse(
-                fs.exists(path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir/index.js'))
+                fs.exists(path.resolve(UnitTestDir, './emit-declaration-only/output.js.dir/index.js'))
             )
     
             assert.ok(
-                fs.exists(path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir/index.d.ts'))
+                fs.exists(path.resolve(UnitTestDir, './emit-declaration-only/output.dts.dir/index.d.ts'))
             )
         })
     });

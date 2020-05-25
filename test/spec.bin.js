@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 
 const cmd = process.execPath
+const fibTypify = path.join(__dirname, '../bin', 'fib-typify.js')
 
 const argFlags = require('../bin/utils/arg_flags')
 const errCode = require('../bin/utils/err_code')
@@ -15,7 +16,7 @@ const { readSubProcessLine } = require('./utils')
 describe('fib-typify', () => {
     it('empty args', () => {
         const sproc = process.open(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js')
+            fibTypify
         ])
 
         assert.equal( readSubProcessLine(sproc), errCode["noArg:output"] )
@@ -25,7 +26,7 @@ describe('fib-typify', () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
         process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js'),
+            fibTypify,
             inputsrc,
             '-o',
             outputdist
@@ -45,7 +46,7 @@ describe('fib-typify', () => {
         const outputdist = path.resolve(__dirname, '../', './test/ts/basic.js')
 
         process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js'),
+            fibTypify,
             inputsrc,
             '--out'
         ], {
@@ -63,7 +64,7 @@ describe('fib-typify', () => {
         const outputdist = path.resolve(__dirname, '../', './test/ts_files/basic.js')
 
         process.run(cmd, [
-            path.join(__dirname, '../bin', 'fib-typify.js'),
+            fibTypify,
             inputsrc,
             '--out'
         ], {
@@ -90,7 +91,7 @@ describe('fib-typify', () => {
 
         it('relative path: non-index.ts', () => {
             let sproc = process.open(cmd, [
-                path.join(__dirname, '../bin', 'fib-typify.js'),
+                fibTypify,
                 isSupportSetModuleCompiler() ? './entry-point/test' : './entry-point/test.ts',
             ], {
                 env: {
@@ -103,7 +104,7 @@ describe('fib-typify', () => {
 
         it('relative path: directory entry', () => {
             let sproc = process.open(cmd, [
-                path.join(__dirname, '../bin', 'fib-typify.js'),
+                fibTypify,
                 isSupportSetModuleCompiler() ? './entry-point' : './entry-point/index-old.ts',
             ], {
                 env: {

@@ -50,12 +50,12 @@ describe('ts simple compile single entry', () => {
     });
 
     it("emit declaration", () => {
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.dts.dir'))
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion/output.js.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration/output.dts.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration/output.js.dir'))
 
         const emitResult = simpleCompile(
             [
-                path.resolve(UnitTestDir, './emit-declartion/ts.dir/index.ts')
+                path.resolve(UnitTestDir, './emit-declaration/ts.dir/index.ts')
             ],
             {
                 noEmitOnError: true,
@@ -63,17 +63,17 @@ describe('ts simple compile single entry', () => {
                 target: ts.ScriptTarget.ES6,
                 module: ts.ModuleKind.CommonJS,
                 declaration: true,
-                declarationDir: path.resolve(UnitTestDir, './emit-declartion/output.dts.dir/'),
-                outDir: path.resolve(UnitTestDir, './emit-declartion/output.js.dir/'),
+                declarationDir: path.resolve(UnitTestDir, './emit-declaration/output.dts.dir/'),
+                outDir: path.resolve(UnitTestDir, './emit-declaration/output.js.dir/'),
             }
         )
 
         assert.ok(
-            fs.exists(path.resolve(UnitTestDir, './emit-declartion/output.js.dir/index.js'))
+            fs.exists(path.resolve(UnitTestDir, './emit-declaration/output.js.dir/index.js'))
         )
 
         assert.ok(
-            fs.exists(path.resolve(UnitTestDir, './emit-declartion/output.dts.dir/index.d.ts'))
+            fs.exists(path.resolve(UnitTestDir, './emit-declaration/output.dts.dir/index.d.ts'))
         )
 
         assert.isFalse(emitResult.emitSkipped)
@@ -81,12 +81,12 @@ describe('ts simple compile single entry', () => {
     });
 
     it("emit declaration only", () => {
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir'))
-        rmdirr(path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration-only/output.dts.dir'))
+        rmdirr(path.resolve(UnitTestDir, './emit-declaration-only/output.js.dir'))
 
         const emitResult = simpleCompile(
             [
-                path.resolve(UnitTestDir, './emit-declartion-only/ts.dir/index.ts')
+                path.resolve(UnitTestDir, './emit-declaration-only/ts.dir/index.ts')
             ],
             {
                 noEmitOnError: true,
@@ -95,17 +95,17 @@ describe('ts simple compile single entry', () => {
                 module: ts.ModuleKind.CommonJS,
                 emitDeclarationOnly: true,
                 declaration: true,
-                declarationDir: path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir/'),
-                outDir: path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir/'),
+                declarationDir: path.resolve(UnitTestDir, './emit-declaration-only/output.dts.dir/'),
+                outDir: path.resolve(UnitTestDir, './emit-declaration-only/output.js.dir/'),
             }
         )
 
         assert.isFalse(
-            fs.exists(path.resolve(UnitTestDir, './emit-declartion-only/output.js.dir/index.js'))
+            fs.exists(path.resolve(UnitTestDir, './emit-declaration-only/output.js.dir/index.js'))
         )
 
         assert.ok(
-            fs.exists(path.resolve(UnitTestDir, './emit-declartion-only/output.dts.dir/index.d.ts'))
+            fs.exists(path.resolve(UnitTestDir, './emit-declaration-only/output.dts.dir/index.d.ts'))
         )
 
         assert.isFalse(emitResult.emitSkipped)
