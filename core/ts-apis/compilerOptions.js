@@ -27,6 +27,10 @@ const getParseConfigHost = exports.getParseConfigHost = (compilerHost, cwd) => {
 }
 
 exports.resolveCwdTsProject = function (projectName = 'tsconfig.json', {
+    /**
+     * @why for ts 3.9, files/inputs are required.
+     */
+    files = [],
     compilerHost,
     cwd = process.cwd(),
 }) {
@@ -40,10 +44,10 @@ exports.resolveCwdTsProject = function (projectName = 'tsconfig.json', {
     const configParsedResult = ts.parseConfigFileTextToJson(projectName, tsconfigContent)
     
     if (configParsedResult.error)
-        throw new Error(configParsedResult.error)
+        throw new Error(configParsedResult.error.messageText)
 
     const inputTSConfig = configParsedResult.config
-    // inputTSConfig.files = fileNames
+    inputTSConfig.files = files
 
     // TODO: learn about ts.ParsedTsConfig, why its real value is augument of its declartion(in types)
     const parsedTSConfig = ts.parseJsonConfigFileContent(

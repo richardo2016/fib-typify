@@ -46,10 +46,13 @@ cli
 
         const CWD = process.cwd()
 
-        const parsedTsConfig = resolveCwdTsProject(options.c, { compilerHost: createCompilerHost(tsCompilerOptions), cwd: CWD })
+        const parsedTsConfig = resolveCwdTsProject(options.c, {
+            compilerHost: createCompilerHost(tsCompilerOptions),
+            files,
+            cwd: CWD
+        })
         if (parsedTsConfig.errors.length)
-            // TODO: test it
-            throw new Error(parsedTsConfig.errors[0])
+            throw new Error(parsedTsConfig.errors[0].messageText)
             
         tsCompilerOptions = parsedTsConfig.options
         
