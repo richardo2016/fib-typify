@@ -7,7 +7,7 @@ const mkdirp = require('@fibjs/mkdirp')
 const { filterCompilerOptions } = require('./ts-apis/compilerOptions')
 const CORE = require('./core')
 
-const { createCompilerHostForSandboxRegister } = require('./vm/sandbox')
+const { getInternalVMTSFilename, createCompilerHostForSandboxRegister } = require('./vm/sandbox')
 const { createProgram } = require('./ts-apis/program')
 
 function time () {
@@ -38,23 +38,7 @@ exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'acti
     return `${CORE.logPrefix}[${domain}:${action}] - [${time()}]  `
 }
 
-
-exports.extendCompilerConfigFromTSConfig = function (origConfig = {}) {
-    let tsConfigFilepath = path.resolve(process.cwd(), 'tsconfig.json')
-
-    if (tsConfigFilepath && fs.exists(tsConfigFilepath) && fs.stat(tsConfigFilepath).isFile()) {
-        let tsConfig = require(tsConfigFilepath) || {}
-        origConfig = util.extend({}, origConfig, tsConfig.compilerOptions)
-    }
-
-    return origConfig
-}
-
 exports.defaultCompilerOptions = require('../tsconfig.dft.json')
-
-exports.getCwdTsCompilerOptions = function () {
-    return exports.extendCompilerConfigFromTSConfig(util.extend({}, exports.defaultCompilerOptions))
-}
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
 
@@ -63,31 +47,26 @@ exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-modu
 exports.registerTsCompiler = (
     sandbox,
     tsCompilerOptions = {},
-    moduleOptions = {},
 ) => {
-    moduleOptions.compilerOptions = util.extend({}, tsCompilerOptions, moduleOptions.compilerOptions)
-
-    filterCompilerOptions(moduleOptions.compilerOptions)
-    const { host, getByFilename } = createCompilerHostForSandboxRegister(tsCompilerOptions)
+    const host = createCompilerHostForSandboxRegister(tsCompilerOptions, sandbox)
 
     ;[
         TS_SUFFIX,
         '.tsx'
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
-            const filename = path.normalize(args.filename)
-            let result = getByFilename(filename)
-            if (!result) {
-                const program = createProgram([ filename ], {
+            const tsFilename = path.normalize(args.filename)
+            const vmtsFilename = getInternalVMTSFilename(tsFilename)
+
+            if (!sandbox.has(vmtsFilename)) {
+                const program = createProgram([ tsFilename ], {
                     ...tsCompilerOptions,
                 }, host)
     
                 program.emit()
-                
-                result = getByFilename(filename)
             }
 
-            return result
+            return sandbox.require(vmtsFilename, __dirname).js
         })
     })
 }

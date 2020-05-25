@@ -1,4 +1,5 @@
 #!/usr/bin/env fibjs
+'use strict';
 
 const path = require('path')
 const util = require('util')
@@ -15,43 +16,21 @@ const cli = require('@fxjs/cli')('ftsc')
 const CWD = process.cwd()
 
 const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
-const { getParseConfigHost } = require('../core/ts-apis/compilerOptions')
+const { resolveCwdTsProject } = require('../core/ts-apis/compilerOptions')
 
 const runProgram = (fileNames, compilerOptions, cmdLineOptions) => {
-    const host = createCompilerHost(compilerOptions)
-
-    let parsedTSConfig
-    // make compilerOptions.project absolute path.
-    compilerOptions.project = fixNonAbsolutePath(compilerOptions.project || 'tsconfig.json', CWD)
-
-    let tsconfigContent = JSON.stringify({})
-    try {
-        tsconfigContent = fs.readTextFile(compilerOptions.project)
-    } catch (error) {}
-
-    const configParsedResult = ts.parseConfigFileTextToJson(compilerOptions.project, tsconfigContent)
-    
-    if (configParsedResult.error)
-        throw new Error(configParsedResult.error)
-
-    inputTSConfig = configParsedResult.config
-    inputTSConfig.files = fileNames
-
-    // TODO: learn about ts.ParsedTsConfig, why its real value is augument of its declartion(in types)
-    parsedTSConfig = ts.parseJsonConfigFileContent(
-        inputTSConfig,
-        /* parseConfigHost */getParseConfigHost(host, CWD),
-        /* basePath */CWD,
-        compilerOptions
-    )
+    const parsedTsConfig = resolveCwdTsProject(compilerOptions.project, { compilerHost: createCompilerHost(compilerOptions), cwd: CWD })
+    if (parsedTsConfig.errors.length)
+        // TODO: test it
+        throw new Error(parsedTsConfig.errors[0])
 
     const program = createProgram(fileNames, {
         "noEmitOnError": true,
         "declaration": false,
         ...compilerOptions,
-        ...parsedTSConfig && parsedTSConfig.options
+        ...parsedTsConfig && parsedTsConfig.options
     })
-
+    
     const emitResult = program.emit();
 
     const allDiagnostics = ts

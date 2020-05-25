@@ -1,4 +1,5 @@
 #!/usr/bin/env fibjs
+'use strict';
 
 const fs = require('fs')
 const path = require('path')
@@ -9,14 +10,15 @@ const pkgJson = require('../package.json')
 const argFlags = require('./utils/arg_flags')
 const errCode = require('./utils/err_code')
 
-const extendCompilerConfigFromTSConfig = require('../core/_utils').extendCompilerConfigFromTSConfig
 const replaceSuffix = require('../core/_utils').replaceSuffix
 
 const { compileDirectoryTo } = require('../core/transpile/fs-directory')
 const { generateLoaderbox } = require('../core/loader-box')
+const { createCompilerHost } = require('../core/ts-apis/program')
+const { resolveCwdTsProject } = require('../core/ts-apis/compilerOptions')
 const defaultCompilerOptions = require('../core/_utils').defaultCompilerOptions
 
-const cli = require('@fxjs/cli')(pkgJson.name)
+const cli = require('@fxjs/cli')('fib-typify')
 
 cli
     .command('[...files]', 'source file')
@@ -24,7 +26,6 @@ cli
         default: path.resolve(process.cwd(), './tsconfig.json')
     })
     .option('-o, --out [target]', 'output target', {})
-    // .command('compile [...compileSource]', 'source files to compile')
     .action(function (files, options) {
         const [srcpath] = files
 
@@ -32,39 +33,47 @@ cli
         const outputExisted = getArgIdxFromArgs(cli.rawArgs, argFlags.output) > -1
 
         let tsCompilerOptions = JSON.parse(JSON.stringify(defaultCompilerOptions))
-        const cwd = process.cwd()
+        if (!tsCompilerOptions.outDir && outputValue) {
+            tsCompilerOptions.outDir = outputValue
+        }
 
-        /* collect params :start */
-        tsCompilerOptions = mergeCompilerConfigFromCustomConfig(options.c, tsCompilerOptions, cwd)
-        tsCompilerOptions = extendCompilerConfigFromTSConfig(tsCompilerOptions)
-        tsCompilerOptions.outDir = tsCompilerOptions.outDir || outputValue
+        if (!tsCompilerOptions.outDir) {
+            tsCompilerOptions.noEmit = true
+            tsCompilerOptions.declaration = false
+            tsCompilerOptions.sourceMap = false
+            tsCompilerOptions.inlineSourceMap = false
+        }
+
+        const CWD = process.cwd()
+
+        const parsedTsConfig = resolveCwdTsProject(options.c, { compilerHost: createCompilerHost(tsCompilerOptions), cwd: CWD })
+        if (parsedTsConfig.errors.length)
+            // TODO: test it
+            throw new Error(parsedTsConfig.errors[0])
+            
+        tsCompilerOptions = parsedTsConfig.options
+        
         is_debug() && console.notice('tsCompilerOptions', tsCompilerOptions);
-        /* collect params :end */
 
         const topTsSandbox = generateLoaderbox(tsCompilerOptions)
         is_debug() && console.notice('tsCompilerOptions.outDir', tsCompilerOptions.outDir)
 
         // finalParams
-        const fP = {
-            cwd,
-            srcpath,
-            entryPoint: resolveExistedEntry(topTsSandbox, srcpath, cwd)
-        }
-        is_debug() && console.notice('finalParams', fP)
+        const entryPoint = resolveExistedEntry(topTsSandbox, srcpath, CWD)
 
         if (outputExisted) {
             // compile mode
-            const baseDir = path.resolve(fP.cwd, fP.srcpath)
-            const distDir = path.resolve(fP.cwd, outputValue || replaceSuffix(fP.srcpath))
+            const baseDir = path.resolve(CWD, srcpath)
+            const distDir = path.resolve(CWD, outputValue || replaceSuffix(srcpath))
 
             if (!fs.exists(baseDir)) {
                 quit(errCode["invalidArg:input"], 1)
             }
 
             compileDirectoryTo(baseDir, distDir, { compilerOptions: tsCompilerOptions })
-        } else if (fP.entryPoint) {
+        } else if (entryPoint) {
             // run mode
-            topTsSandbox.require(fP.entryPoint, __dirname)
+            topTsSandbox.require(entryPoint, __dirname)
         } else
             quit(errCode["noArg:output"], 1)
     })
@@ -85,6 +94,7 @@ function quit (error_msg, code = -1) {
 
 function mergeCompilerConfigFromCustomConfig (configFilePath = null, origConfig = {}, cwd) {
     configFilePath = configFilePath ? path.resolve(cwd, configFilePath) : null
+    console.log('configFilePath', configFilePath);
 
     if (configFilePath && fs.exists(configFilePath)) {
         let config = {}

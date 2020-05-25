@@ -116,6 +116,8 @@ describe('fib-typify', () => {
             assert.equal(readSubProcessLine(sproc), 'I am from entry-point/index.ts')
         })
     })
+
+    require('./bin-typify/spec')
 })
 
 require.main === module && test.run(console.DEBUG)
