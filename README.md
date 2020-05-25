@@ -220,7 +220,13 @@ compile source to **pure javascript** code before publishing.
 
 Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API to build your source code. Get more samples [here](/test/spec.fs-directory.js)
 
-## Contributions
+## Contributors ✨
+
+<!-- <p align="center">
+  <a href="https://github.com/richardo2016/fib-typify/graphs/contributors">
+    <img src="https://contributors-img.web.app/image?repo=richardo2016/fib-typify"></img>
+  </a>
+</p> -->
 
 If you wanna contribute to this package, just learn about [fibjs] first, then fork this repo :)
 
