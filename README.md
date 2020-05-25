@@ -222,18 +222,17 @@ Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API 
 
 ## Contributors ✨
 
-<!-- <p align="center">
-  <a href="https://github.com/richardo2016/fib-typify/graphs/contributors">
-    <img src="https://contributors-img.web.app/image?repo=richardo2016/fib-typify"></img>
-  </a>
-</p> -->
-
 If you wanna contribute to this package, just learn about [fibjs] first, then fork this repo :)
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
+<table>
+  <tr>
+    <td align="center"><a href="http://js.chenlei.me"><img src="https://avatars0.githubusercontent.com/u/6339390?v=4" width="100px;" alt=""/><br /><sub><b>Ray</b></sub></a></td>
+  </tr>
+</table>
+
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
