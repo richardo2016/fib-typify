@@ -75,8 +75,8 @@ You can just pass those options to `ftsc` as arguments(flags), just like what yo
 ftsc ./src/* \ 
     --outDir ./lib \
     --declaration \
-    --declarationDir ./typings
-    --allowJs \
+    --declarationDir ./typings \
+    --allowJs
 ```
 
 #### `fib-typify`(deprecated)
@@ -218,7 +218,7 @@ so it's better to upgrade fibjs to version`>=0.25.0`, best to `>=0.26.0`, which 
 By the way, although I have tested in some cases, but it's not enough to improve "fib-typify's loaderBox can run in production directly". In my own work, I use fib-typify's loaderBox to load all source code when app's in developing stage, but I would
 compile source to **pure javascript** code before publishing.
 
-Just use command `fib-typify ./src -o ./dist`, or use fib-typify's compile* API to build your source code. Get more samples [here](/test/spec.fs-directory.js)
+Just use command  `ftsc ./src/* --outDir ./lib --declaration` to compile your source codes, shipped with all dts files :)
 
 ## Contributors ✨
 
