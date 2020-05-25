@@ -1,8 +1,22 @@
 
-v0.8.2 / 2020-05-25
+v0.8.3 / 2020-05-25
 ==================
 
+  * chore: code clean
+  * fix: fix compilation error on ts@3.9. (#17)
+  * Merge branch 'master' of github.com:richardo2016/fib-typify
+  * chore: delight all contributors.
+  * docs: add richardo2016 as a contributor (#16)
+  * chore: delight contributors section
+  * chore: fixup crash when `outDir` set in runmode.
+  * chore: robust change.
+  * chore: code clean.
+  * chore: update README.md
 
+v0.8.2 / 2020-05-25
+===================
+
+  * Release v0.8.2
 
 v0.8.1 / 2020-05-25
 ===================
