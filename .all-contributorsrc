@@ -24,6 +24,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "yaoqiaofeng",
+      "name": "yaoqiaofeng",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/26225038?v=4",
+      "profile": "https://github.com/yaoqiaofeng",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "projectName": "fib-typify",
