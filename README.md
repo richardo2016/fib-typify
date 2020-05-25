@@ -230,6 +230,7 @@ If you wanna contribute to this package, just learn about [fibjs] first, then fo
 <table>
   <tr>
     <td align="center"><a href="http://js.chenlei.me"><img src="https://avatars0.githubusercontent.com/u/6339390?v=4" width="100px;" alt=""/><br /><sub><b>Ray</b></sub></a></td>
+    <td align="center"><a href="https://github.com/yaoqiaofeng"><img src="https://avatars0.githubusercontent.com/u/26225038?v=4" width="100px;" alt=""/><br /><sub><b>yaoqiaofeng</b></sub></a></td>
   </tr>
 </table>
 
