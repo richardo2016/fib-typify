@@ -37,14 +37,13 @@ exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'acti
 
 exports.defaultCompilerOptions = require('../tsconfig.dft.json').compilerOptions
 
-const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
-const SOURCEMAP_SUFFIX = '.map'
-
 exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-module-hash')()
 
-const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js')
+const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
 
+const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js')
 const LINE_MARKER = '//# sourceMappingURL=';
+
 const saveCacheMap = function (filename, mapContent) {
     const io = require('io')
     const zip = require('zip')
@@ -62,7 +61,8 @@ exports.registerTsCompiler = (
     sandbox,
     tsCompilerOptions = {},
 ) => {
-    if (tsCompilerOptions.inlineSourceMap)
+    const useSourceMap = tsCompilerOptions.inlineSourceMap || tsCompilerOptions.sourceMap
+    if (useSourceMap)
         sandbox.require(SOURCEMAP_RUNTIME_SCRIPT, __dirname)
 
     ;[
@@ -71,7 +71,7 @@ exports.registerTsCompiler = (
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
             const compiledModule = compileCallback(buf, args, {
-                compilerOptions: tsCompilerOptions
+                compilerOptions: {...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
             })
 
             if (tsCompilerOptions.inlineSourceMap) {

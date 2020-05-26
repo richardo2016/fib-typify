@@ -17,27 +17,27 @@ describe('error emitted by fib-typify correctly', () => {
                 '123',
             ],
             [
-                `error missing in coroutine.js(but still it was output)`,
+                `error missing in coroutine.js(but it would be output)`,
                 './source-map/coroutine.js',
                 false
             ],
             [
-                `error missing in coroutine-by-arg.ts(but still it was output)`,
+                `error missing in coroutine-by-arg.ts(but it would be output)`,
                 './source-map/coroutine-by-arg.ts',
                 false
             ],
             [
-                `error missing in coroutine.ts(but still it was output)`,
+                `error missing in coroutine.ts(but it would be output)`,
                 './source-map/coroutine.ts',
                 false
             ],
             [
-                `error emitted in set-timeout(but still it was output)`,
+                `error emitted in set-timeout(but it would be output)`,
                 './source-map/set-timeout.ts',
                 false
             ],
             [
-                `error emitted in set-timeout.js(but still it was output)`,
+                `error emitted in set-timeout.js(but it would be output)`,
                 './source-map/set-timeout.js',
                 false
             ]

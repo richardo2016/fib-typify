@@ -1,5 +1,9 @@
-const { getModuleTranspilor } = require('../ts-apis/transpilor')
+const ts = require('typescript')
 
-exports.compileModule = function (tsRaw = '', options) {
-    return getModuleTranspilor(options)(tsRaw)
+const { getCompilerOptions } = require('../ts-apis/transpilor')
+
+exports.compileModule = function (tsRaw = '', moduleOptions) {
+    moduleOptions.compilerOptions = getCompilerOptions(moduleOptions.compilerOptions)
+
+    return ts.transpileModule(tsRaw, moduleOptions)
 }

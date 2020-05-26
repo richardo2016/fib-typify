@@ -18,12 +18,10 @@ sourceMapSupport.install({
         if (filename.lastIndexOf('.ts') < 0)	
             return null	
 
-        // let mapFilename = filename + '.map'	
         try {	
             return getCacheSourceMap(filename)	
-            // return require(mapFilename, __dirname)	
         } catch (e) {	
-            console.warn(`retrieveFile ${filename} failed, view error detail to help.`)	
+            console.warn(`[retrieveFile] retrieve sourcemap for ${filename} failed, view error detail to help.`)	
             console.error(e.stack)	
         }	
     }	
