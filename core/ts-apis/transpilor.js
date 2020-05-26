@@ -7,7 +7,7 @@ const ts = require('typescript')
  */
 const { getDefaultCompilerOptions } = require('./compilerOptions')
 
-function _getOptions(options, locals) {
+const getCompilerOptions = exports.getCompilerOptions = function getCompilerOptions(options, locals) {
     return ({
         ...getDefaultCompilerOptions(),
         ...options,
@@ -17,14 +17,6 @@ function _getOptions(options, locals) {
 
 exports.getTranspilor = function (compilerOptions, fileName, diagnostics, moduleName) {
     return (input, locals) => {
-        return ts.transpile(input, _getOptions(compilerOptions, locals), fileName, diagnostics, moduleName)
-    }
-}
-
-exports.getModuleTranspilor = function (moduleOptions) {
-    return (input, locals) => {
-        moduleOptions.compilerOptions = _getOptions(moduleOptions.compilerOptions, locals)
-
-        return ts.transpileModule(input, moduleOptions)
+        return ts.transpile(input, getCompilerOptions(compilerOptions, locals), fileName, diagnostics, moduleName)
     }
 }

@@ -79,7 +79,7 @@ export class ChainLoader {
         if (typeof set_loader === 'function')
             set_loader(this)
 
-        registerTsCompiler(this._sandbox, null, this._moduleOptions)
+        registerTsCompiler(this._sandbox, undefined, this._moduleOptions)
 
         return this.sandbox()
     }
