@@ -1,7 +1,15 @@
 
-v0.8.3 / 2020-05-25
+v0.8.4 / 2020-05-26
 ==================
 
+  * chore: recover old implementation for `registerTsCompiler` (#19)
+  * docs: add yaoqiaofeng as a contributor (#18)
+  * chore: update README.md
+
+v0.8.3 / 2020-05-25
+===================
+
+  * Release v0.8.3
   * chore: code clean
   * fix: fix compilation error on ts@3.9. (#17)
   * Merge branch 'master' of github.com:richardo2016/fib-typify
