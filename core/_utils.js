@@ -1,13 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const util = require('util')
 
 const mkdirp = require('@fibjs/mkdirp')
 
 const CORE = require('./core')
 
-const { getInternalVMTSFilename, createCompilerHostForSandboxRegister } = require('./vm/sandbox')
-const { createProgram } = require('./ts-apis/program')
+const { compileModule } = require('./transpile/module')
 
 function time () {
     return new Date()
@@ -40,32 +38,50 @@ exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'acti
 exports.defaultCompilerOptions = require('../tsconfig.dft.json').compilerOptions
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
+const SOURCEMAP_SUFFIX = '.map'
 
 exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-module-hash')()
+
+const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js')
+
+const LINE_MARKER = '//# sourceMappingURL=';
+const saveCacheMap = function (filename, mapContent) {
+    const io = require('io')
+    const zip = require('zip')
+
+    const stream = new io.MemoryStream();
+    const zipfile = zip.open(stream, "w");
+    zipfile.write(new Buffer(mapContent), 'index.map');
+    zipfile.close();
+
+    stream.rewind();
+    fs.setZipFS(`${filename}.zip`, stream.readAll());
+}
 
 exports.registerTsCompiler = (
     sandbox,
     tsCompilerOptions = {},
 ) => {
-    const host = createCompilerHostForSandboxRegister(tsCompilerOptions, sandbox)
+    if (tsCompilerOptions.inlineSourceMap)
+        sandbox.require(SOURCEMAP_RUNTIME_SCRIPT, __dirname)
 
     ;[
         TS_SUFFIX,
         '.tsx'
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
-            const tsFilename = path.normalize(args.filename)
-            const vmtsFilename = getInternalVMTSFilename(tsFilename)
+            const compiledModule = compileCallback(buf, args, {
+                compilerOptions: tsCompilerOptions
+            })
 
-            if (!sandbox.has(vmtsFilename)) {
-                const program = createProgram([ tsFilename ], {
-                    ...tsCompilerOptions,
-                }, host)
-    
-                program.emit()
+            if (tsCompilerOptions.inlineSourceMap) {
+                const sourceMapDataURL = compiledModule.outputText.slice(
+                    compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
+                )
+                saveCacheMap(args.filename, LINE_MARKER + sourceMapDataURL)
             }
 
-            return sandbox.require(vmtsFilename, __dirname).js
+            return compiledModule.outputText
         })
     })
 }
@@ -80,6 +96,19 @@ exports.fixTsRaw = function (tsRaw) {
 
     return tsRaw
 }
+
+function compileCallback (buf, args, moduleOptions) {
+    let tsScriptString = buf + ''
+
+     if (!tsScriptString) return undefined
+
+     const compiledModule = compileModule(tsScriptString, {
+         ...moduleOptions,
+         fileName: args.filename,
+         moduleName: args.filename
+     })
+     return compiledModule
+ }
 
 exports.replaceSuffix = function (target = '', {
     to_replace = /.tsx?$/,
