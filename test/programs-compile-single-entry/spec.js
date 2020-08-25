@@ -29,7 +29,11 @@ describe('ts simple compile single entry', () => {
             fs.exists(path.resolve(UnitTestDir, './just-compile/output.dts.dir/index.d.ts'))
         )
 
-        assert.ok(emitResult.emitSkipped)
+        if (ts.version < '4')
+            assert.isTrue(emitResult.emitSkipped)
+        else
+            assert.isFalse(emitResult.emitSkipped)
+
         assert.isUndefined(emitResult.emittedFiles)
     });
 
