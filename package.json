@@ -54,7 +54,7 @@
 	},
 	"devDependencies": {
 		"@fibjs/ci": "^2.3.0",
-		"@fibjs/types": "^0.28.0",
+		"@fibjs/types": "^0.31.0",
 		"react": "^16.9.0"
 	},
 	"engines": {

@@ -5,6 +5,9 @@
         "moduleResolution": "node",
         "alwaysStrict": true,
         "allowJs": true,
-        "jsx": "react"
+        "jsx": "react",
+        "types": [
+            "@fibjs/types"
+        ]
     }
 }

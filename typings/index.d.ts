@@ -15,11 +15,16 @@ interface LoaderSandbox extends Class_SandBox {
 interface SetLoaderCallback {
     (loader: ChainLoader): void;
 }
+interface SandBoxInitialConfig {
+    modules: object;
+    fallback: Function;
+    global: object;
+}
 export declare class ChainLoader {
     private _sandbox;
     private _moduleOptions;
-    constructor(moduleOptions?: any, sandboxOptions?: any);
-    setModuleOptions(_moduleOptions: any): void;
+    constructor(moduleOptions?: ts.CompilerOptions, sandboxOptions?: SandBoxInitialConfig);
+    setModuleOptions(_moduleOptions: ts.CompilerOptions): void;
     sandbox(): LoaderSandbox;
     sandbox(box: Class_SandBox | LoaderSandbox, func?: SetLoaderCallback): LoaderSandbox;
     sandbox(mods: object, require: Function, global: object, func?: SetLoaderCallback): LoaderSandbox;

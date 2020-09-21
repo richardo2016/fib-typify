@@ -36,18 +36,26 @@ interface LoaderSandbox extends Class_SandBox {
 interface SetLoaderCallback {
     (loader: ChainLoader): void
 }
+interface SandBoxInitialConfig {
+    modules: object
+    fallback: Function
+    global: object
+}
 
 export class ChainLoader {
     private _sandbox: ChainLoader
-    private _moduleOptions: any
+    private _moduleOptions: ts.CompilerOptions
 
-    constructor(moduleOptions?, sandboxOptions?) {
-        this._moduleOptions = this.setModuleOptions(moduleOptions);
+    constructor(
+        moduleOptions: ts.CompilerOptions = {},
+        sandboxOptions?: SandBoxInitialConfig
+    ) {
+        this.setModuleOptions(moduleOptions);
 
         sandboxOptions && typeof sandboxOptions === 'object' && this.sandbox(sandboxOptions['modules'], sandboxOptions['fallback'], sandboxOptions['global'])
     }
 
-    setModuleOptions (_moduleOptions) {
+    setModuleOptions (_moduleOptions: ts.CompilerOptions) {
         this._moduleOptions = _moduleOptions || {}
     }
 
@@ -102,7 +110,7 @@ export {
     compileFileTo,
     compileFileToSandBox,
     compileDirectoryTo,
-    
+
     loaderBox,
     generateLoaderbox,
 };
