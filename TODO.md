@@ -1,3 +1,7 @@
+## Structures
+
+1. [ ] migrate classical APIs about transpilation/runtime to src/*, rewrite them as '*.ts'
+
 ## Test Cases
 
 1. [ ] error emitted in simple case
