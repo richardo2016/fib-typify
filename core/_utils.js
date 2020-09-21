@@ -3,6 +3,8 @@ const path = require('path')
 
 const mkdirp = require('@fibjs/mkdirp')
 
+const readdirr = require('@fibjs/fs-readdir-recursive')
+
 const CORE = require('./core')
 
 const { compileModule } = require('./transpile/module')
@@ -124,4 +126,15 @@ exports.replaceSuffix = function (target = '', {
 
 exports.fixNonAbsolutePath = function (input, basedir) {
     return path.isAbsolute(input) ? input : path.resolve(basedir, input)
+}
+
+exports.getCwdFilenamesR = function getCwdFilenamesR({
+    cwd = process.cwd(),
+    allowNodeModules = false
+} = {}) {
+    return readdirr(cwd, x => {
+        if (!allowNodeModules && x.startsWith('node_modules')) return false
+
+        if (x[0] !== '.') return true
+    })
 }

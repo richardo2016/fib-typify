@@ -6,7 +6,6 @@ const path = require('path')
 const fs = require('fs')
 
 const ts = require('typescript')
-const readdirr = require('@fibjs/fs-readdir-recursive')
 const mm = require('micromatch')
 
 const pkgJson = require('../package.json')
@@ -14,57 +13,9 @@ const cli = require('@fxjs/cli')('ftsc')
 
 const CWD = process.cwd()
 
-const { createProgram, createCompilerHost } = require('../core/ts-apis/program')
-const { resolveCwdTsProject } = require('../core/ts-apis/compilerOptions')
-
-const runProgram = (fileNames, compilerOptions) => {
-    const parsedTsConfig = resolveCwdTsProject(compilerOptions.project, {
-        compilerHost: createCompilerHost(compilerOptions),
-        files: fileNames,
-        cwd: CWD
-    })
-    if (parsedTsConfig.errors.length)
-        throw new Error(parsedTsConfig.errors[0].messageText)
-
-    const program = createProgram(fileNames, {
-        "noEmitOnError": true,
-        "declaration": false,
-        ...compilerOptions,
-        ...parsedTsConfig && parsedTsConfig.options
-    })
-    
-    const emitResult = program.emit();
-
-    const allDiagnostics = ts
-        .getPreEmitDiagnostics(program)
-        .concat(emitResult.diagnostics);
-
-    allDiagnostics.forEach(diagnostic => {
-        if (diagnostic.file) {
-            const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-            const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
-            console.error(`${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
-        } else {
-            console.error(ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"));
-        }
-    });
-
-    process.exit(emitResult.emitSkipped ? 1 : 0)
-}
-
-function getCwdFilenamesR({
-    allowNodeModules = false
-} = {}) {
-    return readdirr(CWD, x => {
-        if (!allowNodeModules && x.startsWith('node_modules')) return false
-
-        if (x[0] !== '.') return true
-    })
-}
-
-function fixNonAbsolutePath(input, basedir) {
-    return path.isAbsolute(input) ? input : path.resolve(basedir, input)
-}
+const { runProgram } = require('../core/ts-apis/program');
+const { formatAndPrintDiagnostic } = require('../core/ts-apis/diagnostic');
+const { getCwdFilenamesR, fixNonAbsolutePath } = require('../core/_utils');
 
 const topCmd = cli
     .command('[...files]', 'source files', {
@@ -73,7 +24,7 @@ const topCmd = cli
 
 /**
  * cmd options to be supported in the future.
- * 
+ *
  * - [ ] ts.optionsForWatch
  * - [x] ts.optionDeclarations
  * - [ ] ts.transpileOptionValueCompilerOptions
@@ -113,14 +64,67 @@ topCmd
             // if files empty, try to find all files with expected extentensions in CURRENT DIRECTORY
             files = mm(getCwdFilenamesR(), ['*.ts', '*.tsx'])
         }
-        
+
         const parsedCommandLine = ts.parseCommandLine(process.argv.slice(2), fname => fs.readTextFile(fname))
         if (parsedCommandLine.errors.length)
             throw new Error(parsedCommandLine.errors[0].messageText)
 
-        runProgram(files, parsedCommandLine.options, cmdLineOptions)
+        runProgram(files, parsedCommandLine.options, {
+            cmdLineOptions,
+            cwd: CWD
+        })
     })
 
+const watchCmd = cli
+    .command('watch [...rootFiles]', 'run ftsc in watch mode', {
+        allowUnknownOptions: true
+    })
+
+watchCmd
+    .action(function (rootFiles, _) {
+        const { watch } = require('../lib/internal');
+
+        let workDir = rootFiles && rootFiles[0] || './';
+        workDir = fixNonAbsolutePath(workDir, process.cwd());
+
+        if (
+            !fs.exists(workDir)
+            || !fs.stat(workDir).isDirectory()
+        ) {
+            throw new Error(`you should provide one valid directory, but '${workDir}' is not one directory!`)
+        }
+
+        const files = mm(
+            getCwdFilenamesR({ cwd: workDir }),
+            ['**/*.ts', '**/*.tsx']
+        )
+            .map(x => path.join(workDir, x))
+
+        if (!files.length) {
+            throw new Error(`no any .ts(x) found in '${workDir}' and its sub directories`)
+        }
+
+        const tscfgpath = path.join(workDir, 'tsconfig.json');
+        const tsConfigWrapper = ts.readConfigFile(tscfgpath, ts.sys.readFile);
+
+        if (tsConfigWrapper.error) {
+            formatAndPrintDiagnostic(tsConfig.error);
+            process.exit(-1);
+        }
+
+        console.log(`try to watch... \n`)
+        watch(
+            files,
+            {
+                module: ts.ModuleKind.CommonJS,
+                rootDir: workDir,
+                ...tsConfigWrapper.config.compilerOptions,
+            },
+            workDir
+        );
+
+        console.log(`started watching directory: ${workDir}! \n`)
+    })
 
 cli.help()
 cli.version(pkgJson.version)

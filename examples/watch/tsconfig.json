@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.dft.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "allowJs": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "declaration": true,
+        "declarationDir": "typings"
+    }
+}
