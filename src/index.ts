@@ -42,6 +42,14 @@ interface SandBoxInitialConfig {
     global: object
 }
 
+type IClazzConstructorParams<T> = T extends {
+    new (...args: infer U): any
+} ? U : (
+T extends {
+    new (...args: infer U): any
+} ? U : never
+)
+
 export class ChainLoader {
     private _sandbox: ChainLoader
     private _moduleOptions: ts.CompilerOptions
@@ -115,7 +123,7 @@ export {
     generateLoaderbox,
 };
 
-export function loader(...args: any[]): ChainLoader {
+export function loader(...args: IClazzConstructorParams<typeof ChainLoader>): ChainLoader {
     const loader = new ChainLoader(args[0], args[1])
     return loader
 }
