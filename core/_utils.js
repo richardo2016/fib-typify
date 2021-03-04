@@ -64,6 +64,8 @@ exports.registerTsCompiler = (
     tsCompilerOptions = {},
 ) => {
     const useSourceMap = tsCompilerOptions.inlineSourceMap || tsCompilerOptions.sourceMap
+    const inlineSourceMap = tsCompilerOptions.inlineSourceMap;
+
     if (useSourceMap)
         sandbox.require(SOURCEMAP_RUNTIME_SCRIPT, __dirname)
 
@@ -76,7 +78,7 @@ exports.registerTsCompiler = (
                 compilerOptions: {...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
             })
 
-            if (tsCompilerOptions.inlineSourceMap) {
+            if (inlineSourceMap) {
                 const sourceMapDataURL = compiledModule.outputText.slice(
                     compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
                 )

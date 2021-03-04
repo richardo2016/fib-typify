@@ -52,10 +52,12 @@ T extends {
 
 export class ChainLoader {
     private _sandbox: ChainLoader
-    private _moduleOptions: ts.CompilerOptions
+    private _moduleOptions: {
+        compilerOptions?: ts.CompilerOptions
+    }
 
     constructor(
-        moduleOptions: ts.CompilerOptions = {},
+        moduleOptions: ChainLoader['_moduleOptions'] = {},
         sandboxOptions?: SandBoxInitialConfig
     ) {
         this.setModuleOptions(moduleOptions);
@@ -63,7 +65,7 @@ export class ChainLoader {
         sandboxOptions && typeof sandboxOptions === 'object' && this.sandbox(sandboxOptions['modules'], sandboxOptions['fallback'], sandboxOptions['global'])
     }
 
-    setModuleOptions (_moduleOptions: ts.CompilerOptions) {
+    setModuleOptions (_moduleOptions: ChainLoader['_moduleOptions']) {
         this._moduleOptions = _moduleOptions || {}
     }
 
@@ -95,7 +97,7 @@ export class ChainLoader {
         if (typeof set_loader === 'function')
             set_loader(this)
 
-        registerTsCompiler(this._sandbox, undefined, this._moduleOptions)
+        registerTsCompiler(this._sandbox, this._moduleOptions?.compilerOptions)
 
         return this.sandbox()
     }

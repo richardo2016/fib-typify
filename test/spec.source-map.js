@@ -74,6 +74,9 @@ describe('error emitted by fib-typify correctly', () => {
                     assert.isTrue(e.stack.includes(
                         target_path
                     ))
+
+                    console.notice(`test lineNumber and columnNumber on stack:`)
+                    console.notice(e.stack)
                     assert.isTrue(e.stack.includes(
                         `at ${target_path}:${lineNumber}:${columnNumber}`
                     ))
@@ -86,14 +89,13 @@ describe('error emitted by fib-typify correctly', () => {
                 }
             }
 
-
             it(purpose, () => {
                 test_item()
             })
         })
     }
 
-    describe('by top-level api genereateLoaderBox', () => {
+    describe('by top-level api generateLoaderbox', () => {
         const vbox = Typify.generateLoaderbox({
             inlineSourceMap: true
         })
