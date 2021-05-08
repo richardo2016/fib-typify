@@ -11,21 +11,19 @@ const argFlags = require('../bin/utils/arg_flags')
 const errCode = require('../bin/utils/err_code')
 
 const { isSupportSetModuleCompiler } = require('../core/compat')
-const { readSubProcessLine } = require('./utils')
+const { openProcess, runProcess } = require('./utils')
 
 describe('fib-typify', () => {
     it('empty args', () => {
-        const sproc = process.open(cmd, [
+        assert.equal(openProcess(cmd, [
             fibTypify
-        ])
-
-        assert.equal( readSubProcessLine(sproc), errCode["noArg:output"] )
+        ]).stderr.readLine(), errCode["noArg:output"])
     })
 
     it(`check ${argFlags.output.join(', ')}`, () => {
         const inputsrc = './test/ts'
         const outputdist = './test/dist/process_output'
-        process.run(cmd, [
+        runProcess(cmd, [
             fibTypify,
             inputsrc,
             '-o',
@@ -45,7 +43,7 @@ describe('fib-typify', () => {
         const inputsrc = './test/ts/basic.ts'
         const outputdist = path.resolve(__dirname, '../', './test/ts/basic.js')
 
-        process.run(cmd, [
+        runProcess(cmd, [
             fibTypify,
             inputsrc,
             '--out'
@@ -63,7 +61,7 @@ describe('fib-typify', () => {
         const inputsrc = './test/ts_files/basic.ts'
         const outputdist = path.resolve(__dirname, '../', './test/ts_files/basic.js')
 
-        process.run(cmd, [
+        runProcess(cmd, [
             fibTypify,
             inputsrc,
             '--out'
@@ -90,7 +88,7 @@ describe('fib-typify', () => {
         })
 
         it('relative path: non-index.ts', () => {
-            let sproc = process.open(cmd, [
+            let { stdout } = openProcess(cmd, [
                 fibTypify,
                 isSupportSetModuleCompiler() ? './entry-point/test' : './entry-point/test.ts',
             ], {
@@ -99,11 +97,11 @@ describe('fib-typify', () => {
                 }
             })
 
-            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/test.ts')
+            assert.equal(stdout.readLine(), 'I am from entry-point/test.ts')
         })
 
         it('relative path: directory entry', () => {
-            let sproc = process.open(cmd, [
+            let { stdout } = openProcess(cmd, [
                 fibTypify,
                 isSupportSetModuleCompiler() ? './entry-point' : './entry-point/index-old.ts',
             ], {
@@ -112,8 +110,8 @@ describe('fib-typify', () => {
                 }
             })
 
-            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/test.ts')
-            assert.equal(readSubProcessLine(sproc), 'I am from entry-point/index.ts')
+            assert.equal(stdout.readLine(), 'I am from entry-point/test.ts')
+            assert.equal(stdout.readLine(), 'I am from entry-point/index.ts')
         })
     })
 

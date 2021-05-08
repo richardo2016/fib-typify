@@ -39,18 +39,14 @@
 		"@fxjs/cli": "0.0.2",
 		"micromatch": "^4.0.2",
 		"source-map-support": "^0.5.12",
-		"typescript": "4.0.7"
+		"typescript": "^4.0.7"
 	},
 	"ci": {
 		"type": "travis, appveyor",
 		"version": [
-			"0.26.0",
-			"0.26.1",
-			"0.27.0",
-			"0.28.0",
-			"0.29.0",
-			"0.30.0",
-			"0.31.0"
+			"0.31.0",
+			"0.32.0",
+			"0.32.1"
 		]
 	},
 	"devDependencies": {

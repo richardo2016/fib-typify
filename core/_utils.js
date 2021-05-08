@@ -30,7 +30,12 @@ exports.overwriteFile = (srcpath, distpath) => {
         }
     }
 
-    fs.copy(srcpath, distpath)
+    // old fibjs version
+    if (fs.copy) {
+        fs.copy(srcpath, distpath)
+    } else {
+        fs.copyFile(srcpath, distpath)
+    }
 }
 
 exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'action') {

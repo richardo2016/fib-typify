@@ -7,7 +7,7 @@ const rmdirr = require('@fibjs/rmdirr')
 const UnitTestDir = path.resolve(__dirname, '.')
 const PKG_ROOT = path.resolve(__dirname, '../../')
 
-const { chDirAndDo, readSubProcessLine } = require('../utils')
+const { chDirAndDo, openProcess } = require('../utils')
 
 const cmd = process.execPath
 const fibTypify = path.resolve(PKG_ROOT, './bin/fib-typify.js')
@@ -15,7 +15,7 @@ const fibTypify = path.resolve(PKG_ROOT, './bin/fib-typify.js')
 describe('./node_modules/.bin/fib-typify', () => {
     it("tsconfig1", () => {
         chDirAndDo(path.resolve(UnitTestDir, './tsconfig1'), () => {
-            let sproc = process.open(cmd, [
+            let { stdout } = openProcess(cmd, [
                 fibTypify,
                 './index.ts'
             ], {
@@ -24,13 +24,13 @@ describe('./node_modules/.bin/fib-typify', () => {
                 }
             })
 
-            assert.equal(readSubProcessLine(sproc), 'bar')
+            assert.equal(stdout.readLine(), 'bar')
         })
     });
 
     it("tsconfig2", () => {
         chDirAndDo(path.resolve(UnitTestDir, './tsconfig2'), () => {
-            let sproc = process.open(cmd, [
+            let { stdout } = openProcess(cmd, [
                 fibTypify,
                 './dev.ts'
             ], {
@@ -39,7 +39,7 @@ describe('./node_modules/.bin/fib-typify', () => {
                 }
             })
 
-            assert.equal(readSubProcessLine(sproc), 'tsconfig2')
+            assert.equal(stdout.readLine(), 'tsconfig2')
         })
     });
 });
