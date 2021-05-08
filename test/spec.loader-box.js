@@ -91,6 +91,28 @@ describe('loader', () => {
         assert.equal(badPractice.add(), 'psudo add')
     })
 
+    describe('features 4.1', () => {
+        it("template-literal", () => {
+            Typify.loaderBox.require('./ts_features/4.1/template-literal', __dirname);
+        });
+
+        it("key-remapping", () => {
+            Typify.loaderBox.require('./ts_features/4.1/key-remapping', __dirname);
+        });
+
+        it("recursive-conditional-types", () => {
+            Typify.loaderBox.require('./ts_features/4.1/recursive-conditional-types.ts', __dirname);
+        });
+
+        it("checked-index-access", () => {
+            Typify.loaderBox.require('./ts_features/4.1/checked-index-access.ts', __dirname);
+        });
+
+        it("conditional-spreads-create-optional-properties", () => {
+            Typify.loaderBox.require('./ts_features/4.1/conditional-spreads-create-optional-properties', __dirname);
+        });
+    });
+
     it('loop require', () => {
         if (!fullSupportLoaderBox) {
             const loop1 = Typify.loaderBox.require('./ts_files/loop_require/loop1', __dirname)
