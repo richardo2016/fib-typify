@@ -1,7 +1,16 @@
 
-v0.8.6 / 2021-03-04
+v0.9.0 / 2021-05-08
 ==================
 
+  * feat: upgrade typescript to 4.1.x:
+  * chore: deprecate some top level apis
+  * bugfix: set non-boolean type option as string type for @fxjs/cli
+  * chore: adapt to fibjs >= 0.32.0 only
+
+v0.8.6 / 2021-03-04
+===================
+
+  * Release v0.8.6
   * bugfix: fixup usage of `ChainLoader['_moduleOptions']`
   * feat: lock typescript version at 4.0.x to avoid bad case about tsconfig.
   * feat: type robust change.
