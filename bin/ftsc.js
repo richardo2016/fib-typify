@@ -42,7 +42,8 @@ ts.optionDeclarations.forEach(cmdOptionWithBuild => {
     topCmd.option([
         cmdOptionWithBuild.shortName ? `--${cmdOptionWithBuild.shortName} ` : '',
         `--${cmdOptionWithBuild.name} `,
-        // `[XTS_${cmdOptionWithBuild.name}]`
+        // use as `string` type for '@fxjs/cli' when it's not boolean-type option
+        cmdOptionWithBuild.type === 'boolean' ? '' : `[${cmdOptionWithBuild.name}]`
     ].filter(x => x).join(''), [
         /**
          * @what if cmdOptionWithBuild.type !== 'string' but cmdOptionWithBuild.type is not empty, maybe it's ReturnType<ts.createMapFromTemplate()>
@@ -53,9 +54,6 @@ ts.optionDeclarations.forEach(cmdOptionWithBuild => {
 })
 
 topCmd
-    // .option('--fib:cwd <fib_cwd>', 'just sample option', {
-    //     default: path.resolve(CWD)
-    // })
     .action(function (files, cmdLineOptions) {
         if (files.length) {
             // when files is not empty, use it as glob
@@ -66,6 +64,7 @@ topCmd
         }
 
         const parsedCommandLine = ts.parseCommandLine(process.argv.slice(2), fname => fs.readTextFile(fname))
+
         if (parsedCommandLine.errors.length)
             throw new Error(parsedCommandLine.errors[0].messageText)
 
