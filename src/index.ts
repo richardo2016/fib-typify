@@ -20,7 +20,13 @@ const {
     compileDirectoryTo
 } = require('../core/transpile/fs-directory')
 
+/**
+ * @deprecated
+ */
 const loaderBox = require('../core/loader-box').defaultBox
+/**
+ * @deprecated
+ */
 const generateLoaderbox = require('../core/loader-box').generateLoaderbox
 
 const builtModules = require('../core/_utils').builtModules
@@ -124,7 +130,9 @@ export {
     loaderBox,
     generateLoaderbox,
 };
-
+/**
+ * @deprecated
+ */
 export function loader(...args: IClazzConstructorParams<typeof ChainLoader>): ChainLoader {
     const loader = new ChainLoader(args[0], args[1])
     return loader

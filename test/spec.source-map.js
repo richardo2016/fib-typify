@@ -77,6 +77,7 @@ describe('error emitted by fib-typify correctly', () => {
 
                     console.notice(`test lineNumber and columnNumber on stack:`)
                     console.notice(e.stack)
+
                     assert.isTrue(e.stack.includes(
                         `at ${target_path}:${lineNumber}:${columnNumber}`
                     ))
@@ -102,7 +103,7 @@ describe('error emitted by fib-typify correctly', () => {
         run_test(vbox)
     })
 
-    describe('by top-level ChainLoader.loader(...).sandbox()', () => {
+    describe.skip('by top-level ChainLoader.loader(...).sandbox()', () => {
         // would emit correct stack lineNumber/columnNumber info in sync,
         run_test(
             Typify.loader({
@@ -113,7 +114,7 @@ describe('error emitted by fib-typify correctly', () => {
         )
     })
 
-    describe('by top-level ChainLoader.loader().sandbox()', () => {
+    describe.skip('by top-level ChainLoader.loader().sandbox()', () => {
         // would emit wrong stack lineNumber/columnNumber info
         run_test(
             Typify.loader().sandbox()

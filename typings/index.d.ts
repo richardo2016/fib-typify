@@ -4,7 +4,13 @@ declare const compileModule: any;
 declare const compileRaw: any, compileRawToFile: any, compileRawToSandBox: any;
 declare const compileFile: any, compileFileTo: any, compileFileToSandBox: any;
 declare const compileDirectoryTo: any;
+/**
+ * @deprecated
+ */
 declare const loaderBox: any;
+/**
+ * @deprecated
+ */
 declare const generateLoaderbox: any;
 declare const builtModules: any;
 declare const registerTsCompiler: any;
@@ -37,4 +43,7 @@ export declare class ChainLoader {
 export declare const createCompilerHost: (compilerOptions: ts.CompilerOptions) => ts.ProgramHost<ts.BuilderProgram>;
 export declare const createProgram: (compilerOptions: ts.CompilerOptions, fileNames: string[], host: ts.ProgramHost<ts.BuilderProgram>) => ts.Program;
 export { builtModules, registerTsCompiler, defaultCompilerOptions, compileModule, compileRaw, compileRawToFile, compileRawToSandBox, compileFile, compileFileTo, compileFileToSandBox, compileDirectoryTo, loaderBox, generateLoaderbox, };
+/**
+ * @deprecated
+ */
 export declare function loader(...args: IClazzConstructorParams<typeof ChainLoader>): ChainLoader;
