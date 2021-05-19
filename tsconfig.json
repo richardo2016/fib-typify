@@ -1,3 +1,6 @@
 {
-    "extends": "./tsconfig.dft.json"
+    "extends": "./tsconfig.dft.json",
+    "include": [
+        "./src/*"
+    ]
 }
