@@ -120,6 +120,15 @@ exports.fixTsRaw = function (tsRaw) {
     return tsRaw
 }
 
+/**
+ *
+ * @param {Class_Buffer} buf
+ * @param {{
+ *  filename: string
+ * }} args
+ * @param {import('typescript').TranspileOptions} moduleOptions
+ * @returns
+ */
 function compileCallback (buf, args, moduleOptions) {
     let tsScriptString = buf + ''
 
