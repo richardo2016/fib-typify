@@ -1,7 +1,17 @@
 
-v0.9.0 / 2021-05-08
+v0.10.0 / 2021-10-12
 ==================
 
+  * ci: stop support to fibjs 0.31
+  * feat: support typescript 4.2 (#21)
+  * ci: upgrade ci config.
+  * ci: migrate to github actions.
+  * chore: upgrade deps, fix tsconfig.json
+
+v0.9.0 / 2021-05-08
+===================
+
+  * Release v0.9.0
   * feat: upgrade typescript to 4.1.x:
   * chore: deprecate some top level apis
   * bugfix: set non-boolean type option as string type for @fxjs/cli
