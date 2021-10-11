@@ -51,7 +51,7 @@
 	},
 	"devDependencies": {
 		"@fibjs/ci": "^2.5.0",
-		"@fibjs/types": "^0.32.7",
+		"@fibjs/types": "^0.33.15",
 		"react": "^16.9.0",
 		"ts-expect": "^1.3.0"
 	},
