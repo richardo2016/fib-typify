@@ -1,7 +1,21 @@
 const fs = require('fs')
 const path = require('path')
 
-const mkdirp = require('@fibjs/mkdirp')
+const mkdirp = (target) => {
+    try {
+        if (!fs.exists(target)) {
+            fs.mkdir(target)
+        }
+    } catch (error) {
+        mkdirp(path.dirname(target));
+
+        try {
+            fs.mkdir(target)
+        } catch (error) {}
+    }
+}
+
+exports.mkdirp = mkdirp;
 
 const readdirr = require('@fibjs/fs-readdir-recursive')
 

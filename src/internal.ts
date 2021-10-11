@@ -9,9 +9,7 @@ import path = require('path');
 import * as ts from 'typescript';
 import { createLanguageServiceFromFiles } from './ts/host';
 
-const mkdirp = require('@fibjs/mkdirp')
-
-const { fixNonAbsolutePath } = require('../core/_utils');
+const { fixNonAbsolutePath, mkdirp } = require('../core/_utils');
 const { formatAndPrintDiagnostic } = require('../core/ts-apis/diagnostic');
 
 function isWatchValid() {

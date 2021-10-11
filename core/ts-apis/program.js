@@ -3,7 +3,7 @@ const ts = require('typescript')
 const fs = require('fs')
 const path = require('path')
 
-const mkdirp = require('@fibjs/mkdirp')
+const mkdirp = require('../_utils').mkdirp;
 
 const { resolveCwdTsProject } = require('./compilerOptions')
 

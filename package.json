@@ -34,7 +34,6 @@
 	"dependencies": {
 		"@fibjs/builtin-modules": "^0.1.0",
 		"@fibjs/fs-readdir-recursive": "^1.0.2",
-		"@fibjs/mkdirp": "^1.0.1",
 		"@fibjs/rmdirr": "^2.0.0",
 		"@fxjs/cli": "0.0.2",
 		"micromatch": "^4.0.2",
