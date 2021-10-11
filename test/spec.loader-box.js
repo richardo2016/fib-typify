@@ -92,24 +92,62 @@ describe('loader', () => {
     })
 
     describe('features 4.1', () => {
+        const featureLoader = Typify.generateLoaderbox({
+            strict: true
+        });
+
         it("template-literal", () => {
-            Typify.loaderBox.require('./ts_features/4.1/template-literal', __dirname);
+            featureLoader.require('./ts_features/4.1/template-literal', __dirname);
         });
 
         it("key-remapping", () => {
-            Typify.loaderBox.require('./ts_features/4.1/key-remapping', __dirname);
+            featureLoader.require('./ts_features/4.1/key-remapping', __dirname);
         });
 
         it("recursive-conditional-types", () => {
-            Typify.loaderBox.require('./ts_features/4.1/recursive-conditional-types.ts', __dirname);
+            featureLoader.require('./ts_features/4.1/recursive-conditional-types.ts', __dirname);
         });
 
         it("checked-index-access", () => {
-            Typify.loaderBox.require('./ts_features/4.1/checked-index-access.ts', __dirname);
+            featureLoader.require('./ts_features/4.1/checked-index-access.ts', __dirname);
         });
 
         it("conditional-spreads-create-optional-properties", () => {
-            Typify.loaderBox.require('./ts_features/4.1/conditional-spreads-create-optional-properties', __dirname);
+            featureLoader.require('./ts_features/4.1/conditional-spreads-create-optional-properties', __dirname);
+        });
+    });
+
+    describe('features 4.2', () => {
+        const featureLoader = Typify.generateLoaderbox({
+            strict: true,
+            noEmitOnError: true,
+        });
+
+        it("smart-types", () => {
+            featureLoader.require('./ts_features/4.2/smart-types', __dirname);
+        });
+
+        it("leading-or-middle-rest-elements-in-tuple-types", () => {
+            featureLoader.require('./ts_features/4.2/leading-or-middle-rest-elements-in-tuple-types', __dirname);
+        });
+
+        it("stricter-checks-for-the-in-operator", () => {
+            assert.throws(() => {
+                featureLoader.require('./ts_features/4.2/stricter-checks-for-the-in-operator.error', __dirname);
+            });
+        });
+
+        it("abstract-construct-signatures", () => {
+            // TODO: in fact, loaderbox's `require` use `transpile`.
+            // so we can not detect some type error which never affect transpilation,
+            // if we want to detect those errors, we should use another check mechanism
+            featureLoader.require('./ts_features/4.2/abstract-construct-signatures.error', __dirname);
+        });
+
+        it("relaxed-rules-between-optional-properties-and-string-index-signatures", () => {
+            featureLoader.require('./ts_features/4.2/relaxed-rules-between-optional-properties-and-string-index-signatures', __dirname);
+
+            featureLoader.require('./ts_features/4.2/relaxed-rules-between-optional-properties-and-string-index-signatures.error', __dirname);
         });
     });
 
