@@ -15,6 +15,7 @@
 		"bootstrap": "fibjs ./scripts/bootstrap",
 		"test": "fibjs test/index.js",
 		"ci": "npm run build && npm run test",
+		"ts-intf": "fibjs test/spec.ts-intf.js",
 		"prepublishOnly": "npm run build"
 	},
 	"repository": {
