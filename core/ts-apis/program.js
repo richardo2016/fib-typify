@@ -24,19 +24,28 @@ const createCompilerHost = exports.createCompilerHost = function createCompilerH
     return contents;
   }
 
+  host.directoryExists = (target) => {
+    return fs.existsSync(target) && fs.statSync(target).isDirectory();
+  }
+
+  host.fileExists = (fileName) => {
+    return fs.existsSync(fileName);
+  }
+
   return host;
 }
 
 const createProgram = exports.createProgram = function createProgram(
   fileNames,
   compilerOptions,
-  host = createCompilerHost(compilerOptions)
+  compilerHost = createCompilerHost(compilerOptions)
 ) {
-    return ts.createProgram(
-        fileNames,
-        compilerOptions,
-        host
-    );
+
+  return ts.createProgram({
+    rootNames: fileNames,
+    options: compilerOptions,
+    host: compilerHost
+  });
 }
 
 const runProgram = exports.runProgram = (fileNames, compilerOptions, {
