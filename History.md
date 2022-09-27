@@ -1,7 +1,17 @@
 
-v0.10.0 / 2021-10-12
+v0.11.0 / 2022-09-27
 ==================
 
+  * ci: update support version.
+  * feat: allow user use typescript > 4.3
+  * update ci config
+  * feat: use typescript@4.3 by default, add test about it.
+  * doc: add jsdoc for some functions about compiler.
+
+v0.10.0 / 2021-10-12
+====================
+
+  * Release v0.10.0
   * ci: stop support to fibjs 0.31
   * feat: support typescript 4.2 (#21)
   * ci: upgrade ci config.
