@@ -12,12 +12,25 @@ exports.getDefaultCompilerOptions = () => compilerOptions
 
 /**
  * @description return one ts.ParseConfigHost
+ *
+ * @param {import('typescript').CompilerHost} compilerHost
+ * @param {string} cwd
  */
 const getParseConfigHost = exports.getParseConfigHost = (compilerHost, cwd) => {
     // this API is from typescript, not documented
     return ts.createCachedDirectoryStructureHost(compilerHost, cwd, process.platform !== 'win32')
 }
 
+/**
+ *
+ * @param {string} projectName
+ * @param {{
+ *  compilerHost: import('typescript').CompilerHost
+ *  files?: string[],
+ *  cwd?: string
+ * }} param1
+ * @returns
+ */
 exports.resolveCwdTsProject = function (projectName = 'tsconfig.json', {
     /**
      * @why for ts 3.9, files/inputs are required.
@@ -34,7 +47,7 @@ exports.resolveCwdTsProject = function (projectName = 'tsconfig.json', {
     } catch (error) {}
 
     const configParsedResult = ts.parseConfigFileTextToJson(projectName, tsconfigContent)
-    
+
     if (configParsedResult.error)
         throw new Error(configParsedResult.error.messageText)
 

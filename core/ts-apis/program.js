@@ -12,7 +12,7 @@ const { resolveCwdTsProject } = require('./compilerOptions')
  *
  * We don't need re-implement all compilerHost APIs starting from scratch. Just fixup some error caused by
  * differences of fs-API between fibjs and NodeJS.
- * @param options
+ * @param {import('typescript').CompilerOptions} compilerOptions
  */
 const createCompilerHost = exports.createCompilerHost = function createCompilerHost(compilerOptions) {
   const host = ts.createCompilerHost(compilerOptions);
@@ -35,22 +35,34 @@ const createCompilerHost = exports.createCompilerHost = function createCompilerH
   return host;
 }
 
+/**
+ * @param {import('typescript').CreateProgramOptions['rootNames']} rootNames
+ * @param {import('typescript').CreateProgramOptions['options']} compilerOptions
+ * @param {import('typescript').CreateProgramOptions['host']} compilerHost
+ */
 const createProgram = exports.createProgram = function createProgram(
-  fileNames,
+  rootNames,
   compilerOptions,
   compilerHost = createCompilerHost(compilerOptions)
 ) {
 
   return ts.createProgram({
-    rootNames: fileNames,
+    rootNames: rootNames,
     options: compilerOptions,
     host: compilerHost
   });
 }
 
-const runProgram = exports.runProgram = (fileNames, compilerOptions, {
+/**
+ * @param {string[]} filenames
+ * @param {import('typescript').CompilerOptions} compilerOptions
+ * @param {{
+ *  cwd?: string
+ * }} param2
+ */
+exports.runProgram = function runProgram (fileNames, compilerOptions, {
     cwd = process.cwd()
-} = {}) => {
+} = {}) {
     const parsedTsConfig = resolveCwdTsProject(compilerOptions.project, {
         compilerHost: createCompilerHost(compilerOptions),
         files: fileNames,
