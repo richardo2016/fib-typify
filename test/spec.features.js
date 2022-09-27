@@ -144,7 +144,7 @@ describe('ts versioned features', () => {
             assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
 
             assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
-                "Property 'prop' of type 'boolean' is not assignable to string index type 'string | number'."
+                "(2,12): Property 'prop' of type 'boolean' is not assignable to 'string' index type 'string | number'."
             ));
         });
     });

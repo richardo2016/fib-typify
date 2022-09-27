@@ -16,6 +16,7 @@ describe('ts-intf', () => {
                 'newLine',
                 'useCaseSensitiveFileNames',
                 'write',
+                'getWidthOfTerminal',
                 'writeOutputIsTTY',
                 'readFile',
                 'writeFile',
@@ -62,6 +63,8 @@ describe('ts-intf', () => {
             assert.isBoolean(ts.sys.useCaseSensitiveFileNames);
 
             assert.isFunction(ts.sys.write);
+            assert.isFunction(ts.sys.getWidthOfTerminal);
+
             assert.isFunction(ts.sys.writeOutputIsTTY);
             assert.isFunction(ts.sys.readFile);
             assert.isFunction(ts.sys.writeFile);
@@ -158,6 +161,12 @@ describe('ts-intf', () => {
 
         it.skip('realpath', () => {
         })
+
+        if (process.stdout.isTTY) {
+            it('ts.sys.getWidthOfTerminal', () => {
+                assert.isNumber(ts.sys.getWidthOfTerminal());
+            })
+        }
     });
 })
 
