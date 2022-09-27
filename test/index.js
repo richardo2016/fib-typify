@@ -16,6 +16,7 @@ require('./spec.fs-directory')
 
 require('./spec.bin')
 
+require('./spec.features')
 require('./spec.loader-box')
 
 require('./spec.program')

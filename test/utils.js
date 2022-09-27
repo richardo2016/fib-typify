@@ -1,3 +1,7 @@
+const ts = require('typescript');
+const path = require('path');
+const { tryToCompile } = require('../core/ts-apis/test-program');
+
 exports.runProcess = function (cmd, args = [], opts) {
     if (!process.run) {
 		const child_process = require('child_process')
@@ -57,4 +61,28 @@ exports.chDirAndDo = (target, cb) => {
 
     if (err)
         throw err
+}
+
+const UnitTestDir = path.resolve(__dirname, '.')
+/**
+ *
+ * @param {string | string[]} files
+ * @param {import('typescript').CompilerOptions} tsConfig
+ * @param {string} dirname
+ */
+exports.requireAsCompilation = (files, tsConfig = {}, dirname = UnitTestDir) => {
+    files = (Array.isArray(files) ? files : [files]).map(file => {
+        return path.resolve(dirname, file);
+    });
+    return tryToCompile(
+        files,
+        {
+            noEmit: true,
+            noEmitOnError: true,
+            noImplicitAny: true,
+            target: ts.ScriptTarget.ES6,
+            module: ts.ModuleKind.CommonJS,
+            ...tsConfig,
+        }
+    )
 }
