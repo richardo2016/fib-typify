@@ -6,6 +6,9 @@ const Typify = require('../');
 const { requireAsCompilation } = require('./utils');
 
 describe('ts versioned features', () => {
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html
+     */
     describe('features 4.1', () => {
         const featureLoader = Typify.generateLoaderbox({
             strict: true
@@ -32,6 +35,9 @@ describe('ts versioned features', () => {
         });
     });
 
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-2.html
+     */
     describe('features 4.2', () => {
         const featureLoader = Typify.generateLoaderbox({
             strict: true,
@@ -74,6 +80,9 @@ describe('ts versioned features', () => {
         });
     });
 
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html
+     */
     describe('features 4.3', () => {
         const featureLoader = Typify.generateLoaderbox({
             strict: true,
@@ -145,6 +154,103 @@ describe('ts versioned features', () => {
 
             assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
                 "(2,12): Property 'prop' of type 'boolean' is not assignable to 'string' index type 'string | number'."
+            ));
+        });
+    });
+
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html
+     */
+    describe('4.4', () => {
+        it('Control-Flow-Analysis-of-Aliased-Conditions-and-Discriminants', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Control-Flow-Analysis-of-Aliased-Conditions-and-Discriminants.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Symbol-and-Template-String-Pattern-Index-Signatures', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Symbol-and-Template-String-Pattern-Index-Signatures.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.4/Symbol-and-Template-String-Pattern-Index-Signatures.error.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(8,3): Type 'string' is not assignable to type 'boolean'."
+            ));
+        });
+
+        it('Defaulting-to-the-unknown-Type-in-Catch-Variables', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Defaulting-to-the-unknown-Type-in-Catch-Variables.ts', {
+                useUnknownInCatchVariables: true
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.4/Defaulting-to-the-unknown-Type-in-Catch-Variables.error.ts', {
+                useUnknownInCatchVariables: true
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(11,23): Property 'message' does not exist on type 'unknown'."
+            ));
+        });
+
+        it('Exact-Optional-Property-Types', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Exact-Optional-Property-Types.error.ts', {
+                exactOptionalPropertyTypes: false
+            });
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.4/Exact-Optional-Property-Types.error.ts', {
+                strictNullChecks: true,
+                exactOptionalPropertyTypes: true
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(13,5): Type 'undefined' is not assignable to type 'number'."
+            ));
+        });
+
+        it('static-Blocks-in-Classes', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/static-Blocks-in-Classes.ts', {
+                target: 'es2015'
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Broader-Always-Truthy-Promise-Checks', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Broader-Always-Truthy-Promise-Checks.ts', {
+                strictNullChecks: false,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.4/Broader-Always-Truthy-Promise-Checks.ts', {
+                strictNullChecks: true,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(8,9): This condition will always return true since this 'Promise<boolean>' is always defined."
+            ));
+        });
+
+        it('Abstract-Properties-Do-Not-Allow-Initializers', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.4/Abstract-Properties-Do-Not-Allow-Initializers.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(6,14): Property 'prop' cannot have an initializer because it is marked abstract."
             ));
         });
     });
