@@ -161,7 +161,7 @@ describe('ts versioned features', () => {
     /**
      * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html
      */
-    describe('4.4', () => {
+    describe('features 4.4', () => {
         it('Control-Flow-Analysis-of-Aliased-Conditions-and-Discriminants', () => {
             var emitResult = requireAsCompilation('./ts_features/4.4/Control-Flow-Analysis-of-Aliased-Conditions-and-Discriminants.ts');
 
@@ -213,9 +213,9 @@ describe('ts versioned features', () => {
 
             assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
 
-            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
-                "(13,5): Type 'undefined' is not assignable to type 'number'."
-            ));
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(`(8,7): Type '{ name: string; age: undefined; }' is not assignable to type 'Person' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.`));
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(`Types of property 'age' are incompatible.`));
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(`Type 'undefined' is not assignable to type 'number'.`));
         });
 
         it('static-Blocks-in-Classes', () => {
@@ -253,6 +253,89 @@ describe('ts versioned features', () => {
                 "(6,14): Property 'prop' cannot have an initializer because it is marked abstract."
             ));
         });
+    });
+
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html
+     */
+    describe('features 4.5', () => {
+        it('The-Awaited-Type-and-Promise-Improvements', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/The-Awaited-Type-and-Promise-Improvements.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Template-String-Types-as-Discriminants', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/Template-String-Types-as-Discriminants.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Tail-Recursion-Elimination-on-Conditional-Types', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/Tail-Recursion-Elimination-on-Conditional-Types.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.5/Tail-Recursion-Elimination-on-Conditional-Types.error.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(4,13): Type instantiation is excessively deep and possibly infinite."
+            ));
+
+        });
+
+        it('Disabling-Import-Elision', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/Disabling-Import-Elision.ts', {
+                module: require('typescript').ModuleKind.ES2015,
+                isolatedModules: false,
+                preserveValueImports: true
+            });
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.5/Disabling-Import-Elision.ts', {
+                module: require('typescript').ModuleKind.ES2015,
+                isolatedModules: true,
+                preserveValueImports: true
+            });
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(1,15): 'Animal' is a type and must be imported using a type-only import when 'preserveValueImports' and 'isolatedModules' are both enabled."
+            ));
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+        });
+
+        it('type-Modifiers-on-Import-Names', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/type-Modifiers-on-Import-Names.ts', {
+                module: require('typescript').ModuleKind.ES2015,
+                isolatedModules: true,
+                preserveValueImports: true
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Private-Field-Presence-Checks', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/Private-Field-Presence-Checks.ts', {
+                target: require('typescript').ScriptTarget.ES2015,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Import-Assertions', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.5/Import-Assertions.ts', {
+                resolveJsonModule: true,
+                module: require('typescript').ModuleKind.ESNext,
+                moduleResolution: require('typescript').ModuleResolutionKind.NodeJs,
+                esModuleInterop: true,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
     });
 })
 
