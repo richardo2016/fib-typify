@@ -1,7 +1,13 @@
 
-v0.11.0-rc.1 / 2022-09-29
+v0.11.1 / 2022-09-29
 ==================
 
+  * feat: adapt to typescript 4.5, use this version by default.
+
+v0.11.0-rc.1 / 2022-09-29
+=========================
+
+  * Release v0.11.0-rc.1
   * feat: allow typescript between 4.1 to 4.4
   * test: add test about typescript@4.4.x
   * feat: adapt to typescript to 4.4 and use it by default. (#22)
