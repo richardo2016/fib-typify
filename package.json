@@ -10,6 +10,12 @@
 		"fib-typify": "./bin/fib-typify.js",
 		"typify": "./bin/fib-typify.js"
 	},
+    "files": [
+        "bin",
+        "core",
+        "lib",
+        "typings"
+    ],
 	"scripts": {
 		"build": "fibjs ./bin/ftsc.js src/* -p tsconfig.bootstrap.json --outDir ./lib",
 		"bootstrap": "fibjs ./scripts/bootstrap",
