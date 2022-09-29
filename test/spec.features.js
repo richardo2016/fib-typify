@@ -337,6 +337,60 @@ describe('ts versioned features', () => {
         });
 
     });
+
+
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-6.html
+     */
+     describe('features 4.6', () => {
+        it('Allowing-Code-in-Constructors-Before-super', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Allowing-Code-in-Constructors-Before-super.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        })
+
+        it('Control-Flow-Analysis-for-Destructured-Discriminated-Unions', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Control-Flow-Analysis-for-Destructured-Discriminated-Unions.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        })
+
+        it('Improved-Recursion-Depth-Checks', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Improved-Recursion-Depth-Checks.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                "(6,1): Type 'Foo<Foo<Foo<Foo<Foo<string>>>>>' is not assignable to type 'Foo<Foo<Foo<Foo<Foo<Foo<string>>>>>>'."
+            ));
+        })
+
+        it('Indexed-Access-Inference-Improvements', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Indexed-Access-Inference-Improvements.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        })
+
+        it('Control-Flow-Analysis-for-Dependent-Parameters', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Control-Flow-Analysis-for-Dependent-Parameters.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        })
+
+        it('Object-Rests-Drop-Unspreadable-Members-from-Generic-Objects', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.6/Object-Rests-Drop-Unspreadable-Members-from-Generic-Objects.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 2);
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                `(11,10): Property 'someMethod' does not exist on type 'Omit<T, "someProperty" | "someMethod">'.`
+            ));
+
+            assert.isTrue((emitResult.__typifyAllDiagnostics[1].error + '').includes(
+                `(23,14): Property 'someMethod2' does not exist on type 'Omit<this, "someProperty" | "someMethod2" | "someOtherMethod">'.`
+            ));
+        })
+     });
 })
 
 require.main === module && test.run(console.DEBUG)

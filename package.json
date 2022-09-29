@@ -10,12 +10,12 @@
 		"fib-typify": "./bin/fib-typify.js",
 		"typify": "./bin/fib-typify.js"
 	},
-    "files": [
-        "bin",
-        "core",
-        "lib",
-        "typings"
-    ],
+	"files": [
+		"bin",
+		"core",
+		"lib",
+		"typings"
+	],
 	"scripts": {
 		"build": "fibjs ./bin/ftsc.js src/* -p tsconfig.bootstrap.json --outDir ./lib",
 		"bootstrap": "fibjs ./scripts/bootstrap",
@@ -45,7 +45,7 @@
 		"@fxjs/cli": "0.0.2",
 		"micromatch": "^4.0.2",
 		"source-map-support": "^0.5.12",
-		"typescript": ">= 4.1 <= 4.5"
+		"typescript": ">= 4.1 <= 4.6"
 	},
 	"ci": {
 		"type": "actions",
