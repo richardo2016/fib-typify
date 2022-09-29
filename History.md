@@ -1,7 +1,14 @@
 
-v0.11.1 / 2022-09-29
+v0.11.2 / 2022-09-29
 ==================
 
+  * feat: adapt to typescript 4.6, use this version by default.
+  * chore: specify files to publish.
+
+v0.11.1 / 2022-09-29
+====================
+
+  * Release v0.11.1
   * feat: adapt to typescript 4.5, use this version by default.
 
 v0.11.0-rc.1 / 2022-09-29
