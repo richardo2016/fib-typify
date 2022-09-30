@@ -14,7 +14,9 @@
 		"bin",
 		"core",
 		"lib",
-		"typings"
+		"typings",
+		"tsconfig.dft.json",
+		"tsconfig.json"
 	],
 	"scripts": {
 		"build": "fibjs ./bin/ftsc.js src/* -p tsconfig.bootstrap.json --outDir ./lib",
