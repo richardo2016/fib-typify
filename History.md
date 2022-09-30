@@ -1,7 +1,14 @@
 
-v0.11.2 / 2022-09-29
+v0.11.3 / 2022-10-01
 ==================
 
+  * fix: lack of required tsconfig files
+  * ci: upgrade ci.
+
+v0.11.2 / 2022-09-29
+====================
+
+  * Release v0.11.2
   * feat: adapt to typescript 4.6, use this version by default.
   * chore: specify files to publish.
 
