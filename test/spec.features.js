@@ -341,7 +341,7 @@ describe('ts versioned features', () => {
     /**
      * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-6.html
      */
-     describe('features 4.6', () => {
+    describe('features 4.6', () => {
         it('Allowing-Code-in-Constructors-Before-super', () => {
             var emitResult = requireAsCompilation('./ts_features/4.6/Allowing-Code-in-Constructors-Before-super.ts');
 
@@ -612,6 +612,172 @@ describe('ts versioned features', () => {
 
         // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#type-in-packagejson-and-new-extensions
         it('type-in-package-json-and-New-Extensions', () => {
+        });
+    });
+
+    describe('features 4.8', () => {
+        describe('Improved-Intersection-Reduction--Union-Compatibility--and-Narrowing', () => {
+            it('unknown-assign-to-null-undefined-plainobj', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Intersection-Reduction--Union-Compatibility--and-Narrowing/unknown-assign-to-null-undefined-plainobj', {
+                    strictNullChecks: true,
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('simpler-nonnullable-impl', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Intersection-Reduction--Union-Compatibility--and-Narrowing/simpler-nonnullable-impl', {
+                    strictNullChecks: true,
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('control-flow', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Intersection-Reduction--Union-Compatibility--and-Narrowing/control-flow', {
+                    strictNullChecks: true,
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('generics', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Intersection-Reduction--Union-Compatibility--and-Narrowing/generics', {
+                    strictNullChecks: true,
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+        });
+
+        it('Improved-Inference-for-infer-Types-in-Template-String-Types', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Inference-for-infer-Types-in-Template-String-Types/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Inference-for-infer-Types-in-Template-String-Types/back-matches.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Errors-When-Comparing-Object-and-Array-Literals', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.8/Errors-When-Comparing-Object-and-Array-Literals/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+            assertDiagnostic(diagnostic, [
+                `This condition will always return 'false' since JavaScript compares objects by reference, not value.`,
+            ]);
+        });
+
+        it('Improved-Inference-from-Binding-Patterns', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Inference-from-Binding-Patterns/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.8/Improved-Inference-from-Binding-Patterns/cannot-parse.ts');
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+            assertDiagnostic(diagnostic, [
+                `Type 'unknown' is not an array type.`,
+            ]);
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#file-watching-fixes-especially-across-git-checkouts
+        it('File-Watching-Fixes-Especially-Across-git-checkouts', () => {
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#find-all-references-performance-improvements
+        it('Find-All-References-Performance-Improvements', () => {
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#exclude-specific-files-from-auto-imports
+        it('Exclude-Specific-Files-from-Auto-Imports', () => {
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#correctness-fixes-and-breaking-changes
+        it('Correctness-Fixes-and-Breaking-Changes', () => {
+        });
+
+        describe('Unconstrained-Generics-No-Longer-Assignable-to', () => {
+            it('value', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Unconstrained-Generics-No-Longer-Assignable-to/value.ts', {
+                    strictNullChecks: true
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+                var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+                assertDiagnostic(diagnostic, [
+                    `Argument of type 'T' is not assignable to parameter of type '{}'.`,
+                ]);
+            });
+
+            it('value-correct', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Unconstrained-Generics-No-Longer-Assignable-to/value-correct.ts', {
+                    strictNullChecks: true
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('value-workaround-by-controlflow', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Unconstrained-Generics-No-Longer-Assignable-to/value-workaround-by-controlflow.ts', {
+                    strictNullChecks: true
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('value-workaround-due-to-improved-intersection', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Unconstrained-Generics-No-Longer-Assignable-to/value-workaround-due-to-improved-intersection.ts', {
+                    strictNullChecks: true
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('type', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.8/Unconstrained-Generics-No-Longer-Assignable-to/type.ts', {
+                    strictNullChecks: true
+                });
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+                var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+                assertDiagnostic(diagnostic, [
+                    `Type 'T' does not satisfy the constraint '{}'.`,
+                ]);
+            });
+        });
+
+        // see more details in https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#decorators-are-placed-on-modifiers-on-typescripts-syntax-trees
+        it('Decorators-are-placed-on-modifiers-on-TypeScript-s-Syntax-Trees', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.8/Decorators-are-placed-on-modifiers-on-TypeScript-s-Syntax-Trees/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#decorators-are-placed-on-modifiers-on-typescripts-syntax-trees
+        it('Types-Cannot-Be-Imported/Exported-in-JavaScript-Files', () => {
+            // open file test/ts_features/4.8/Types-Cannot-Be-Imported-Exported-in-JavaScript-Files/index.js
+            // then see the errors in IDE
+        });
+
+        // see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-8.html#binding-patterns-do-not-directly-contribute-to-inference-candidates
+        it('Binding-Patterns-Do-Not-Directly-Contribute-to-Inference-Candidates', () => {
+        });
+
+        it('Unused-Renames-in-Binding-Patterns-are-Now-Errors-in-Type-Signatures', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.8/Unused-Renames-in-Binding-Patterns-are-Now-Errors-in-Type-Signatures/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 2);
+            assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                `'string' is an unused renaming of 'name'. Did you intend to use it as a type annotation?`,
+            ]);
+            assertDiagnostic(emitResult.__typifyAllDiagnostics[1].diagnostic, [
+                `'number' is an unused renaming of 'age'. Did you intend to use it as a type annotation?`,
+            ]);
         });
     });
 })
