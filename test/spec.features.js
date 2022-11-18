@@ -413,9 +413,9 @@ describe('ts versioned features', () => {
             });
 
             assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
-            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.start, 102);
-            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.length, 5);
-            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.messageText, `Property '[key]' has no initializer and is not definitely assigned in the constructor.`);
+            assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                `Property '[key]' has no initializer and is not definitely assigned in the constructor.`,
+            ]);
         });
 
         // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#control-over-module-detection
