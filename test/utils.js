@@ -86,3 +86,30 @@ exports.requireAsCompilation = (files, tsConfig = {}, dirname = UnitTestDir) => 
         }
     )
 }
+
+/**
+ *
+ * @param {import('typescript').Diagnostic} diagnostic
+ * @param {string[]} expecteds
+ */
+exports.assertDiagnostic = (diagnostic, expecteds = []) => {
+    assert.isTrue(expecteds.length >= 1);
+
+    if (typeof diagnostic.messageText === 'string') {
+        assert.equal(diagnostic.messageText, expecteds[0]);
+        return ;
+    }
+
+    var nextOne = diagnostic.messageText;
+    assert.isObject(nextOne);
+
+    expecteds.forEach((message, idx) => {
+        assert.equal(nextOne.messageText, message);
+        if (nextOne.next)
+            nextOne = nextOne.next[0];
+        else {
+            assert.isUndefined(nextOne.next); // no more
+            assert.equal(expecteds.length, idx + 1); // check if all expecteds are checked
+        }
+    });
+};

@@ -3,7 +3,7 @@ test.setup();
 
 const Typify = require('../');
 
-const { requireAsCompilation } = require('./utils');
+const { requireAsCompilation, assertDiagnostic } = require('./utils');
 
 describe('ts versioned features', () => {
     /**
@@ -338,7 +338,6 @@ describe('ts versioned features', () => {
 
     });
 
-
     /**
      * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-6.html
      */
@@ -390,7 +389,231 @@ describe('ts versioned features', () => {
                 `(23,14): Property 'someMethod2' does not exist on type 'Omit<this, "someProperty" | "someMethod2" | "someOtherMethod">'.`
             ));
         })
-     });
+    });
+
+    /**
+     * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html
+     */
+    describe('features 4.7', () => {
+        // see more details in https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#new-file-extensions
+        it('CommonJS-Interoperability', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/CommonJS-Interoperability/foo.cts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Control-Flow-Analysis-for-Bracketed-Element-Access', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/Control-Flow-Analysis-for-Bracketed-Element-Access/sample1.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.7/Control-Flow-Analysis-for-Bracketed-Element-Access/strictPropertyInitialization.ts', {
+                strictNullChecks: true,
+                strictPropertyInitialization: true
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.start, 102);
+            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.length, 5);
+            assert.equal(emitResult.__typifyAllDiagnostics[0].diagnostic.messageText, `Property '[key]' has no initializer and is not definitely assigned in the constructor.`);
+        });
+
+        // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#control-over-module-detection
+        it('Control-over-Module-Detection', () => {
+            var emitResult = requireAsCompilation('./ts_features/empty.ts', {
+                moduleDetection: require('typescript').ModuleDetectionKind.Auto,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('ECMAScript-Module-Support-in-Node.js', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/ECMAScript-Module-Support-in-Node.js.ts', {
+                module: require('typescript').ModuleKind.Node16,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('extends-Constraints-on-infer-Type-Variables', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/extends-Constraints-on-infer-Type-Variables/previous1.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.7/extends-Constraints-on-infer-Type-Variables/previous2.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.7/extends-Constraints-on-infer-Type-Variables/now.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#go-to-source-definition
+        it('Go-to-Source-Definition', () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#group-aware-organize-imports
+        it('Group-Aware-Organize-Imports', () => {
+        });
+
+        it('Improved-Function-Inference-in-Objects-and-Methods', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/Improved-Function-Inference-in-Objects-and-Methods/work.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it('Instantiation-Expressions', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/Instantiation-Expressions.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#object-method-snippet-completions
+        it('Object-Method-Snippet-Completions', () => {
+        });
+
+        describe('Optional-Variance-Annotations-for-Type-Parameters', () => {
+            it('previous', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/previous.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('now-explicit-in-out', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/now-explicit-in-out.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('now-both-in-out', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/now-both-in-out.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('now-out-error1', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/now-out-error1.ts');
+
+                // note there's no error emitted, but in fact there should be, just see red underlines in the file.
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+
+            it('type-check-previous', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/type-check-previous.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+                var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+                assertDiagnostic(diagnostic, [
+                    `Type 'Foo<unknown>' is not assignable to type 'Foo<string>'.`,
+                    `Type 'unknown' is not assignable to type 'string'.`,
+                ]);
+            });
+
+            it('type-check-now', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Optional-Variance-Annotations-for-Type-Parameters/type-check-now.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 2);
+
+                var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+                assertDiagnostic(diagnostic, [
+                    `Type 'Foo<string>' is not assignable to type 'Foo<unknown>'.`,
+                    `Types of property 'f' are incompatible.`,
+                    `Type 'Bar<string>' is not assignable to type 'Bar<unknown>'.`,
+                    `Types of parameters 'x' and 'x' are incompatible.`,
+                    `Type 'Baz<unknown[]>' is not assignable to type 'Baz<string[]>'.`,
+                    `The types of 'value.x' are incompatible between these types.`,
+                    `Type 'unknown[][]' is not assignable to type 'string[][]'.`,
+                ]);
+            });
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#packagejson-exports-imports-and-self-referencing
+        it('package-json-Exports-Imports-and-Self-Referencing', () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#readfile-method-is-no-longer-optional-on-languageservicehost
+        it('readFile-Method-is-No-Longer-Optional-on-LanguageServiceHost', () => {
+        });
+
+        it('Resolution-Customization-with-moduleSuffixes', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/Resolution-Customization-with-moduleSuffixes/index.ts', {
+                moduleSuffixes: ['.ios', ''],
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 00);0
+
+            var emitResult = requireAsCompilation('./ts_features/4.7/Resolution-Customization-with-moduleSuffixes/index.ts', {
+                moduleSuffixes: ['.native', ''],
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        /**
+         * Additionally, in nightly versions of TypeScript, import type can specify an import assertion to achieve something similar.
+         *
+         * @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#resolution-mode
+         */
+        it('resolution-mode', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/resolution-mode/import', {
+                moduleResolution: require('typescript').ModuleResolutionKind.NodeNext,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+
+            var emitResult = requireAsCompilation('./ts_features/4.7/resolution-mode/require', {
+                moduleResolution: require('typescript').ModuleResolutionKind.NodeNext,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        describe('Stricter-Checks-with-Template-String-Expressions', () => {
+            it('symbol', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Stricter-Checks-with-Template-String-Expressions/symbol.ts');
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+                var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+                assertDiagnostic(diagnostic, [
+                    `Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.`
+                ]);
+            });
+
+            it('symbol-as-generics', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Stricter-Checks-with-Template-String-Expressions/symbol-as-generics.ts');
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 2);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                    `Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.`,
+                ]);
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[1].diagnostic, [
+                    `Implicit conversion of a 'symbol' to a 'string' will fail at runtime. Consider wrapping this expression in 'String(...)'.`,
+                ]);
+            });
+
+            it('workaround', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.7/Stricter-Checks-with-Template-String-Expressions/workaround.ts');
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+            });
+        });
+
+        it('Stricter-Spread-Checks-in-JSX', () => {
+            var emitResult = requireAsCompilation('./ts_features/4.7/Stricter-Spread-Checks-in-JSX/index.tsx', {
+                jsx: true,
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            var diagnostic = emitResult.__typifyAllDiagnostics[0].diagnostic;
+            assertDiagnostic(diagnostic, [
+                'Spread types may only be created from object types.'
+            ]);
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#type-in-packagejson-and-new-extensions
+        it('type-in-package-json-and-New-Extensions', () => {
+        });
+    });
 })
 
 require.main === module && test.run(console.DEBUG)
