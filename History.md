@@ -1,7 +1,22 @@
 
-v0.11.3 / 2022-10-01
+v0.11.5 / 2022-12-04
 ==================
 
+  * fix: remove LINE_MARKER before redunt cache map content.
+
+v0.11.4 / 2022-11-18
+====================
+
+  * Release v0.11.4
+  * fix: test case.
+  * feat: adapt to typescript 4.8, use this version by default.
+  * feat: adapt to typescript 4.7, use this version by default.
+  * feat: upgrade version of @fxjs/cli
+
+v0.11.3 / 2022-10-01
+====================
+
+  * Release v0.11.3
   * fix: lack of required tsconfig files
   * ci: upgrade ci.
 
