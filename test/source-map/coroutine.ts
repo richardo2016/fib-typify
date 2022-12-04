@@ -20,5 +20,5 @@ export const fiber = coroutine.start(() => {
 
 
 
-    throw new global.Error("I am from coroutine.ts");
+    throw new Error("I am from coroutine.ts");
 })

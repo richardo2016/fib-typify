@@ -21,7 +21,7 @@
 	"scripts": {
 		"build": "fibjs ./bin/ftsc.js src/* -p tsconfig.bootstrap.json --outDir ./lib",
 		"bootstrap": "fibjs ./scripts/bootstrap",
-		"test": "fibjs test/index.js",
+		"test": "../fibjs/bin/Windows_amd64_release/fibjs test/index.js",
 		"ci": "npm run build && npm run test",
 		"ts-intf": "fibjs test/spec.ts-intf.js",
 		"prepublishOnly": "npm run build"

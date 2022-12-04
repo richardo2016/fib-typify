@@ -7,40 +7,40 @@ const coroutine = require('coroutine');
 const Typify = require('..')
 const fibjsVersion = require('util').buildInfo().fibjs
 
-describe('error emitted by fib-typify correctly', () => {
+describe.only('error emitted by fib-typify correctly', () => {
     function run_test(vbox) {
         ;[
-            [
-                `normal error emitted in top level`,
-                './source-map/normal.ts',
-                6, 7,
-                '123',
-            ],
-            [
-                `error missing in coroutine.js(but it would be output)`,
-                './source-map/coroutine.js',
-                false
-            ],
+            // [
+            //     `normal error emitted in top level`,
+            //     './source-map/normal.ts',
+            //     6, 7,
+            //     '123',
+            // ],
+            // [
+            //     `error missing in coroutine.js(but it would be output)`,
+            //     './source-map/coroutine.js',
+            //     false
+            // ],
             [
                 `error missing in coroutine-by-arg.ts(but it would be output)`,
                 './source-map/coroutine-by-arg.ts',
                 false
             ],
-            [
-                `error missing in coroutine.ts(but it would be output)`,
-                './source-map/coroutine.ts',
-                false
-            ],
-            [
-                `error emitted in set-timeout(but it would be output)`,
-                './source-map/set-timeout.ts',
-                false
-            ],
-            [
-                `error emitted in set-timeout.js(but it would be output)`,
-                './source-map/set-timeout.js',
-                false
-            ]
+            // [
+            //     `error missing in coroutine.ts(but it would be output)`,
+            //     './source-map/coroutine.ts',
+            //     false
+            // ],
+            // [
+            //     `error emitted in set-timeout(but it would be output)`,
+            //     './source-map/set-timeout.ts',
+            //     false
+            // ],
+            // [
+            //     `error emitted in set-timeout.js(but it would be output)`,
+            //     './source-map/set-timeout.js',
+            //     false
+            // ]
         ].forEach(([
             purpose,
             require_path,
@@ -56,7 +56,9 @@ describe('error emitted by fib-typify correctly', () => {
                 let e = null
                 try {
                     coroutine.sleep(0);
-                    fiber = vbox.require(require_path, __dirname).fiber
+                    const mod = vbox.require(require_path, __dirname);
+                    fiber = mod.fiber
+                    // console.notice('[feat] fiber', fiber);
                     if (fiber) {
                         fiber.join();
                     }
@@ -66,6 +68,11 @@ describe('error emitted by fib-typify correctly', () => {
                     if (!lineNumber) {
                         assert.equal(e, null)
                         return
+                    } else if (!e) {
+                        throw new Error(`error expected but not found`)
+                    } else {
+                        // leave here for debugging
+                        // console.error(e)
                     }
 
                     assert.equal(e.message, message)

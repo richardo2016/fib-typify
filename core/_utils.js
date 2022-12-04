@@ -11,7 +11,7 @@ const mkdirp = (target) => {
 
         try {
             fs.mkdir(target)
-        } catch (error) {}
+        } catch (error) { }
     }
 }
 
@@ -23,7 +23,7 @@ const CORE = require('./core')
 
 const { compileModule } = require('./transpile/module')
 
-function time () {
+function time() {
     return new Date()
 }
 const isDebug = exports.isDebug = !!process.env.FIB_DEBUG
@@ -52,7 +52,7 @@ exports.overwriteFile = (srcpath, distpath) => {
     }
 }
 
-exports.getLogPrefix = function getLogPrefix (domain = 'default', action = 'action') {
+exports.getLogPrefix = function getLogPrefix(domain = 'default', action = 'action') {
     return `${CORE.logPrefix}[${domain}:${action}] - [${time()}]  `
 }
 
@@ -60,14 +60,25 @@ exports.defaultCompilerOptions = require('../tsconfig.dft.json').compilerOptions
 
 exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-module-hash')()
 
+function normalizePosixPath(p) {
+    return p
+        // normalize potential windows path to posix path
+        .replace(/^([A-Za-z])\:/, (_, $1) => `/${$1.toLowerCase()}`)
+        .replace(/\\/g, '/')
+}
+
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
 
-const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js')
+const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js');
+const SOURCEMAP_RUNTIME_SCRIPT_REQUIREABLE = SOURCEMAP_RUNTIME_SCRIPT.replace(/\\/g, '/');
+
 const LINE_MARKER = '//# sourceMappingURL=';
 
 const saveCacheMap = function (filename, mapContent) {
     const io = require('io')
     const zip = require('zip')
+
+    // console.notice('[feat] save cache map', filename, mapContent);
 
     const stream = new io.MemoryStream();
     const zipfile = zip.open(stream, "w");
@@ -75,7 +86,8 @@ const saveCacheMap = function (filename, mapContent) {
     zipfile.close();
 
     stream.rewind();
-    fs.setZipFS(`${filename}.zip`, stream.readAll());
+    const buf = stream.readAll();
+    fs.setZipFS(`${filename}.zip`, buf);
 }
 
 exports.registerTsCompiler = (
@@ -85,8 +97,9 @@ exports.registerTsCompiler = (
     const useSourceMap = tsCompilerOptions.inlineSourceMap || tsCompilerOptions.sourceMap
     const inlineSourceMap = tsCompilerOptions.inlineSourceMap;
 
-    if (useSourceMap)
+    if (useSourceMap) {
         sandbox.require(SOURCEMAP_RUNTIME_SCRIPT, __dirname)
+    }
 
     ;[
         TS_SUFFIX,
@@ -94,16 +107,18 @@ exports.registerTsCompiler = (
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
             const compiledModule = compileCallback(buf, args, {
-                compilerOptions: {...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
+                compilerOptions: { ...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
             })
 
             if (inlineSourceMap) {
+                const idx = compiledModule.outputText.lastIndexOf(LINE_MARKER);
                 const sourceMapDataURL = compiledModule.outputText.slice(
-                    compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
+                    idx, -1
                 )
-                saveCacheMap(args.filename, LINE_MARKER + sourceMapDataURL)
+                saveCacheMap(args.filename, sourceMapDataURL)
             }
 
+            // console.notice('[feat] compiledModule.outputText', compiledModule.outputText);
             return compiledModule.outputText
         })
     })
@@ -111,7 +126,7 @@ exports.registerTsCompiler = (
 
 exports.fixTsRaw = function (tsRaw) {
     if (typeof tsRaw !== 'string')
-        throw 'tsRaw must be string!'
+        throw new Error('[fixTsRaw] tsRaw must be string!');
 
     if (tsRaw.length > 2 && tsRaw.indexOf('#!') === 0) {
         tsRaw = '//' + tsRaw;
@@ -129,18 +144,20 @@ exports.fixTsRaw = function (tsRaw) {
  * @param {import('typescript').TranspileOptions} moduleOptions
  * @returns
  */
-function compileCallback (buf, args, moduleOptions) {
+function compileCallback(buf, args, moduleOptions) {
     let tsScriptString = buf + ''
 
-     if (!tsScriptString) return undefined
+    if (!tsScriptString) return undefined
 
-     const compiledModule = compileModule(tsScriptString, {
-         ...moduleOptions,
-         fileName: args.filename,
-         moduleName: args.filename
-     })
-     return compiledModule
- }
+    //  tsScriptString = `require("${SOURCEMAP_RUNTIME_SCRIPT_REQUIREABLE}");${tsScriptString}`
+
+    const compiledModule = compileModule(tsScriptString, {
+        ...moduleOptions,
+        fileName: args.filename,
+        moduleName: args.filename
+    })
+    return compiledModule
+}
 
 exports.replaceSuffix = function (target = '', {
     to_replace = /.tsx?$/,
