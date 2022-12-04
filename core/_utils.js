@@ -62,7 +62,8 @@ exports.builtModules = require('@fibjs/builtin-modules/lib/util/get-builtin-modu
 
 const TS_SUFFIX = exports.TS_SUFFIX = '.ts'
 
-const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js')
+const SOURCEMAP_RUNTIME_SCRIPT = path.resolve(__dirname, './runtime/source-map-install.js');
+
 const LINE_MARKER = '//# sourceMappingURL=';
 
 const saveCacheMap = function (filename, mapContent) {
@@ -75,7 +76,8 @@ const saveCacheMap = function (filename, mapContent) {
     zipfile.close();
 
     stream.rewind();
-    fs.setZipFS(`${filename}.zip`, stream.readAll());
+    const buf = stream.readAll();
+    fs.setZipFS(`${filename}.zip`, buf);
 }
 
 exports.registerTsCompiler = (
@@ -85,8 +87,9 @@ exports.registerTsCompiler = (
     const useSourceMap = tsCompilerOptions.inlineSourceMap || tsCompilerOptions.sourceMap
     const inlineSourceMap = tsCompilerOptions.inlineSourceMap;
 
-    if (useSourceMap)
+    if (useSourceMap) {
         sandbox.require(SOURCEMAP_RUNTIME_SCRIPT, __dirname)
+    }
 
     ;[
         TS_SUFFIX,
@@ -94,14 +97,14 @@ exports.registerTsCompiler = (
     ].forEach(tsSuffix => {
         sandbox.setModuleCompiler(tsSuffix, (buf, args) => {
             const compiledModule = compileCallback(buf, args, {
-                compilerOptions: {...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
+                compilerOptions: { ...tsCompilerOptions, sourceMap: false, inlineSourceMap: true }
             })
 
             if (inlineSourceMap) {
                 const sourceMapDataURL = compiledModule.outputText.slice(
                     compiledModule.outputText.lastIndexOf(LINE_MARKER), -1
                 )
-                saveCacheMap(args.filename, LINE_MARKER + sourceMapDataURL)
+                saveCacheMap(args.filename, sourceMapDataURL)
             }
 
             return compiledModule.outputText
@@ -111,7 +114,7 @@ exports.registerTsCompiler = (
 
 exports.fixTsRaw = function (tsRaw) {
     if (typeof tsRaw !== 'string')
-        throw 'tsRaw must be string!'
+        throw new Error('[fixTsRaw] tsRaw must be string!');
 
     if (tsRaw.length > 2 && tsRaw.indexOf('#!') === 0) {
         tsRaw = '//' + tsRaw;
@@ -129,18 +132,18 @@ exports.fixTsRaw = function (tsRaw) {
  * @param {import('typescript').TranspileOptions} moduleOptions
  * @returns
  */
-function compileCallback (buf, args, moduleOptions) {
+function compileCallback(buf, args, moduleOptions) {
     let tsScriptString = buf + ''
 
-     if (!tsScriptString) return undefined
+    if (!tsScriptString) return undefined
 
-     const compiledModule = compileModule(tsScriptString, {
-         ...moduleOptions,
-         fileName: args.filename,
-         moduleName: args.filename
-     })
-     return compiledModule
- }
+    const compiledModule = compileModule(tsScriptString, {
+        ...moduleOptions,
+        fileName: args.filename,
+        moduleName: args.filename
+    })
+    return compiledModule
+}
 
 exports.replaceSuffix = function (target = '', {
     to_replace = /.tsx?$/,
