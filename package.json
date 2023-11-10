@@ -41,7 +41,7 @@
 	},
 	"homepage": "https://github.com/richardo2016/fib-typify#readme",
 	"dependencies": {
-		"@fibjs/builtin-modules": "^0.1.0",
+		"@fibjs/builtin-modules": "^0.1.1",
 		"@fibjs/fs-readdir-recursive": "^1.0.2",
 		"@fibjs/rmdirr": "^2.0.0",
 		"@fxjs/cli": "^0.1.0",
