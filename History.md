@@ -1,7 +1,15 @@
 
-v0.11.5 / 2022-12-04
+v0.11.6 / 2024-04-17
 ==================
 
+  * feat: support typescript 4.9 (#24)
+  * build: adapt to fibjs 0.37 (#23)
+  * feat: upgrade dep.
+
+v0.11.5 / 2022-12-04
+====================
+
+  * Release v0.11.5
   * fix: remove LINE_MARKER before redunt cache map content.
 
 v0.11.4 / 2022-11-18
