@@ -24,24 +24,84 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os:
-          - windows-2019
-          - ubuntu-20.04
-          - macos-11
-        fibjs: [0.34.0, 0.35.0, 0.36.0, 0.37.0]
-        arch: [amd64, i386]
-        exclude:
-          - os: windows-2019
-            arch: i386
-          - os: macos-11
-            arch: i386
         include:
-          - os: windows-2022
-            arch: arm64
-            fibjs: 0.37.0
-          - os: macos-11
-            arch: arm64
-            fibjs: 0.37.0
+        - os: windows-2019
+          arch: x64
+          fibjs: 0.34.0
+        - os: windows-2019
+          arch: x64
+          fibjs: 0.35.0
+        - os: windows-2019
+          arch: x64
+          fibjs: 0.36.0
+        - os: windows-2019
+          arch: x64
+          fibjs: 0.37.0
+        - os: windows-2019
+          arch: x86
+          fibjs: 0.34.0
+        - os: windows-2019
+          arch: x86
+          fibjs: 0.35.0
+        - os: windows-2019
+          arch: x86
+          fibjs: 0.36.0
+        - os: windows-2019
+          arch: x86
+          fibjs: 0.37.0
+        - os: ubuntu-20.04
+          arch: x64
+          fibjs: 0.34.0
+        - os: ubuntu-20.04
+          arch: x64
+          fibjs: 0.35.0
+        - os: ubuntu-20.04
+          arch: x64
+          fibjs: 0.36.0
+        - os: ubuntu-20.04
+          arch: x64
+          fibjs: 0.37.0
+        - os: ubuntu-20.04
+          arch: x86
+          fibjs: 0.34.0
+        - os: ubuntu-20.04
+          arch: x86
+          fibjs: 0.35.0
+        - os: ubuntu-20.04
+          arch: x86
+          fibjs: 0.36.0
+        - os: ubuntu-20.04
+          arch: x86
+          fibjs: 0.37.0
+        - os: macos-11
+          arch: x64
+          fibjs: 0.34.0
+        - os: macos-11
+          arch: x64
+          fibjs: 0.35.0
+        - os: macos-11
+          arch: x64
+          fibjs: 0.36.0
+        - os: macos-11
+          arch: x64
+          fibjs: 0.37.0
+        - os: macos-14
+          arch: x64
+          fibjs: 0.34.0
+        - os: macos-14
+          arch: x64
+          fibjs: 0.35.0
+        - os: macos-14
+          arch: x64
+          fibjs: 0.36.0
+        - os: macos-14
+          arch: x64
+          fibjs: 0.37.0
+        - os: macos-14
+          arch: arm64
+          fibjs: 0.37.0
+        
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
