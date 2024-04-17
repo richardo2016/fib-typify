@@ -26,7 +26,7 @@ interface SandBoxInitialConfig {
     fallback: Function;
     global: object;
 }
-type IClazzConstructorParams<T> = T extends {
+declare type IClazzConstructorParams<T> = T extends {
     new (...args: infer U): any;
 } ? U : (T extends {
     new (...args: infer U): any;
