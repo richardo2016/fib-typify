@@ -24,13 +24,17 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os: [ubuntu-18.04, windows-2019, macos-10.15]
+        os: 
+          - ubuntu-20.04
+          # since fibjs 0.37.0, windows-2019 not supported
+          - windows-2022
+          - macos-11
         version: [0.34.0, 0.35.0, 0.36.0, 0.37.0]
         arch: [amd64, i386]
         exclude:
-          - os: windows-2019
+          - os: windows-2022
             arch: i386
-          - os: macos-10.15
+          - os: macos-11
             arch: i386
 
     steps:
@@ -41,7 +45,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Set Env Variables
         id: set-env-vars
