@@ -51,12 +51,13 @@
 	},
 	"ci": {
 		"type": "actions",
-        "os": [
-            "windows-2019",
-            "ubuntu-20.04",
-            "macos-11",
-            "macos-14"
-        ],
+		"os": [
+			"windows-2019",
+			"ubuntu-20.04",
+			"macos-11",
+			"macos-14"
+		],
+		"node_version": 18,
 		"version": [
 			"0.34.0",
 			"0.35.0",
@@ -65,7 +66,7 @@
 		]
 	},
 	"devDependencies": {
-		"@fibjs/ci": "^2.7.0",
+		"@fibjs/ci": "^2.7.1",
 		"@fibjs/types": "^0.33.15",
 		"@types/react": "~16.9",
 		"react": "^16.9.0",
