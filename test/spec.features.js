@@ -52,14 +52,25 @@ describe('ts versioned features', () => {
             featureLoader.require('./ts_features/4.2/leading-or-middle-rest-elements-in-tuple-types', __dirname);
         });
 
-        it("stricter-checks-for-the-in-operator", () => {
-            var emitResult = requireAsCompilation('./ts_features/4.2/stricter-checks-for-the-in-operator.error.ts', {
-            });
-            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+        describe("stricter-checks-for-the-in-operator", () => {
+            it.skip('#4.2', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.2/stricter-checks-for-the-in-operator.error.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
 
-            assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
-                "(4,10): The right-hand side of an 'in' expression must not be a primitive."
-            ));
+                assert.isTrue((emitResult.__typifyAllDiagnostics[0].error + '').includes(
+                    "(4,10): The right-hand side of an 'in' expression must not be a primitive."
+                ));
+            });
+
+            // behavior changed in typescript 4.9, see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#unlisted-property-narrowing-with-the-in-operator
+            it('#4.9', () => {
+                var emitResult = requireAsCompilation('./ts_features/4.2/stricter-checks-for-the-in-operator.error.ts');
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                    `Type 'number' is not assignable to type 'object'.`
+                ]);
+            });
         });
 
         it("abstract-construct-signatures", () => {
@@ -778,6 +789,110 @@ describe('ts versioned features', () => {
             assertDiagnostic(emitResult.__typifyAllDiagnostics[1].diagnostic, [
                 `'number' is an unused renaming of 'age'. Did you intend to use it as a type annotation?`,
             ]);
+        });
+    });
+
+    describe('features 4.9', () => {
+        describe("The-satisfies-Operator", () => {
+            it("basic", () => {
+                var emitResult = requireAsCompilation('./ts_features/4.9/The-satisfies-Operator/index.ts');
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 2);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                    `Type '{ red: [number, number, number]; green: string; bleu: number[]; }' does not satisfy the expected type 'Record<Colors, string | RGB>'.`,
+                    `Object literal may only specify known properties, and 'bleu' does not exist in type 'Record<Colors, string | RGB>'.`,
+                ]);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[1].diagnostic, [
+                    `Property 'at' does not exist on type '[number, number, number]'.`,
+                ]);
+            });
+
+            it("catch errors", () => {
+                var emitResult = requireAsCompilation('./ts_features/4.9/The-satisfies-Operator/catch-errors.ts');
+
+                assert.equal(emitResult.__typifyAllDiagnostics.length, 3);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                    `Type '{ red: string; green: boolean; blue: string; platypus: boolean; }' does not satisfy the expected type 'Record<Colors, unknown>'.`,
+                    `Object literal may only specify known properties, and '"platypus"' does not exist in type 'Record<Colors, unknown>'.`,
+                ]);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[1].diagnostic, [
+                    `Type '[number, number]' is not assignable to type 'string | RGB'.`,
+                    `Type '[number, number]' is not assignable to type 'string'.`
+                ]);
+
+                assertDiagnostic(emitResult.__typifyAllDiagnostics[2].diagnostic, [
+                    `Property 'at' does not exist on type '[number, number, number]'.`
+                ]);
+            });
+        });
+
+        it("Unlisted-Property-Narrowing-with-the-in-Operator", () => {
+            var emitResult = requireAsCompilation('./ts_features/4.9/Unlisted-Property-Narrowing-with-the-in-Operator/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        // see https://github.com/tc39/proposal-decorators
+        it("Auto-Accessors-in-Classes", () => {
+            var emitResult = requireAsCompilation('./ts_features/4.9/Auto-Accessors-in-Classes/index.ts', {
+                target: 'es2015'
+            });
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        it("Checks-For-Equality-on-NaN", () => {
+            var emitResult = requireAsCompilation('./ts_features/4.9/Checks-For-Equality-on-NaN/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 1);
+
+            assertDiagnostic(emitResult.__typifyAllDiagnostics[0].diagnostic, [
+                `This condition will always return 'true'.`
+            ]);
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#file-watching-now-uses-file-system-events
+        // ? maybe this not affected fibjs's impl?
+        it.skip("File-Watching-Now-Uses-File-System-Events", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#remove-unused-imports-and-sort-imports-commands-for-editors
+        it.skip("Remove-Unused-Imports-and-Sort-Imports-Commands-for-Editors", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#go-to-definition-on-return-keywords
+        it.skip("Go-to-Definition-on-return-Keywords", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#performance-improvements
+        it.skip("Performance-Improvements", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#libdts-updates
+        it.skip("lib.d.ts-Updates", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#better-types-for-promiseresolve
+        it.skip("Better-Types-for-Promise.resolve", () => {
+            var emitResult = requireAsCompilation('./ts_features/4.9/Better-Types-for-Promise.resolve/index.ts');
+
+            assert.equal(emitResult.__typifyAllDiagnostics.length, 0);
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#javascript-emit-no-longer-elides-imports
+        it.skip("JavaScript-Emit-No-Longer-Elides-Imports", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#exports-is-prioritized-over-typesversions
+        it.skip("exports-is-Prioritized-Over-typesVersions", () => {
+        });
+
+        // @see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html#substitute-replaced-with-constraint-on-substitutiontypes
+        it.skip("substitute-Replaced-With-constraint-on-SubstitutionTypes", () => {
         });
     });
 })
